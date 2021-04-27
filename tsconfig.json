@@ -1,0 +1,50 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "target": "es5",
+    "outDir": "./build",
+    "inlineSourceMap": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "jsx": "preserve",
+    /* Additional Checks */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    /* Debugging Options */
+    "traceResolution": false,
+    "listFiles": false,
+    "pretty": true,
+    /* Experimental Options */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "lib": [
+      "es2019",
+      "dom"
+    ],
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules/@fridgefm-web/typings",
+      "src/styles/global.d.ts"
+    ],
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "./src/**/*.tsx",
+    "./src/**/*.ts",
+    "./src/**/*.js",
+    "./stories/**/*.ts",
+    "./stories/**/*.tsx",
+    "./stories/**/*.js",
+  ],
+  "exclude": [
+    "./node_modules"
+  ]
+}
