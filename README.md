@@ -16,6 +16,5 @@ View:  Field   <   FieldStructure   <   StepStructure
 - 
 
 ## Next iterations
-- Add stepping logic
 - Add validation
-- Add basic control
+- Add basic control via observable

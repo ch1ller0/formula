@@ -146,7 +146,7 @@ export const SubmitButtonView = ViewGenerator.field<{ label: string }>({
 
 export const ThankYouView = ViewGenerator.field<{
   title: string;
-  link: { href; label };
+  link: { href: string; label: string };
 }>({
   name: 'final-page',
   render: ({ props }) => {
