@@ -10,7 +10,8 @@ import {
   ThankYouView,
 } from './fb-form.fields';
 import { formBuilder } from '../../src/index';
-import { nextStepControl } from '../../src/base/controls/step.control';
+import { ValidationFeature } from '../../src/features/validation/validation.feature';
+import { nextStepControl } from '../../src/features/step/step.control';
 
 export const FBForm = formBuilder
   .addStep({
@@ -18,6 +19,11 @@ export const FBForm = formBuilder
       field: InputFieldView,
       // @TODO infer type here
       props: { label: 'Your name' },
+      controls: (feature) => [
+        feature(ValidationFeature).validate((v) =>
+          v.length < 6 ? { error: 'Введите имя не менее 6 символов' } : null,
+        ),
+      ],
     },
     location: {
       field: SelectFieldView,
@@ -25,6 +31,11 @@ export const FBForm = formBuilder
         label: 'Location',
         options: ['New York', 'St Petersburg', 'Moscow'],
       },
+      // controls: [
+      //   ValidationFeature.useService.validate((v) => {
+      //     return v.length > 1 ? { error: 'Введите местоположение' } : null;
+      //   }),
+      // ],
     },
     gender: {
       field: RadioFieldView,
@@ -41,6 +52,11 @@ export const FBForm = formBuilder
       props: {
         label: 'Remember me',
       },
+      // controls: (feature) => [
+      //   feature(ValidationFeature).validate((v) => {
+      //     return !!v ? { error: 'Вы должны кликнуть' } : null;
+      //   }),
+      // ],
     },
     next_button: {
       field: SubmitButtonView,
@@ -81,6 +97,7 @@ export const FBForm = formBuilder
       },
     },
   })
+  .addFeatures([ValidationFeature])
   .toComponent(({ children }) => {
     return (
       <ThemeProvider

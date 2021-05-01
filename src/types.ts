@@ -1,5 +1,6 @@
 import type { FC } from 'react';
-import type { Store } from './base/atoms/index';
+import type { Store } from './base/store';
+import type { Feature } from './features/features.type';
 
 // #### VIEW
 
@@ -38,6 +39,7 @@ export type BuilderFieldProps = {
 
 export type BuilderConfig = {
   structure: StepStructure[];
+  features: Feature<unknown>[];
 };
 
 // @TODO NEED BETTER TYPES, CURRENT ARE REALLY VAGUE
