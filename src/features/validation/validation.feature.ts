@@ -1,31 +1,69 @@
 import { fieldAtom } from '../field/field.atom';
 import { validateAction, validationAtom } from './validation.atom';
+import { propsChange } from '../props/props.atom';
 import { globalStore, rxGlobalStore } from '../../base/store';
-import { debounceTime } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilKeyChanged,
+  distinctUntilChanged,
+} from 'rxjs/operators';
+import keys from '@tinkoff/utils/object/keys';
 
-type ValidationError = { error: string };
+type ValidateFn = (v: string | number) => string | Promise<string>;
 
 class ValidationService {
-  private _store: any;
+  constructor({ structure }) {
+    this._structure = structure;
 
-  constructor() {
-    this._store = globalStore;
     // debug
-    this._store.subscribe(validationAtom, (vl) => {
-      console.log('validatonStore', vl);
-    });
+    // globalStore.subscribe(validationAtom, (vl) => {
+    //   console.log('validatonStore', vl);
+    // });
   }
 
-  validate(validateFn: () => ValidationError | Promise<ValidationError>) {
-    return ({ initiator }) => {
-      rxGlobalStore(fieldAtom)
-        .pipe(debounceTime(300))
-        .subscribe((nextValue) => {
-          console.log('vlaidrx', nextValue);
+  isStepValid() {
+    const fieldsByStep = this._structure.map(keys);
 
-          const currentValue = nextValue[initiator];
-          const error = validateFn(currentValue);
-          this._store.dispatch(validateAction({ name: initiator, error }));
+    return ({ initiator: { fieldName } }) => {
+      rxGlobalStore(validationAtom)
+        .pipe(distinctUntilChanged())
+        .subscribe((v) => {
+          const stepValidationRequirements = fieldsByStep.find((v) =>
+            v.includes(fieldName),
+          );
+
+          const disabled = stepValidationRequirements.some((x) => v[x]?.length);
+
+          globalStore.dispatch(
+            propsChange({
+              name: fieldName,
+              value: { disabled },
+            }),
+          );
+        });
+    };
+  }
+
+  validate(validateFns: ValidateFn[]) {
+    return ({ initiator: { fieldName } }) => {
+      rxGlobalStore(fieldAtom)
+        .pipe(distinctUntilKeyChanged(fieldName), debounceTime(300))
+        .subscribe(async (nextValue) => {
+          const currentValue = nextValue[fieldName];
+          if (currentValue === undefined) {
+            return;
+          }
+          const errors = await Promise.all(
+            validateFns.map((v) => v(currentValue)),
+          ).then((a) => a.filter((x) => !!x));
+
+          globalStore.dispatch(validateAction({ name: fieldName, errors }));
+          globalStore.dispatch(
+            propsChange({
+              name: fieldName,
+              value: { error: errors[0] || '' },
+            }),
+          );
         });
     };
   }

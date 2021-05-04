@@ -11,18 +11,37 @@ import {
 } from './fb-form.fields';
 import { formBuilder } from '../../src/index';
 import { ValidationFeature } from '../../src/features/validation/validation.feature';
+import { PropsFeature } from '../../src/features/props/props.feature';
 import { nextStepControl } from '../../src/features/step/step.control';
 
+const requiredValidator = (v: string) =>
+  !v?.length ? 'Field is required' : undefined;
+
+const lengthValidator = ({
+  min = 0,
+  max = 30,
+}: {
+  min?: number;
+  max?: number;
+}) => (v: string) => {
+  const { length } = v;
+  if (length > max || length < min) {
+    return `Length should be between ${min} and ${max}`;
+  }
+};
+
 export const FBForm = formBuilder
+  .addFeatures([PropsFeature, ValidationFeature])
   .addStep({
     first_name: {
       field: InputFieldView,
       // @TODO infer type here
       props: { label: 'Your name' },
       controls: (feature) => [
-        feature(ValidationFeature).validate((v) =>
-          v.length < 6 ? { error: 'Введите имя не менее 6 символов' } : null,
-        ),
+        feature(ValidationFeature).validate([
+          requiredValidator,
+          lengthValidator({ min: 6 }),
+        ]),
       ],
     },
     location: {
@@ -31,11 +50,6 @@ export const FBForm = formBuilder
         label: 'Location',
         options: ['New York', 'St Petersburg', 'Moscow'],
       },
-      // controls: [
-      //   ValidationFeature.useService.validate((v) => {
-      //     return v.length > 1 ? { error: 'Введите местоположение' } : null;
-      //   }),
-      // ],
     },
     gender: {
       field: RadioFieldView,
@@ -52,18 +66,14 @@ export const FBForm = formBuilder
       props: {
         label: 'Remember me',
       },
-      // controls: (feature) => [
-      //   feature(ValidationFeature).validate((v) => {
-      //     return !!v ? { error: 'Вы должны кликнуть' } : null;
-      //   }),
-      // ],
     },
-    next_button: {
+    next_button1: {
       field: SubmitButtonView,
       onAction: nextStepControl,
       props: {
         label: 'Next',
       },
+      controls: (feature) => [feature(ValidationFeature).isStepValid()],
     },
   })
   .addStep({
@@ -76,13 +86,19 @@ export const FBForm = formBuilder
       props: {
         label: 'I am a vegaterian',
       },
+      controls: (feature) => [
+        feature(ValidationFeature).validate([
+          (v) => !v && 'Vegging is required',
+        ]),
+      ],
     },
-    next_button: {
+    next_button2: {
       field: SubmitButtonView,
       onAction: nextStepControl,
       props: {
         label: 'Finalize',
       },
+      controls: (feature) => [feature(ValidationFeature).isStepValid()],
     },
   })
   .addStep({
@@ -97,7 +113,6 @@ export const FBForm = formBuilder
       },
     },
   })
-  .addFeatures([ValidationFeature])
   .toComponent(({ children }) => {
     return (
       <ThemeProvider
@@ -105,6 +120,7 @@ export const FBForm = formBuilder
           colors: {
             background: 'black',
             primary: 'tomato',
+            disconnect: '#bbb',
           },
           space: [0, 6, 12, 24, 48],
           fontSizes: [14, 16, 18, 20, 24],

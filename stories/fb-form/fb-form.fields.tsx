@@ -146,11 +146,18 @@ export const CheckboxFieldView = ViewGenerator.field<{
 export const SubmitButtonView = ViewGenerator.field<{ label: string }>({
   name: 'submit',
   render: ({ props, onAction }) => {
-    const { label } = props;
+    const { label, disabled = true } = props;
 
     return Boxify(
-      <Button onClick={onAction}>
-        <Text>{label}</Text>
+      <Button
+        onClick={onAction}
+        disabled={disabled}
+        bg={disabled && 'disconnect'}
+        style={{
+          cursor: 'pointer',
+        }}
+      >
+        <Text color={disabled ? 'white' : 'black'}>{label}</Text>
       </Button>,
       props.error,
     );

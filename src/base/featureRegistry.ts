@@ -8,28 +8,39 @@ export class FeatureRegistry {
   private _featureProviders: Record<string, Feature<unknown>>;
 
   constructor() {
-    this._featureProviders = {};
+    this._featureProviders = Object.create(null);
   }
 
-  fill(a: { structure: StepStructure[]; features: Feature<unknown>[] }) {
-    a.features.forEach((cfg) => {
+  fill({
+    structure,
+    features,
+  }: {
+    structure: StepStructure[];
+    features: Feature<unknown>[];
+  }) {
+    features.forEach((cfg) => {
       const key = getName(cfg.name);
       this._featureProviders[key] = {
-        service: new cfg.useService(),
+        service: new cfg.useService({ structure }),
       };
     });
 
-    console.log('featureProviders:', this._featureProviders);
-
-    a.structure.forEach((step, index) => {
+    structure.forEach((step) => {
       toPairs(step).forEach(([fieldName, { controls }]) => {
         if (controls) {
-          const getService = (fea: Feature<unknown>) =>
-            this._featureProviders[getName(fea.name)].service;
+          const getService = (fea: Feature<unknown>) => {
+            const realisation = this._featureProviders[getName(fea.name)];
+            if (!realisation) {
+              throw new Error(
+                `Did not find "${fea.name}" feature in a registry. Forgot to call "addFeatures"? `,
+              );
+            }
+            return realisation.service;
+          };
 
           const fieldControls = controls(getService);
           fieldControls.forEach((element) => {
-            element({ initiator: fieldName });
+            element({ initiator: { fieldName } });
           });
         }
       });

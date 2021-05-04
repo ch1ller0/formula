@@ -7,7 +7,7 @@ export const changeAction = declareAction<{
   value: string | number;
 }>('field-changed');
 
-export const fieldAtom = declareAtom<State>('allfields', {}, (on) => [
+export const fieldAtom = declareAtom<State>('field.atom', {}, (on) => [
   on(changeAction, (state, payload) => ({
     ...state,
     [payload.name]: payload.value,

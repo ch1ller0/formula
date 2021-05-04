@@ -13,15 +13,9 @@ export const StepWrapper: React.FC<{
   const currentStep = useAtom(stepAtom);
 
   const paired = toPairs(structure[currentStep]);
-  const fields = paired.map(([name, { props, ...innerProps }]) => {
+  const fields = paired.map(([name, { ...innerProps }]) => {
     return (
-      <FieldWrapper
-        name={name}
-        key={name}
-        fieldProps={props}
-        store={store}
-        {...innerProps}
-      />
+      <FieldWrapper name={name} key={name} store={store} {...innerProps} />
     );
   });
 

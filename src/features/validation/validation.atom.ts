@@ -4,12 +4,16 @@ type State = Record<string, { error: string }>;
 
 export const validateAction = declareAction<{
   name: string;
-  error: string;
+  errors: string[];
 }>('validation-changed');
 
-export const validationAtom = declareAtom<State>({}, (on) => [
-  on(validateAction, (state, payload) => ({
-    ...state,
-    [payload.name]: payload.error,
-  })),
-]);
+export const validationAtom = declareAtom<State>(
+  'validation.atom',
+  {},
+  (on) => [
+    on(validateAction, (state, payload) => ({
+      ...state,
+      [payload.name]: payload.errors,
+    })),
+  ],
+);
