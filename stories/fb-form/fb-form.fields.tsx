@@ -1,7 +1,7 @@
 import { Label, Input, Select, Radio, Checkbox } from '@rebass/forms';
 import { Button, Box, Flex, Text as RText } from 'rebass';
 import { BaseSyntheticEvent } from 'react';
-import { ViewGenerator } from '../../src/generate';
+import { ViewGenerator } from '../../packages/core/src';
 
 const Text = (props: any) => (
   <RText
@@ -40,8 +40,9 @@ const Boxify: React.FC<{ error?: string }> = ({ children, error }) => {
 export const InputFieldView = ViewGenerator.field<{ label: string }>({
   name: 'input',
   render: ({ value, setValue, name, label, error }) => {
-    const onChange = (e: BaseSyntheticEvent<{ value: string }>) =>
-      setValue(e.target.value);
+    const onChange = (
+      e: BaseSyntheticEvent<unknown, unknown, { value: string }>,
+    ) => setValue(e.target.value);
 
     return (
       <Boxify error={error}>
@@ -59,11 +60,13 @@ export const InputFieldView = ViewGenerator.field<{ label: string }>({
 export const SelectFieldView = ViewGenerator.field<{
   label: string;
   options: string[];
+  error: string;
 }>({
   name: 'select',
   render: ({ value, setValue, label, options, error, name }) => {
-    const onChange = (e: BaseSyntheticEvent<{ value: string }>) =>
-      setValue(e.target.value);
+    const onChange = (
+      e: BaseSyntheticEvent<unknown, unknown, { value: string }>,
+    ) => setValue(e.target.value);
 
     return (
       <Boxify error={error}>
@@ -146,7 +149,7 @@ export const SubmitButtonView = ViewGenerator.field<{
   onAction: () => void;
 }>({
   name: 'submit',
-  render: ({ onAction, label, disabled }) => (
+  render: ({ onAction, label, disabled = true }) => (
     <Boxify>
       <Button
         onClick={onAction}

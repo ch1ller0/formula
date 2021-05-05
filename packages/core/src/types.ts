@@ -1,8 +1,9 @@
 import type { FC } from 'react';
 import type { Store } from './base/store';
-import type { Feature } from './features/features.type';
+import type { FeatureConfig } from './features/features.type';
 
 type VagueProps = Record<string, any>;
+export type Primitive = string | number | boolean;
 
 // #### VIEW
 
@@ -15,6 +16,7 @@ export type FieldConfig<T extends VagueProps = VagueProps> = {
 export type FieldStructure = {
   field: FieldConfig<VagueProps>;
   props: VagueProps;
+  controls: unknown[];
 };
 export type StepStructure = Record<string, FieldStructure>;
 
@@ -31,12 +33,12 @@ export type Control = {
 export type BuilderFieldProps = {
   value: string | number;
   name: string;
-  setValue: (e: Event) => void;
+  setValue: (value: Primitive) => void;
 };
 
 export type BuilderConfig = {
   structure: StepStructure[];
-  features: Feature<unknown>[];
+  features: FeatureConfig[];
 };
 
 // @TODO NEED BETTER TYPES, CURRENT ARE REALLY VAGUE

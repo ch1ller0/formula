@@ -1,4 +1,4 @@
-import type { FieldConfig, StepStructure, Control } from './types';
+import type { FieldConfig, StepStructure } from './types';
 
 type Brand<T> = { _: T };
 
@@ -14,14 +14,5 @@ export class ViewGenerator {
 
   static step(stepCfg: StepStructure): StepStructure & Brand<'step'> {
     return stepCfg as StepStructure & Brand<'step'>;
-  }
-}
-
-export class ControlGenerator {
-  static control({ name, fn }: Control): Control & Brand<'control'> {
-    return {
-      name: `control:${name}`,
-      fn,
-    } as Control & Brand<'control'>;
   }
 }

@@ -9,30 +9,13 @@ import {
   SubmitButtonView,
   ThankYouView,
 } from './fb-form.fields';
-import { FormBuilder } from '../../src/index';
-import { ValidationFeature } from '../../src/features/validation/validation.feature';
-import { PropsFeature } from '../../src/features/props/props.feature';
-import { StepFeature } from '../../src/features/step/step.feature';
-import { FieldFeature } from '../../src/features/field/field.feature';
+import { FormBuilder, Features } from '../../packages/core/src';
+import { requiredValidator, lengthValidator } from './validators';
 
-const requiredValidator = (v: string) =>
-  !v?.length ? 'Field is required' : undefined;
-
-const lengthValidator = ({
-  min = 0,
-  max = 30,
-}: {
-  min?: number;
-  max?: number;
-}) => (v: string) => {
-  const { length } = v;
-  if (length > max || length < min) {
-    return `Length should be between ${min} and ${max}`;
-  }
-};
+const { FieldFeature, StepFeature, ValidationFeature, PropsFeature } = Features;
 
 export const FBForm = new FormBuilder()
-  .addFeatures([FieldFeature, PropsFeature, StepFeature, ValidationFeature])
+  .addFeatures([FieldFeature, StepFeature, ValidationFeature, PropsFeature])
   .addStep({
     first_name: {
       field: InputFieldView,
@@ -75,7 +58,7 @@ export const FBForm = new FormBuilder()
       },
       controls: (feature) => [
         feature(StepFeature).bindNextStep(),
-        feature(ValidationFeature).isStepValid(),
+        feature(ValidationFeature).toggleDisabled(),
       ],
     },
   })
@@ -102,7 +85,7 @@ export const FBForm = new FormBuilder()
       },
       controls: (feature) => [
         feature(StepFeature).bindNextStep(),
-        feature(ValidationFeature).isStepValid(),
+        feature(ValidationFeature).toggleDisabled(),
       ],
     },
   })
