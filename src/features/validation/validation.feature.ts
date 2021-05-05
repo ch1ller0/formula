@@ -8,17 +8,14 @@ import {
   distinctUntilChanged,
 } from 'rxjs/operators';
 import keys from '@tinkoff/utils/object/keys';
+import { FieldFeature } from '../field/field.feature';
+import type { FeatureConfig } from '../features.type';
 
 type ValidateFn = (v: string | number) => string | Promise<string>;
 
 class ValidationService {
-  constructor({ structure }) {
+  constructor({ structure, deps }) {
     this._structure = structure;
-
-    // debug
-    // globalStore.subscribe(validationAtom, (vl) => {
-    //   console.log('validatonStore', vl);
-    // });
   }
 
   isStepValid() {
@@ -69,7 +66,8 @@ class ValidationService {
   }
 }
 
-export const ValidationFeature = {
+export const ValidationFeature: FeatureConfig<unknown> = {
   name: 'validation',
   useService: ValidationService,
+  deps: [FieldFeature],
 };

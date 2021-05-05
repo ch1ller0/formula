@@ -2,22 +2,20 @@ import type { FC } from 'react';
 import type { Store } from './base/store';
 import type { Feature } from './features/features.type';
 
+type VagueProps = Record<string, any>;
+
 // #### VIEW
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type FieldConfig<T = {}> = {
+export type FieldConfig<T extends VagueProps = VagueProps> = {
   name: string;
-  render: FC<BuilderFieldProps & { props: T }>;
+  render: FC<BuilderFieldProps & T>;
 };
 
-export type FieldStructure<T = {}> = T extends {
-  field: FieldConfig<infer P>;
-  props: infer P;
-  onAction?: Control;
-}
-  ? P
-  : never;
-
+export type FieldStructure = {
+  field: FieldConfig<VagueProps>;
+  props: VagueProps;
+};
 export type StepStructure = Record<string, FieldStructure>;
 
 // #### CONTROL
@@ -34,7 +32,6 @@ export type BuilderFieldProps = {
   value: string | number;
   name: string;
   setValue: (e: Event) => void;
-  onAction: (e: Event) => void;
 };
 
 export type BuilderConfig = {

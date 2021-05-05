@@ -1,6 +1,6 @@
 import { declareAction, declareAtom } from '@reatom/core';
 
-type Props = Record<string, unknown>;
+export type Props = Record<string, unknown>;
 type State = Record<string, Props>;
 
 export const propsChange = declareAction<{

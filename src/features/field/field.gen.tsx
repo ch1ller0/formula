@@ -2,8 +2,11 @@ import React from 'react';
 import { useAction, useAtom } from '@reatom/react';
 import { changeAction, fieldAtom } from './field.atom';
 import { propsAtom } from '../props/props.atom';
+import toPairs from '@tinkoff/utils/object/toPairs';
 
-export const FieldWrapper = ({ name, field, onAction, store }: any) => {
+import type { FieldConfig } from '../../types';
+
+const FieldWrapper: React.FC<FieldConfig> = ({ name, field }) => {
   const Component = field.render;
 
   const Consumer = () => {
@@ -17,15 +20,21 @@ export const FieldWrapper = ({ name, field, onAction, store }: any) => {
       setValue: (value) => {
         changeKeyVal({ name, value });
       },
-      onAction: onAction?.fn(store),
     };
 
     if (!fieldProps) {
       return null;
     }
 
-    return <Component {...props} key={name} props={fieldProps} />;
+    return <Component {...fieldProps} {...props} key={name} />;
   };
 
   return <Consumer />;
+};
+
+export const renderFields = (currentStep, structure) => {
+  const paired = toPairs(structure[currentStep]);
+  return paired.map(([name, innerProps]) => {
+    return <FieldWrapper name={name} key={name} {...innerProps} />;
+  });
 };

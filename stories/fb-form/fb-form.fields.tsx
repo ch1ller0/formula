@@ -15,7 +15,7 @@ const Text = (props: any) => (
   </RText>
 );
 
-const Boxify = (children, error) => {
+const Boxify: React.FC<{ error?: string }> = ({ children, error }) => {
   return (
     <>
       <Box
@@ -39,20 +39,19 @@ const Boxify = (children, error) => {
 
 export const InputFieldView = ViewGenerator.field<{ label: string }>({
   name: 'input',
-  render: ({ value, setValue, name, props }) => {
+  render: ({ value, setValue, name, label, error }) => {
     const onChange = (e: BaseSyntheticEvent<{ value: string }>) =>
       setValue(e.target.value);
 
-    return Boxify(
-      <>
-        {props.label && (
+    return (
+      <Boxify error={error}>
+        {label && (
           <Label htmlFor={name}>
-            <Text>{props.label}</Text>
+            <Text>{label}</Text>
           </Label>
         )}
         <Input id={name} name={name} value={value} onChange={onChange} />
-      </>,
-      props.error,
+      </Boxify>
     );
   },
 });
@@ -62,13 +61,12 @@ export const SelectFieldView = ViewGenerator.field<{
   options: string[];
 }>({
   name: 'select',
-  render: ({ value, setValue, props, name }) => {
-    const { label, options } = props;
+  render: ({ value, setValue, label, options, error, name }) => {
     const onChange = (e: BaseSyntheticEvent<{ value: string }>) =>
       setValue(e.target.value);
 
-    return Boxify(
-      <>
+    return (
+      <Boxify error={error}>
         {label && (
           <Label htmlFor={name}>
             <Text>{label}</Text>
@@ -79,8 +77,7 @@ export const SelectFieldView = ViewGenerator.field<{
             <option key={v}>{v}</option>
           ))}
         </Select>
-      </>,
-      props.error,
+      </Boxify>
     );
   },
 });
@@ -88,10 +85,10 @@ export const SelectFieldView = ViewGenerator.field<{
 export const RadioFieldView = ViewGenerator.field<{
   options: { value: string; label: string }[];
   label: string;
+  error: string;
 }>({
   name: 'radio',
-  render: ({ value: selectedValue, setValue, props, name }) => {
-    const { label, options } = props;
+  render: ({ value: selectedValue, setValue, label, options, name, error }) => {
     const onChange = (e: BaseSyntheticEvent<{ value: string }>) => {
       setValue(e.target.value);
     };
@@ -109,59 +106,60 @@ export const RadioFieldView = ViewGenerator.field<{
       </Label>
     ));
 
-    return Boxify(
-      <>
+    return (
+      <Boxify error={error}>
         {label && (
           <Label htmlFor={name}>
             <Text>{label}</Text>
           </Label>
         )}
         <Flex>{renderedOptions}</Flex>
-      </>,
-      props.error,
+      </Boxify>
     );
   },
 });
 
 export const CheckboxFieldView = ViewGenerator.field<{
   label: string;
+  error: string;
 }>({
   name: 'checkbox',
-  render: ({ value, setValue, props, name }) => {
-    const { label } = props;
+  render: ({ value, setValue, name, label, error }) => {
     const onChange = (e: BaseSyntheticEvent<{ value: string }>) => {
       setValue(e.target.checked);
     };
 
-    return Boxify(
-      <Label width={[1 / 2]} p={2}>
-        <Checkbox id={name} name={name} onChange={onChange} checked={value} />
-        <Text fontSize={2}>{label}</Text>
-      </Label>,
-      props.error,
+    return (
+      <Boxify error={error}>
+        <Label width={[1 / 2]} p={2}>
+          <Checkbox id={name} name={name} onChange={onChange} checked={value} />
+          <Text fontSize={2}>{label}</Text>
+        </Label>
+      </Boxify>
     );
   },
 });
 
-export const SubmitButtonView = ViewGenerator.field<{ label: string }>({
+export const SubmitButtonView = ViewGenerator.field<{
+  label: string;
+  disabled: boolean;
+  onAction: () => void;
+}>({
   name: 'submit',
-  render: ({ props, onAction }) => {
-    const { label, disabled = true } = props;
-
-    return Boxify(
+  render: ({ onAction, label, disabled }) => (
+    <Boxify>
       <Button
         onClick={onAction}
         disabled={disabled}
-        bg={disabled && 'disconnect'}
+        bg={disabled ? 'disconnect' : 'primary'}
         style={{
           cursor: 'pointer',
         }}
       >
         <Text color={disabled ? 'white' : 'black'}>{label}</Text>
-      </Button>,
-      props.error,
-    );
-  },
+      </Button>
+    </Boxify>
+  ),
 });
 
 export const ThankYouView = ViewGenerator.field<{
@@ -169,27 +167,19 @@ export const ThankYouView = ViewGenerator.field<{
   link: { href: string; label: string };
 }>({
   name: 'final-page',
-  render: ({ props }) => {
-    const {
-      title,
-      link: { href, label },
-    } = props;
-
-    return Boxify(
-      <>
-        <Label width={[1]} p={2}>
-          <Text>{title}</Text>
-        </Label>
-        <Label width={[1]} p={2}>
-          <Text>
-            {label}
-            <a href={href} target="_blank">
-              {href}
-            </a>
-          </Text>
-        </Label>
-      </>,
-      props.error,
-    );
-  },
+  render: ({ title, link: { href, label } }) => (
+    <Boxify>
+      <Label width={[1]} p={2}>
+        <Text>{title}</Text>
+      </Label>
+      <Label width={[1]} p={2}>
+        <Text>
+          {label}
+          <a href={href} target="_blank">
+            {href}
+          </a>
+        </Text>
+      </Label>
+    </Boxify>
+  ),
 });

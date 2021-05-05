@@ -1,23 +1,16 @@
 import React from 'react';
-import { useAtom } from '@reatom/react';
-import { FieldWrapper } from '../field/field.gen';
-import { stepAtom } from './step.atom';
-import toPairs from '@tinkoff/utils/object/toPairs';
 import type { StepStructure } from '../../types';
-import { Store } from '../../base/store';
+import { renderFields } from '../field/field.gen';
 
 export const StepWrapper: React.FC<{
   structure: StepStructure[];
-  store: Store;
-}> = ({ structure, store }) => {
-  const currentStep = useAtom(stepAtom);
+  provider: any;
+}> = ({ provider, structure }) => {
+  const currentStep = provider.service.getCurrentStep(); // @TODO
 
-  const paired = toPairs(structure[currentStep]);
-  const fields = paired.map(([name, { ...innerProps }]) => {
-    return (
-      <FieldWrapper name={name} key={name} store={store} {...innerProps} />
-    );
-  });
-
-  return <React.Fragment key={currentStep.toString()}>{fields}</React.Fragment>;
+  return (
+    <React.Fragment key={currentStep.toString()}>
+      {renderFields(currentStep, structure)}
+    </React.Fragment>
+  );
 };
