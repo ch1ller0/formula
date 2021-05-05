@@ -10,14 +10,39 @@ import {
   ThankYouView,
 } from './fb-form.fields';
 import { formBuilder } from '../../src/index';
-import { nextStepControl } from '../../src/base/controls/step.control';
+import { ValidationFeature } from '../../src/features/validation/validation.feature';
+import { PropsFeature } from '../../src/features/props/props.feature';
+import { nextStepControl } from '../../src/features/step/step.control';
+
+const requiredValidator = (v: string) =>
+  !v?.length ? 'Field is required' : undefined;
+
+const lengthValidator = ({
+  min = 0,
+  max = 30,
+}: {
+  min?: number;
+  max?: number;
+}) => (v: string) => {
+  const { length } = v;
+  if (length > max || length < min) {
+    return `Length should be between ${min} and ${max}`;
+  }
+};
 
 export const FBForm = formBuilder
+  .addFeatures([PropsFeature, ValidationFeature])
   .addStep({
     first_name: {
       field: InputFieldView,
       // @TODO infer type here
       props: { label: 'Your name' },
+      controls: (feature) => [
+        feature(ValidationFeature).validate([
+          requiredValidator,
+          lengthValidator({ min: 6 }),
+        ]),
+      ],
     },
     location: {
       field: SelectFieldView,
@@ -42,12 +67,13 @@ export const FBForm = formBuilder
         label: 'Remember me',
       },
     },
-    next_button: {
+    next_button1: {
       field: SubmitButtonView,
       onAction: nextStepControl,
       props: {
         label: 'Next',
       },
+      controls: (feature) => [feature(ValidationFeature).isStepValid()],
     },
   })
   .addStep({
@@ -60,13 +86,19 @@ export const FBForm = formBuilder
       props: {
         label: 'I am a vegaterian',
       },
+      controls: (feature) => [
+        feature(ValidationFeature).validate([
+          (v) => !v && 'Vegging is required',
+        ]),
+      ],
     },
-    next_button: {
+    next_button2: {
       field: SubmitButtonView,
       onAction: nextStepControl,
       props: {
         label: 'Finalize',
       },
+      controls: (feature) => [feature(ValidationFeature).isStepValid()],
     },
   })
   .addStep({
@@ -88,6 +120,7 @@ export const FBForm = formBuilder
           colors: {
             background: 'black',
             primary: 'tomato',
+            disconnect: '#bbb',
           },
           space: [0, 6, 12, 24, 48],
           fontSizes: [14, 16, 18, 20, 24],

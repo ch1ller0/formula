@@ -1,14 +1,15 @@
 import React from 'react';
 import { useAction, useAtom } from '@reatom/react';
-import { changeAction, fieldsAtom } from './atoms/fields.atom';
-import { combinedStore } from './atoms/index';
+import { changeAction, fieldAtom } from './field.atom';
+import { propsAtom } from '../props/props.atom';
 
-export const FieldWrapper = ({ name, field, fieldProps, onAction }: any) => {
+export const FieldWrapper = ({ name, field, onAction, store }: any) => {
   const Component = field.render;
 
   const Consumer = () => {
     const changeKeyVal = useAction(changeAction);
-    const fieldValue = useAtom(fieldsAtom, (atom) => atom[name], []);
+    const fieldValue = useAtom(fieldAtom, (atom) => atom[name], []);
+    const fieldProps = useAtom(propsAtom, (atom) => atom[name], []);
 
     const props = {
       name,
@@ -16,8 +17,12 @@ export const FieldWrapper = ({ name, field, fieldProps, onAction }: any) => {
       setValue: (value) => {
         changeKeyVal({ name, value });
       },
-      onAction: onAction?.fn(combinedStore),
+      onAction: onAction?.fn(store),
     };
+
+    if (!fieldProps) {
+      return null;
+    }
 
     return <Component {...props} key={name} props={fieldProps} />;
   };

@@ -1,4 +1,4 @@
-import { stepIncrement } from '../atoms/step.atom';
+import { stepIncrement } from './step.atom';
 import { ControlGenerator } from '../../generate';
 
 export const nextStepControl = ControlGenerator.control({
