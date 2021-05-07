@@ -16,5 +16,7 @@ View:  Field   <   FieldStructure   <   StepStructure
 - 
 
 ## Next iterations
-- Add validation
-- Add basic control via observable
+- Init stores on first render
+- Move store outside of global
+- Add dependency graph for features
+- Split to different packages

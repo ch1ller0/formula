@@ -9,29 +9,13 @@ import {
   SubmitButtonView,
   ThankYouView,
 } from './fb-form.fields';
-import { formBuilder } from '../../src/index';
-import { ValidationFeature } from '../../src/features/validation/validation.feature';
-import { PropsFeature } from '../../src/features/props/props.feature';
-import { nextStepControl } from '../../src/features/step/step.control';
+import { FormBuilder, Features } from '../../packages/core/src';
+import { requiredValidator, lengthValidator } from './validators';
 
-const requiredValidator = (v: string) =>
-  !v?.length ? 'Field is required' : undefined;
+const { FieldFeature, StepFeature, ValidationFeature, PropsFeature } = Features;
 
-const lengthValidator = ({
-  min = 0,
-  max = 30,
-}: {
-  min?: number;
-  max?: number;
-}) => (v: string) => {
-  const { length } = v;
-  if (length > max || length < min) {
-    return `Length should be between ${min} and ${max}`;
-  }
-};
-
-export const FBForm = formBuilder
-  .addFeatures([PropsFeature, ValidationFeature])
+export const FBForm = new FormBuilder()
+  .addFeatures([FieldFeature, StepFeature, ValidationFeature, PropsFeature])
   .addStep({
     first_name: {
       field: InputFieldView,
@@ -69,11 +53,13 @@ export const FBForm = formBuilder
     },
     next_button1: {
       field: SubmitButtonView,
-      onAction: nextStepControl,
       props: {
         label: 'Next',
       },
-      controls: (feature) => [feature(ValidationFeature).isStepValid()],
+      controls: (feature) => [
+        feature(StepFeature).bindNextStep(),
+        feature(ValidationFeature).toggleDisabled(),
+      ],
     },
   })
   .addStep({
@@ -94,11 +80,13 @@ export const FBForm = formBuilder
     },
     next_button2: {
       field: SubmitButtonView,
-      onAction: nextStepControl,
       props: {
         label: 'Finalize',
       },
-      controls: (feature) => [feature(ValidationFeature).isStepValid()],
+      controls: (feature) => [
+        feature(StepFeature).bindNextStep(),
+        feature(ValidationFeature).toggleDisabled(),
+      ],
     },
   })
   .addStep({
@@ -108,7 +96,7 @@ export const FBForm = formBuilder
         title: 'Thank You for your feedback, $username',
         link: {
           href: 'https://fridgefm.com',
-          label: 'Please visit',
+          label: 'Please visit ',
         },
       },
     },
