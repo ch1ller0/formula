@@ -1,6 +1,6 @@
 {
-  "name": "observable-form",
-  "version": "1.0.0",
+  "name": "@formula/monorepo",
+  "version": "0.0.0-stub",
   "description": "Form engine on observables",
   "main": "index.js",
   "license": "MIT",
