@@ -1,18 +1,22 @@
 import toPairs from '@tinkoff/utils/object/toPairs';
 import { globalStore } from '../store';
-import { StepStructure } from '../../types';
-import { FeatureConfig, FeatureProvider } from '../../features/features.type';
+
+import type { TStepStructure } from '../../types';
+import type {
+  TFeatureConfig,
+  TFeatureService,
+} from '../../features/features.type';
 
 const getName = (name: string) => `feature:${name}`;
 
 type Config = {
-  structure: StepStructure[];
-  features: FeatureConfig[];
+  structure: TStepStructure[];
+  features: TFeatureConfig[];
 };
 
 export class FeatureRegistry {
   private _cfg: Config;
-  private _featureProviders: Record<string, FeatureProvider>;
+  private _featureProviders: Record<string, TFeatureService>;
 
   constructor() {
     this._featureProviders = Object.create(null);
@@ -26,14 +30,14 @@ export class FeatureRegistry {
     return this._cfg;
   }
 
-  getFeature(cfg: FeatureConfig) {
+  getFeature(cfg: TFeatureConfig) {
     return this._featureProviders[getName(cfg.name)];
   }
 
   fill(_cfg: Config) {
     this._cfg = _cfg;
     const { structure, features } = _cfg;
-    const constructService = (cfg: FeatureConfig): FeatureProvider | null => {
+    const constructService = (cfg: TFeatureConfig): TFeatureService => {
       const alreadyRegisteredDep = this.getFeature(cfg);
       if (alreadyRegisteredDep !== undefined) {
         return alreadyRegisteredDep;
@@ -41,18 +45,16 @@ export class FeatureRegistry {
 
       const resolvedDeps = cfg.deps?.map(constructService) || [];
 
-      return cfg.useService
-        ? new cfg.useService({
-            structure,
-            deps: resolvedDeps,
-            globalStore: this.getStore(),
-          })
-        : null;
+      return new cfg.useService({
+        structure,
+        deps: resolvedDeps,
+        globalStore: this.getStore(),
+      });
     };
 
     features.forEach((cfg) => {
       const key = getName(cfg.name);
-      this._featureProviders[key] = constructService(cfg, { structure });
+      this._featureProviders[key] = constructService(cfg);
     });
 
     structure.forEach((step) => {

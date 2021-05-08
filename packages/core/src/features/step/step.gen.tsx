@@ -1,11 +1,12 @@
 import React from 'react';
 import { useAtom } from '@reatom/react';
-import type { FeatureRegistry } from '../../base/featureRegistry';
 import { StepFeature } from './step.feature';
+
+import type { FeatureRegistry } from '../../base/featureRegistry';
 
 export const StepWrapper: React.FC<{
   registry: FeatureRegistry;
-  Component: React.FC<{ currentStep: number }>;
+  Component: React.FC<{ currentStep: number; registry: FeatureRegistry }>;
 }> = ({ registry, Component }) => {
   const atom = registry.getFeature(StepFeature).getAtom();
   const currentStep = useAtom(atom) as number;

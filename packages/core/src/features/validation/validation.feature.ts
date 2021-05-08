@@ -11,22 +11,27 @@ import keys from '@tinkoff/utils/object/keys';
 import { toRxStore } from '../../base/store';
 import { FieldFeature, PropsFeature } from '../index';
 
-import type { FeatureConfig } from '../features.type';
+import type {
+  TFeatureConfig,
+  TFeatureConstructorArgs,
+  TFeatureService,
+} from '../features.type';
 import type { Atom } from '@reatom/core';
 
 type State = Record<string, { error: string }>;
+type ValidateFn = (v: string | number) => string | Promise<string>;
 
 const validateAction = declareAction<{
   name: string;
   errors: string[];
 }>('validation-change.action');
 
-type ValidateFn = (v: string | number) => string | Promise<string>;
+class ValidationService implements TFeatureService {
+  private readonly _atom: Atom<State>;
+  private readonly _globalStore: TFeatureConstructorArgs['globalStore'];
+  private readonly _structure: TFeatureConstructorArgs['structure'];
 
-class ValidationService {
-  _atom: Atom<State>;
-
-  constructor({ structure, deps, globalStore }) {
+  constructor({ structure, deps, globalStore }: TFeatureConstructorArgs) {
     const [fieldService, propsService] = deps;
     this._structure = structure;
     this._fieldRx = fieldService.getRxStore();
@@ -61,10 +66,7 @@ class ValidationService {
           startWith(true), // disable at first render
         )
         .subscribe((disabled) => {
-          this._propsService.setFieldProp({
-            name: fieldName,
-            value: { disabled },
-          });
+          this._propsService.setFieldProp(fieldName, { disabled });
         });
     };
   }
@@ -85,12 +87,14 @@ class ValidationService {
           this._globalStore.dispatch(
             validateAction({ name: fieldName, errors }),
           );
+
+          this._propsService.setFieldProp(fieldName, { error: errors[0] });
         });
     };
   }
 }
 
-export const ValidationFeature: FeatureConfig<unknown> = {
+export const ValidationFeature: TFeatureConfig = {
   name: 'validation',
   useService: ValidationService,
   deps: [FieldFeature, PropsFeature],

@@ -2,6 +2,7 @@ import React from 'react';
 import { context } from '@reatom/react';
 import { Fields } from '../features/field/field.gen';
 import { StepWrapper } from '../features/step/step.gen';
+
 import type { FeatureRegistry } from './featureRegistry';
 
 const defaultWrapper: React.FC<{}> = ({ children }) => children;

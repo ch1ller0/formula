@@ -9,11 +9,11 @@ import React from 'react';
 import { FeatureRegistry } from './featureRegistry';
 import { renderComponent } from './render';
 
-import type { FeatureConfig } from '../features/features.type';
-import type { BuilderConfig, FieldStructure } from '../types';
+import type { TFeatureConfig } from '../features/features.type';
+import type { TBuilderConfig, TFieldStructure } from '../types';
 
 export class FormBuilder {
-  private _config: BuilderConfig;
+  private _config: TBuilderConfig;
   private _registry: FeatureRegistry;
   private _initInternalDeps() {
     this._registry.fill(this._config);
@@ -24,14 +24,14 @@ export class FormBuilder {
     this._registry = new FeatureRegistry();
   }
 
-  addStep(stepStructure: Record<string, FieldStructure>) {
+  addStep(stepStructure: Record<string, TFieldStructure>) {
     const nextStepIndex = this._config.structure.length;
     this._config.structure[nextStepIndex] = stepStructure;
 
     return this;
   }
 
-  addFeatures(ar: FeatureConfig[]) {
+  addFeatures(ar: TFeatureConfig[]) {
     this._config.features = this._config.features.concat(ar);
     return this;
   }

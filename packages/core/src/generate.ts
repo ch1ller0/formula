@@ -1,18 +1,18 @@
-import type { FieldConfig, StepStructure } from './types';
+import type { TFieldConfig, TStepStructure } from './types';
 
 type Brand<T> = { _: T };
 
 export class ViewGenerator {
   static field<Props extends Record<string, unknown>>(
-    fieldCfg: FieldConfig<Props>,
-  ): FieldConfig<Props> & Brand<'field'> {
+    fieldCfg: TFieldConfig<Props>,
+  ): TFieldConfig<Props> & Brand<'field'> {
     return {
       name: fieldCfg.name,
       render: fieldCfg.render,
-    } as FieldConfig<Props> & Brand<'field'>;
+    } as TFieldConfig<Props> & Brand<'field'>;
   }
 
-  static step(stepCfg: StepStructure): StepStructure & Brand<'step'> {
-    return stepCfg as StepStructure & Brand<'step'>;
+  static step(stepCfg: TStepStructure): TStepStructure & Brand<'step'> {
+    return stepCfg as TStepStructure & Brand<'step'>;
   }
 }

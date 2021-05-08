@@ -1,19 +1,20 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import { PropsFeature } from '../props/props.feature';
+
+import type { Atom } from '@reatom/core';
 import type {
-  FeatureConfig,
-  FeatureService,
-  FeatureConstructorArgs,
+  TFeatureConfig,
+  TFeatureService,
+  TFeatureConstructorArgs,
 } from '../features.type';
 
 const stepIncrement = declareAction('step-increment');
+class StepService implements TFeatureService {
+  private readonly _globalStore: TFeatureConstructorArgs['globalStore'];
+  private readonly _atom: Atom<number>;
+  private readonly _propsService: TFeatureConstructorArgs['deps'][0];
 
-class StepService implements FeatureService {
-  private readonly _globalStore: FeatureConstructorArgs['globalStore'];
-  private readonly _atom: any;
-  private readonly _propsService: FeatureConstructorArgs['deps'][0];
-
-  constructor({ deps, globalStore }: FeatureConstructorArgs) {
+  constructor({ deps, globalStore }: TFeatureConstructorArgs) {
     const [propsService] = deps;
 
     this._atom = declareAtom<number>('step.atom', 0, (on) => [
@@ -29,19 +30,16 @@ class StepService implements FeatureService {
 
   bindNextStep() {
     return ({ initiator }) => {
-      this._propsService.setFieldProp({
-        name: initiator.fieldName,
-        value: {
-          onAction: () => {
-            this._globalStore.dispatch(stepIncrement());
-          },
+      this._propsService.setFieldProp(initiator.fieldName, {
+        onAction: () => {
+          this._globalStore.dispatch(stepIncrement());
         },
       });
     };
   }
 }
 
-export const StepFeature: FeatureConfig = {
+export const StepFeature: TFeatureConfig = {
   name: 'step',
   useService: StepService,
   deps: [PropsFeature],

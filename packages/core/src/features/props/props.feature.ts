@@ -3,9 +3,9 @@ import toPairs from '@tinkoff/utils/object/toPairs';
 import { Atom, declareAction, declareAtom } from '@reatom/core';
 
 import type {
-  FeatureConfig,
-  FeatureService,
-  FeatureConstructorArgs,
+  TFeatureConfig,
+  TFeatureService,
+  TFeatureConstructorArgs,
 } from '../features.type';
 
 type Props = Record<string, unknown>;
@@ -16,10 +16,10 @@ const changeFieldProps = declareAction<{
   value: Props;
 }>('change-field-props.action');
 
-class PropsService implements FeatureService {
+class PropsService implements TFeatureService {
   private readonly _atom: Atom<State>;
 
-  constructor({ structure }: FeatureConstructorArgs) {
+  constructor({ structure }: TFeatureConstructorArgs) {
     const initialState = {} as State;
 
     structure.forEach((step) => {
@@ -43,7 +43,7 @@ class PropsService implements FeatureService {
     ]);
   }
 
-  setFieldProp({ name, value }: { name: string; value: Props }) {
+  setFieldProp(name: string, value: Props) {
     // @TODO remove this crutch
     setTimeout(() => {
       globalStore.dispatch(changeFieldProps({ name, value }));
@@ -55,7 +55,7 @@ class PropsService implements FeatureService {
   }
 }
 
-export const PropsFeature: FeatureConfig = {
+export const PropsFeature: TFeatureConfig = {
   name: 'props',
   useService: PropsService,
 };

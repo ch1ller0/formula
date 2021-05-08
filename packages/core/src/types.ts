@@ -1,44 +1,37 @@
 import type { FC } from 'react';
-import type { Store } from './base/store';
-import type { FeatureConfig } from './features/features.type';
+import type { TFeatureConfig } from './features/features.type';
 
-type VagueProps = Record<string, any>;
-export type Primitive = string | number | boolean;
+type TVagueProps = Record<string, any>;
+export type TPrimitive = string | number | boolean;
 
 // #### VIEW
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type FieldConfig<T extends VagueProps = VagueProps> = {
+export type TFieldConfig<T extends TVagueProps = TVagueProps> = {
   name: string;
-  render: FC<BuilderFieldProps & T>;
+  render: FC<TBuilderFieldProps & T>;
 };
 
-export type FieldStructure = {
-  field: FieldConfig<VagueProps>;
-  props: VagueProps;
-  controls: unknown[];
+export type TFieldStructure = {
+  field: TFieldConfig<TVagueProps>;
+  props: TVagueProps;
+  controls?: (getFeature: any) => unknown[];
 };
-export type StepStructure = Record<string, FieldStructure>;
+export type TStepStructure = Record<string, TFieldStructure>;
 
-// #### CONTROL
-
-export type ControlFactory = (store: Store) => (e: Event) => void;
-export type Control = {
-  name: string;
-  fn: ControlFactory;
-};
+// #### CONTROLS
 
 // #### CONFG
 
-export type BuilderFieldProps = {
+export type TBuilderFieldProps = {
   value: string | number;
   name: string;
-  setValue: (value: Primitive) => void;
+  setValue: (value: TPrimitive) => void;
 };
 
-export type BuilderConfig = {
-  structure: StepStructure[];
-  features: FeatureConfig[];
+export type TBuilderConfig = {
+  structure: TStepStructure[];
+  features: TFeatureConfig[];
 };
 
 // @TODO NEED BETTER TYPES, CURRENT ARE REALLY VAGUE

@@ -1,28 +1,25 @@
 import type { Store, Atom, ActionCreator } from '@reatom/core';
 import type { Observable } from '@reatom/observable';
-import type { StepStructure } from '../types';
+import type { TStepStructure } from '../types';
 
-export type FeatureConstructorArgs = {
-  deps: FeatureProvider[];
+export type TFeatureConstructorArgs = {
+  deps: unknown[];
   globalStore: Store;
-  structure: StepStructure[];
+  structure: TStepStructure[];
 };
 
-export type FeatureService = {
-  new (a: FeatureConstructorArgs): FeatureProvider;
+export interface TFeatureService {
   getRxStore?(): Observable<any>;
   getAtom?(): Atom<any>;
   getActions?(): Record<string, ActionCreator<string>>;
-};
+}
 
-export type FeatureConfig = {
+export type TFeatureConfig = {
   name: string;
-  useService?: FeatureService;
-  deps?: FeatureConfig[];
-};
-
-export type FeatureProvider = {
-  service: unknown;
+  useService: {
+    new (args: TFeatureConstructorArgs): TFeatureService;
+  };
+  deps?: TFeatureConfig[];
 };
 
 /**
