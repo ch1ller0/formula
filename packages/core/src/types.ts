@@ -22,10 +22,10 @@ export type TStepStructure = Record<string, TFieldStructure>;
 
 // #### CONTROL
 
-export type ControlFactory = (store: Store) => (e: Event) => void;
-export type Control = {
+export type TControlFactory = (store: Store) => (e: Event) => void;
+export type TControl = {
   name: string;
-  fn: ControlFactory;
+  fn: TControlFactory;
 };
 
 // #### CONFG

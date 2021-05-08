@@ -1,6 +1,7 @@
 import toPairs from '@tinkoff/utils/object/toPairs';
 import { globalStore } from '../store';
-import { TStepStructure } from '../../types';
+
+import type { TStepStructure } from '../../types';
 import type {
   TFeatureConfig,
   TFeatureService,
