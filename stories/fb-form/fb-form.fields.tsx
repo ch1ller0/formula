@@ -149,7 +149,7 @@ export const SubmitButtonView = ViewGenerator.field<{
   onAction: () => void;
 }>({
   name: 'submit',
-  render: ({ onAction, label, disabled }) => (
+  render: ({ onAction, label, disabled = true }) => (
     <Boxify>
       <Button
         onClick={onAction}

@@ -1,5 +1,4 @@
 import type { FC } from 'react';
-import type { Store } from './base/store';
 import type { TFeatureConfig } from './features/features.type';
 
 type TVagueProps = Record<string, any>;
@@ -20,13 +19,7 @@ export type TFieldStructure = {
 };
 export type TStepStructure = Record<string, TFieldStructure>;
 
-// #### CONTROL
-
-export type TControlFactory = (store: Store) => (e: Event) => void;
-export type TControl = {
-  name: string;
-  fn: TControlFactory;
-};
+// #### CONTROLS
 
 // #### CONFG
 

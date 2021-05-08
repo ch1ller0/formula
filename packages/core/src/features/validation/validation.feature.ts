@@ -19,16 +19,17 @@ import type {
 import type { Atom } from '@reatom/core';
 
 type State = Record<string, { error: string }>;
+type ValidateFn = (v: string | number) => string | Promise<string>;
 
 const validateAction = declareAction<{
   name: string;
   errors: string[];
 }>('validation-change.action');
 
-type ValidateFn = (v: string | number) => string | Promise<string>;
-
 class ValidationService implements TFeatureService {
-  _atom: Atom<State>;
+  private readonly _atom: Atom<State>;
+  private readonly _globalStore: TFeatureConstructorArgs['globalStore'];
+  private readonly _structure: TFeatureConstructorArgs['structure'];
 
   constructor({ structure, deps, globalStore }: TFeatureConstructorArgs) {
     const [fieldService, propsService] = deps;
