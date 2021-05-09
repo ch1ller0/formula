@@ -1,6 +1,5 @@
 import { Atom, declareAction, declareAtom } from '@reatom/core';
 import { toRxStore } from '../../base/store';
-import { shareReplay } from 'rxjs/operators';
 
 import type {
   TFeatureConfig,
@@ -8,6 +7,7 @@ import type {
   TFeatureConstructorArgs,
 } from '../features.type';
 import type { TPrimitive } from '../../types';
+import type { Observable } from 'rxjs';
 
 type State = Record<string, TPrimitive>;
 
@@ -18,6 +18,7 @@ const changeAction = declareAction<{
 
 class FieldService implements TFeatureService {
   private readonly _atom: Atom<State>;
+  private readonly _rxStore: Observable<State>;
 
   constructor({}: TFeatureConstructorArgs) {
     // @TODO populate atom instead of {}
@@ -27,10 +28,11 @@ class FieldService implements TFeatureService {
         [payload.name]: payload.value,
       })),
     ]);
+    this._rxStore = toRxStore(this._atom);
   }
 
   getRxStore() {
-    return toRxStore(this._atom).pipe(shareReplay());
+    return this._rxStore;
   }
 
   getAtom() {
