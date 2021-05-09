@@ -1,5 +1,5 @@
 import type { Store, Atom, ActionCreator } from '@reatom/core';
-import type { Observable } from '@reatom/observable';
+import type { Observable } from 'rxjs';
 import type { TStepStructure } from '../types';
 
 export type TFeatureConstructorArgs = {

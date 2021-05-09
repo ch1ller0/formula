@@ -1,25 +1,26 @@
 import { Atom, declareAction, declareAtom } from '@reatom/core';
 import { toRxStore } from '../../base/store';
-import { shareReplay } from 'rxjs/operators';
 
 import type {
-  FeatureConfig,
-  FeatureService,
-  FeatureConstructorArgs,
+  TFeatureConfig,
+  TFeatureService,
+  TFeatureConstructorArgs,
 } from '../features.type';
-import type { Primitive } from '../../types';
+import type { TPrimitive } from '../../types';
+import type { Observable } from 'rxjs';
 
-type State = Record<string, Primitive>;
+type State = Record<string, TPrimitive>;
 
 const changeAction = declareAction<{
   name: string;
   value: string | number;
 }>('field-change.action');
 
-class FieldService implements FeatureService {
+class FieldService implements TFeatureService {
   private readonly _atom: Atom<State>;
+  private readonly _rxStore: Observable<State>;
 
-  constructor({}: FeatureConstructorArgs) {
+  constructor({}: TFeatureConstructorArgs) {
     // @TODO populate atom instead of {}
     this._atom = declareAtom<State>('field.atom', {}, (on) => [
       on(changeAction, (state, payload) => ({
@@ -27,10 +28,11 @@ class FieldService implements FeatureService {
         [payload.name]: payload.value,
       })),
     ]);
+    this._rxStore = toRxStore(this._atom);
   }
 
   getRxStore() {
-    return toRxStore(this._atom).pipe(shareReplay());
+    return this._rxStore;
   }
 
   getAtom() {
@@ -42,7 +44,7 @@ class FieldService implements FeatureService {
   }
 }
 
-export const FieldFeature: FeatureConfig = {
+export const FieldFeature: TFeatureConfig = {
   name: 'field',
   useService: FieldService,
 };
