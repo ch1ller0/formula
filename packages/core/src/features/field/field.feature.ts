@@ -14,13 +14,13 @@ type State = Record<string, TPrimitive>;
 const changeAction = declareAction<{
   name: string;
   value: string | number;
-}>('field-change.action');
+}>('field.changeAction');
 
 class FieldService implements TFeatureService {
   private readonly _atom: Atom<State>;
   private readonly _rxStore: Observable<State>;
 
-  constructor({}: TFeatureConstructorArgs) {
+  constructor({ globalStore }: TFeatureConstructorArgs) {
     // @TODO populate atom instead of {}
     this._atom = declareAtom<State>('field.atom', {}, (on) => [
       on(changeAction, (state, payload) => ({
@@ -28,7 +28,7 @@ class FieldService implements TFeatureService {
         [payload.name]: payload.value,
       })),
     ]);
-    this._rxStore = toRxStore(this._atom);
+    this._rxStore = toRxStore(globalStore, this._atom);
   }
 
   getRxStore() {

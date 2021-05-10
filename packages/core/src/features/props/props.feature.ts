@@ -1,12 +1,12 @@
-import { globalStore } from '../../base/store';
 import toPairs from '@tinkoff/utils/object/toPairs';
-import { Atom, declareAction, declareAtom } from '@reatom/core';
+import { declareAction, declareAtom } from '@reatom/core';
 
 import type {
   TFeatureConfig,
   TFeatureService,
   TFeatureConstructorArgs,
 } from '../features.type';
+import type { Atom } from '@reatom/core';
 
 type Props = Record<string, unknown>;
 type State = Record<string, Props>;
@@ -14,12 +14,14 @@ type State = Record<string, Props>;
 const changeFieldProps = declareAction<{
   name: string;
   value: Props;
-}>('change-field-props.action');
+}>('props.changeFieldProps');
 
 class PropsService implements TFeatureService {
   private readonly _atom: Atom<State>;
+  private readonly _globalStore: TFeatureConstructorArgs['globalStore'];
 
-  constructor({ structure }: TFeatureConstructorArgs) {
+  constructor({ structure, globalStore }: TFeatureConstructorArgs) {
+    this._globalStore = globalStore;
     const initialState = {} as State;
 
     structure.forEach((step) => {
@@ -46,7 +48,7 @@ class PropsService implements TFeatureService {
   setFieldProp(name: string, value: Props) {
     // @TODO remove this crutch
     setTimeout(() => {
-      globalStore.dispatch(changeFieldProps({ name, value }));
+      this._globalStore.dispatch(changeFieldProps({ name, value }));
     });
   }
 

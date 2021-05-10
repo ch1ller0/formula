@@ -71,6 +71,7 @@ export const FBForm = new FormBuilder()
       field: CheckboxFieldView,
       props: {
         label: 'I am a vegaterian',
+        value: true,
       },
       controls: (feature) => [
         feature(ValidationFeature).validate([

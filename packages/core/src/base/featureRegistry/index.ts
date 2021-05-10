@@ -1,5 +1,5 @@
 import toPairs from '@tinkoff/utils/object/toPairs';
-import { globalStore } from '../store';
+import { createGlobalStore, toRxStore } from '../store';
 
 import type { TStepStructure } from '../../types';
 import type {
@@ -15,15 +15,21 @@ type Config = {
 };
 
 export class FeatureRegistry {
-  private _cfg: Config;
-  private _featureProviders: Record<string, TFeatureService>;
+  private _cfg: Config | undefined;
+  private _featureProviders = Object.create(null) as Record<
+    string,
+    TFeatureService
+  >;
+  private _globalStore = createGlobalStore();
 
   constructor() {
-    this._featureProviders = Object.create(null);
+    toRxStore(this._globalStore).subscribe((v) => {
+      console.log('rxGlobalStore', v);
+    });
   }
 
   getStore() {
-    return globalStore;
+    return this._globalStore;
   }
 
   getArguments() {

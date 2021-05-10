@@ -4,10 +4,12 @@ import { from } from 'rxjs';
 import { shareReplay, startWith } from 'rxjs/operators';
 
 import type { Observable } from 'rxjs';
-import type { Atom } from '@reatom/core';
+import type { Atom, Store } from '@reatom/core';
 
-export const globalStore = createStore();
-export const toRxStore = <Stt>(atom?: Atom<Stt>): Observable<Stt> => {
+export const toRxStore = <Stt>(
+  globalStore: Store,
+  atom?: Atom<Stt>,
+): Observable<Stt> => {
   if (atom) {
     const initialState = globalStore.getState(atom);
 
@@ -20,9 +22,4 @@ export const toRxStore = <Stt>(atom?: Atom<Stt>): Observable<Stt> => {
   return from(observe(globalStore));
 };
 
-// toRxStore().subscribe((v) => {
-//   console.log('rxStoreGlobal', v);
-// });
-
-export type Store = typeof globalStore;
-export type RxStore = typeof toRxStore;
+export const createGlobalStore = createStore;
