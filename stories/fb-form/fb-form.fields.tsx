@@ -39,7 +39,7 @@ const Boxify: React.FC<{ error?: string }> = ({ children, error }) => {
 
 export const InputFieldView = ViewGenerator.field<{ label: string }>({
   name: 'input',
-  render: ({ value, setValue, name, label, error }) => {
+  render: ({ value = '', setValue, name, label, error }) => {
     const onChange = (
       e: BaseSyntheticEvent<unknown, unknown, { value: string }>,
     ) => setValue(e.target.value);
@@ -127,7 +127,7 @@ export const CheckboxFieldView = ViewGenerator.field<{
   error: string;
 }>({
   name: 'checkbox',
-  render: ({ value, setValue, name, label, error }) => {
+  render: ({ value = false, setValue, name, label, error }) => {
     const onChange = (e: BaseSyntheticEvent<{ value: string }>) => {
       setValue(e.target.checked);
     };

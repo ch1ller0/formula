@@ -1,10 +1,3 @@
-// https://excalidraw.com/#json=5759839904989184,jPg3ft3xFFj3Xu4IA3hCBQ
-/**
- * Milestones
- * 1 Создать базовый плагин AddApplication
- * 2 Создать еще какой нибудь плагин
- */
-
 import React from 'react';
 import { FeatureRegistry } from './featureRegistry';
 import { renderComponent } from './render';

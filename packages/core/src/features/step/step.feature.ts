@@ -8,7 +8,7 @@ import type {
   TFeatureConstructorArgs,
 } from '../features.type';
 
-const stepIncrement = declareAction('step-increment');
+const stepIncrement = declareAction('step.stepIncrement');
 class StepService implements TFeatureService {
   private readonly _globalStore: TFeatureConstructorArgs['globalStore'];
   private readonly _atom: Atom<number>;

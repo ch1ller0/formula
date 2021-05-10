@@ -24,7 +24,7 @@ type ValidateFn = (v: string | number) => string | Promise<string>;
 const validateAction = declareAction<{
   name: string;
   errors: string[];
-}>('validation-change.action');
+}>('validation.validateAction');
 
 class ValidationService implements TFeatureService {
   private readonly _atom: Atom<State>;
@@ -53,7 +53,7 @@ class ValidationService implements TFeatureService {
         v.includes(fieldName),
       );
 
-      toRxStore(this._atom)
+      toRxStore(this._globalStore, this._atom)
         .pipe(
           distinctUntilChanged(),
           filter((v) =>

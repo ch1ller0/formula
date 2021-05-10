@@ -23,14 +23,16 @@ const FieldWrapper: React.FC<TFieldConfig & { registry: FeatureRegistry }> = ({
 
     const props = {
       name,
-      value: fieldValue || '',
+      value: fieldValue,
       setValue: (value) => {
         changeKeyVal({ name, value });
       },
     };
 
     if (!fieldProps) {
-      return <div>placeholder</div>;
+      throw new Error(
+        'fieldProps are undefined - it might mean that you tried to render before store init',
+      );
     }
 
     return <Component {...fieldProps} {...props} key={name} />;
