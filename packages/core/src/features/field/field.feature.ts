@@ -2,8 +2,8 @@ import { Atom, declareAction, declareAtom } from '@reatom/core';
 import { toRxStore } from '../../base/store';
 
 import type {
-  TFeatureConfig,
-  TFeatureService,
+  TProviderConfig,
+  TProviderService,
   TFeatureConstructorArgs,
 } from '../features.type';
 import type { TPrimitive } from '../../types';
@@ -13,10 +13,10 @@ type State = Record<string, TPrimitive>;
 
 const changeAction = declareAction<{
   name: string;
-  value: string | number;
+  value: TPrimitive;
 }>('field.changeAction');
 
-class FieldService implements TFeatureService {
+class FieldService implements TProviderService {
   private readonly _atom: Atom<State>;
   private readonly _rxStore: Observable<State>;
 
@@ -44,7 +44,7 @@ class FieldService implements TFeatureService {
   }
 }
 
-export const FieldFeature: TFeatureConfig = {
+export const FieldFeature: TProviderConfig<FieldService> = {
   name: 'field',
   useService: FieldService,
 };

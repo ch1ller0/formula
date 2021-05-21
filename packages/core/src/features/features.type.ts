@@ -8,18 +8,16 @@ export type TFeatureConstructorArgs = {
   structure: TStepStructure[];
 };
 
-export interface TFeatureService {
+export interface TProviderService {
   getRxStore?(): Observable<any>;
-  getAtom?(): Atom<any>;
-  getActions?(): Record<string, ActionCreator<string>>;
 }
 
-export type TFeatureConfig = {
+export type TProviderConfig<Service = TProviderService> = {
   name: string;
   useService: {
-    new (args: TFeatureConstructorArgs): TFeatureService;
+    new (args: TFeatureConstructorArgs): Service;
   };
-  deps?: TFeatureConfig[];
+  deps?: TProviderConfig[];
 };
 
 /**

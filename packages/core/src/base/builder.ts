@@ -1,20 +1,20 @@
 import React from 'react';
-import { FeatureRegistry } from './featureRegistry';
+import { ProviderContainer } from './provider-container.ts';
 import { renderComponent } from './render';
 
-import type { TFeatureConfig } from '../features/features.type';
+import type { TProviderConfig } from '../features/features.type';
 import type { TBuilderConfig, TFieldStructure } from '../types';
 
 export class FormBuilder {
   private _config: TBuilderConfig;
-  private _registry: FeatureRegistry;
+  private _providerContainer: ProviderContainer | undefined;
   private _initInternalDeps() {
-    this._registry.fill(this._config);
+    this._providerContainer = new ProviderContainer({ cfg: this._config });
+    this._providerContainer.fill();
   }
 
   constructor() {
     this._config = { structure: [], features: [] };
-    this._registry = new FeatureRegistry();
   }
 
   addStep(stepStructure: Record<string, TFieldStructure>) {
@@ -24,7 +24,7 @@ export class FormBuilder {
     return this;
   }
 
-  addFeatures(ar: TFeatureConfig[]) {
+  addFeatures(ar: TProviderConfig[]) {
     this._config.features = this._config.features.concat(ar);
     return this;
   }
@@ -32,6 +32,10 @@ export class FormBuilder {
   toComponent(CoreWrapper?: React.FC): React.ReactNode {
     this._initInternalDeps();
 
-    return renderComponent(this._registry, CoreWrapper);
+    if (!this._providerContainer) {
+      throw new Error('No provider container registered');
+    }
+
+    return renderComponent(this._providerContainer, CoreWrapper);
   }
 }

@@ -3,48 +3,50 @@ import { createGlobalStore, toRxStore } from '../store';
 
 import type { TStepStructure } from '../../types';
 import type {
-  TFeatureConfig,
-  TFeatureService,
+  TProviderConfig,
+  TProviderService,
 } from '../../features/features.type';
 
 const getName = (name: string) => `feature:${name}`;
 
 type Config = {
   structure: TStepStructure[];
-  features: TFeatureConfig[];
+  features: TProviderService[];
 };
 
-export class FeatureRegistry {
-  private _cfg: Config | undefined;
+export class ProviderContainer {
+  private _cfg: Config;
   private _featureProviders = Object.create(null) as Record<
     string,
-    TFeatureService
+    TProviderConfig
   >;
   private _globalStore = createGlobalStore();
 
-  constructor() {
-    toRxStore(this._globalStore).subscribe((v) => {
-      console.log('rxGlobalStore', v);
-    });
+  constructor({ cfg }) {
+    this._cfg = cfg;
+    // toRxStore(this._globalStore).subscribe((v) => {
+    //   console.log('rxGlobalStore', v);
+    // });
   }
 
   getStore() {
     return this._globalStore;
   }
 
-  getArguments() {
+  getConfig() {
     return this._cfg;
   }
 
-  getFeature(cfg: TFeatureConfig) {
-    return this._featureProviders[getName(cfg.name)];
+  getProvider<Pr extends TProviderConfig>({
+    name,
+  }: Pr): InstanceType<Pr['useService']> {
+    return this._featureProviders[getName(name)];
   }
 
-  fill(_cfg: Config) {
-    this._cfg = _cfg;
-    const { structure, features } = _cfg;
-    const constructService = (cfg: TFeatureConfig): TFeatureService => {
-      const alreadyRegisteredDep = this.getFeature(cfg);
+  fill() {
+    const { structure, features } = this._cfg;
+    const constructService = (cfg: TProviderConfig): TProviderService => {
+      const alreadyRegisteredDep = this.getProvider(cfg);
       if (alreadyRegisteredDep !== undefined) {
         return alreadyRegisteredDep;
       }
@@ -66,7 +68,7 @@ export class FeatureRegistry {
     structure.forEach((step) => {
       toPairs(step).forEach(([fieldName, { controls }]) => {
         if (controls) {
-          const fieldControls = controls(this.getFeature.bind(this));
+          const fieldControls = controls(this.getProvider.bind(this));
           fieldControls.forEach((element) => {
             element({ initiator: { fieldName } });
           });

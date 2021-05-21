@@ -3,13 +3,13 @@ import { PropsFeature } from '../props/props.feature';
 
 import type { Atom } from '@reatom/core';
 import type {
-  TFeatureConfig,
-  TFeatureService,
+  TProviderConfig,
+  TProviderService,
   TFeatureConstructorArgs,
 } from '../features.type';
 
 const stepIncrement = declareAction('step.stepIncrement');
-class StepService implements TFeatureService {
+class StepService implements TProviderService {
   private readonly _globalStore: TFeatureConstructorArgs['globalStore'];
   private readonly _atom: Atom<number>;
   private readonly _propsService: TFeatureConstructorArgs['deps'][0];
@@ -39,7 +39,7 @@ class StepService implements TFeatureService {
   }
 }
 
-export const StepFeature: TFeatureConfig = {
+export const StepFeature: TProviderConfig<StepService> = {
   name: 'step',
   useService: StepService,
   deps: [PropsFeature],

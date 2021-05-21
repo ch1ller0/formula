@@ -2,18 +2,25 @@ import React from 'react';
 import { useAtom } from '@reatom/react';
 import { StepFeature } from './step.feature';
 
-import type { FeatureRegistry } from '../../base/featureRegistry';
+import type { ProviderContainer } from '../../base/provider-container.ts';
 
 export const StepWrapper: React.FC<{
-  registry: FeatureRegistry;
-  Component: React.FC<{ currentStep: number; registry: FeatureRegistry }>;
-}> = ({ registry, Component }) => {
-  const atom = registry.getFeature(StepFeature).getAtom();
-  const currentStep = useAtom(atom) as number;
+  providerContainer: ProviderContainer;
+  Component: React.FC<{
+    currentStep: number;
+    providerContainer: ProviderContainer;
+  }>;
+}> = ({ providerContainer, Component }) => {
+  const prov = providerContainer.getProvider(StepFeature);
+  const atom = prov.getAtom();
+  const currentStep = useAtom(atom);
 
   return (
     <React.Fragment key={currentStep.toString()}>
-      <Component currentStep={currentStep} registry={registry} />
+      <Component
+        currentStep={currentStep}
+        providerContainer={providerContainer}
+      />
     </React.Fragment>
   );
 };

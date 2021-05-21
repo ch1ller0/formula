@@ -3,18 +3,18 @@ import { useAction, useAtom } from '@reatom/react';
 import toPairs from '@tinkoff/utils/object/toPairs';
 import { FieldFeature, PropsFeature } from '../index';
 
-import type { FeatureRegistry } from '../../base/featureRegistry';
-import type { TFieldConfig } from '../../types';
+import type { ProviderContainer } from '../../base/provider-container.ts';
+import type { TFieldStructure, TPrimitive } from '../../types';
 
-const FieldWrapper: React.FC<TFieldConfig & { registry: FeatureRegistry }> = ({
-  name,
-  field,
-  registry,
-}) => {
-  const Component = field.render;
-  const fieldAtom = registry.getFeature(FieldFeature).getAtom?.();
-  const fieldActions = registry.getFeature(FieldFeature).getActions?.();
-  const propsAtom = registry.getFeature(PropsFeature).getAtom?.();
+const FieldWrapper: React.FC<
+  TFieldStructure & { providerContainer: ProviderContainer; name: string }
+> = ({ name, field, providerContainer }) => {
+  const { render: Component } = field;
+  const fieldAtom = providerContainer.getProvider(FieldFeature).getAtom();
+  const fieldActions = providerContainer
+    .getProvider(FieldFeature)
+    .getActions?.();
+  const propsAtom = providerContainer.getProvider(PropsFeature).getAtom?.();
 
   const Consumer = () => {
     const changeKeyVal = useAction(fieldActions.changeAction);
@@ -24,7 +24,7 @@ const FieldWrapper: React.FC<TFieldConfig & { registry: FeatureRegistry }> = ({
     const props = {
       name,
       value: fieldValue,
-      setValue: (value) => {
+      setValue: (value: TPrimitive) => {
         changeKeyVal({ name, value });
       },
     };
@@ -42,20 +42,22 @@ const FieldWrapper: React.FC<TFieldConfig & { registry: FeatureRegistry }> = ({
 };
 
 export const Fields: React.FC<{
-  registry: FeatureRegistry;
+  providerContainer: ProviderContainer;
   currentStep: number;
-}> = ({ registry, currentStep }) => {
-  const { structure } = registry.getArguments();
+}> = ({ providerContainer, currentStep }) => {
+  const { structure } = providerContainer.getConfig();
   const paired = toPairs(structure[currentStep]);
 
-  return paired.map(([name, innerProps]) => {
-    return (
-      <FieldWrapper
-        name={name}
-        key={name}
-        registry={registry}
-        {...innerProps}
-      />
-    );
-  });
+  return (
+    <>
+      {paired.map(([name, innerProps]) => (
+        <FieldWrapper
+          name={name}
+          key={name}
+          providerContainer={providerContainer}
+          {...innerProps}
+        />
+      ))}
+    </>
+  );
 };
