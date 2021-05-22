@@ -5,7 +5,7 @@ import type {
   TProviderConfig,
   TProviderService,
   TProviderConsturctorArgs,
-} from '../provider.type';
+} from '../../types/provider.types';
 import type { Atom } from '@reatom/core';
 import { toRxStore } from '../../base/store';
 

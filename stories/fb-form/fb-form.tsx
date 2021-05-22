@@ -1,5 +1,6 @@
 import { Box } from 'rebass';
 import { ThemeProvider } from 'emotion-theming';
+import { debounceTime, distinctUntilKeyChanged, pluck } from 'rxjs/operators';
 
 import {
   InputFieldView,
@@ -15,6 +16,10 @@ import {
   ExternalProviders,
 } from '../../packages/core/src';
 import { requiredValidator, lengthValidator } from './validators';
+import {
+  FieldProvider,
+  PropsProvider,
+} from '../../packages/core/src/providers/built-in';
 
 const { StepProvider } = BuiltInProviders;
 const { ValidationProvider } = ExternalProviders;
@@ -99,12 +104,28 @@ export const FBForm = new FormBuilder()
     thank_you: {
       field: ThankYouView,
       props: {
-        title: 'Thank You for your feedback, $username',
+        title: 'No title',
         link: {
           href: 'https://fridgefm.com',
           label: 'Please visit ',
         },
       },
+      controls: (getProvider) => [
+        ({ initiator: { fieldName } }) => {
+          const watchField = 'first_name';
+          getProvider(FieldProvider)
+            .getRxStore()
+            .pipe(
+              distinctUntilKeyChanged(watchField),
+              pluck(watchField),
+              debounceTime(300),
+            )
+            .subscribe((firstName) => {
+              const title = `Thank you for your feedback, ${firstName}`;
+              getProvider(PropsProvider).setFieldProp(fieldName, { title });
+            });
+        },
+      ],
     },
   })
   .toComponent(({ children }) => {

@@ -7,8 +7,8 @@ import {
   FieldProvider,
 } from '../providers/built-in';
 
-import type { TProviderConfig } from '../providers/provider.type';
-import type { TBuilderConfig, TFieldStructure } from '../types';
+import type { TProviderConfig } from '../types/provider.types';
+import type { TBuilderConfig, TFieldStructure } from '../types/base.types';
 
 const DEFAULT_PROVIDERS = [PropsProvider, StepProvider, FieldProvider];
 
