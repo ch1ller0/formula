@@ -9,25 +9,25 @@ import {
   SubmitButtonView,
   ThankYouView,
 } from './fb-form.fields';
-import { FormBuilder, Providers } from '../../packages/core/src';
+import {
+  FormBuilder,
+  BuiltInProviders,
+  ExternalProviders,
+} from '../../packages/core/src';
 import { requiredValidator, lengthValidator } from './validators';
 
-const {
-  FieldFeature,
-  StepFeature,
-  ValidationFeature,
-  PropsFeature,
-} = Providers;
+const { StepProvider } = BuiltInProviders;
+const { ValidationProvider } = ExternalProviders;
 
 export const FBForm = new FormBuilder()
-  .addFeatures([FieldFeature, StepFeature, ValidationFeature, PropsFeature])
+  .addProviders([ValidationProvider])
   .addStep({
     first_name: {
       field: InputFieldView,
       // @TODO infer type here
       props: { label: 'Your name' },
-      controls: (feature) => [
-        feature(ValidationFeature).validate([
+      controls: (getProvider) => [
+        getProvider(ValidationProvider).validate([
           requiredValidator,
           lengthValidator({ min: 6 }),
         ]),
@@ -61,9 +61,9 @@ export const FBForm = new FormBuilder()
       props: {
         label: 'Next',
       },
-      controls: (feature) => [
-        feature(StepFeature).bindNextStep(),
-        feature(ValidationFeature).toggleDisabled(),
+      controls: (getProvider) => [
+        getProvider(StepProvider).bindNextStep(),
+        getProvider(ValidationProvider).toggleDisabled(),
       ],
     },
   })
@@ -78,8 +78,8 @@ export const FBForm = new FormBuilder()
         label: 'I am a vegaterian',
         value: true,
       },
-      controls: (feature) => [
-        feature(ValidationFeature).validate([
+      controls: (getProvider) => [
+        getProvider(ValidationProvider).validate([
           (v) => !v && 'Vegging is required',
         ]),
       ],
@@ -89,9 +89,9 @@ export const FBForm = new FormBuilder()
       props: {
         label: 'Finalize',
       },
-      controls: (feature) => [
-        feature(StepFeature).bindNextStep(),
-        feature(ValidationFeature).toggleDisabled(),
+      controls: (getProvider) => [
+        getProvider(StepProvider).bindNextStep(),
+        getProvider(ValidationProvider).toggleDisabled(),
       ],
     },
   })

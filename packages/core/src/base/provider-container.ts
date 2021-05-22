@@ -1,27 +1,24 @@
 import toPairs from '@tinkoff/utils/object/toPairs';
-import noop from '@tinkoff/utils/function/noop';
+// import noop from '@tinkoff/utils/function/noop';
 import { createGlobalStore, toRxStore } from './store';
 
 import type { TBuilderConfig } from '../types';
 import type {
   TProviderConfig,
   TProviderService,
-} from '../features/features.type';
+  TToProviderInstance,
+} from '../providers/provider.type';
 
-const getName = (name: string) => `feature:${name}`;
+const getName = (name: string) => `provider:${name}`;
 
 export class ProviderContainer {
   private _cfg: TBuilderConfig;
-  private _featureProviders = Object.create(null) as Record<
-    string,
-    TProviderConfig
-  >;
+  private _providers = Object.create(null) as Record<string, TProviderConfig>;
   private _globalStore = createGlobalStore();
 
   constructor({ cfg }: { cfg: TBuilderConfig }) {
     this._cfg = cfg;
     // @ts-ignore
-    this._globalStore.subscribe(noop);
     window.__formulaStore = this._globalStore;
     // toRxStore(this._globalStore).subscribe((v) => {
     //   console.log('rxGlobalStore', v);
@@ -38,12 +35,12 @@ export class ProviderContainer {
 
   getProvider<Pr extends TProviderConfig>({
     name,
-  }: Pr): InstanceType<Pr['useService']> {
-    return this._featureProviders[getName(name)];
+  }: Pr): TToProviderInstance<Pr> {
+    return this._providers[getName(name)];
   }
 
   fill() {
-    const { structure, features } = this._cfg;
+    const { structure, providers } = this._cfg;
     const constructService = (cfg: TProviderConfig): TProviderService => {
       const alreadyRegisteredDep = this.getProvider(cfg);
       if (alreadyRegisteredDep !== undefined) {
@@ -59,9 +56,9 @@ export class ProviderContainer {
       });
     };
 
-    features.forEach((cfg) => {
+    providers.forEach((cfg) => {
       const key = getName(cfg.name);
-      this._featureProviders[key] = constructService(cfg);
+      this._providers[key] = constructService(cfg);
     });
 
     structure.forEach((step) => {

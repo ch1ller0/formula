@@ -1,9 +1,16 @@
 import React from 'react';
 import { ProviderContainer } from './provider-container';
 import { renderComponent } from './render';
+import {
+  PropsProvider,
+  StepProvider,
+  FieldProvider,
+} from '../providers/built-in';
 
-import type { TProviderConfig } from '../features/features.type';
+import type { TProviderConfig } from '../providers/provider.type';
 import type { TBuilderConfig, TFieldStructure } from '../types';
+
+const DEFAULT_PROVIDERS = [PropsProvider, StepProvider, FieldProvider];
 
 export class FormBuilder {
   private _config: TBuilderConfig;
@@ -14,7 +21,7 @@ export class FormBuilder {
   }
 
   constructor() {
-    this._config = { structure: [], features: [] };
+    this._config = { structure: [], providers: DEFAULT_PROVIDERS };
   }
 
   addStep(stepStructure: Record<string, TFieldStructure>) {
@@ -24,8 +31,8 @@ export class FormBuilder {
     return this;
   }
 
-  addFeatures(ar: TProviderConfig[]) {
-    this._config.features = this._config.features.concat(ar);
+  addProviders(ar: TProviderConfig[]) {
+    this._config.providers = this._config.providers.concat(ar);
     return this;
   }
 

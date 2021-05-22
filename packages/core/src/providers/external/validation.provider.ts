@@ -9,14 +9,14 @@ import {
 import { declareAction, declareAtom } from '@reatom/core';
 import keys from '@tinkoff/utils/object/keys';
 import { toRxStore } from '../../base/store';
-import { FieldFeature, PropsFeature } from '../index';
+import { PropsProvider, FieldProvider } from '../built-in/index';
 
 import type {
   TProviderConfig,
   TProviderConsturctorArgs,
   TProviderService,
   TToProviderInstance,
-} from '../features.type';
+} from '../provider.type';
 import type { Atom } from '@reatom/core';
 import type { TPrimitive } from '../../types';
 
@@ -33,7 +33,7 @@ class ValidationService implements TProviderService {
   private readonly _globalStore: TProviderConsturctorArgs['globalStore'];
   private readonly _structure: TProviderConsturctorArgs['structure'];
   private readonly _fieldRx: ReturnType<
-    TToProviderInstance<typeof FieldFeature>['getRxStore']
+    TToProviderInstance<typeof FieldProvider>['getRxStore']
   >;
 
   constructor({ structure, deps, globalStore }: TProviderConsturctorArgs) {
@@ -77,6 +77,10 @@ class ValidationService implements TProviderService {
 
   validate(validateFns: ValidateFn[]) {
     return ({ initiator: { fieldName } }) => {
+      this._globalStore.dispatch(
+        validateAction({ name: fieldName, errors: [] }),
+      );
+
       this._fieldRx
         .pipe(distinctUntilKeyChanged(fieldName), debounceTime(300))
         .subscribe(async (nextValue) => {
@@ -102,8 +106,8 @@ class ValidationService implements TProviderService {
   }
 }
 
-export const ValidationFeature: TProviderConfig<ValidationService> = {
+export const ValidationProvider: TProviderConfig<ValidationService> = {
   name: 'validation',
   useService: ValidationService,
-  deps: [FieldFeature, PropsFeature],
+  deps: [FieldProvider, PropsProvider],
 };

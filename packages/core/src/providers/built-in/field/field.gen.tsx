@@ -1,20 +1,20 @@
 import React from 'react';
 import { useAction, useAtom } from '@reatom/react';
 import toPairs from '@tinkoff/utils/object/toPairs';
-import { FieldFeature, PropsFeature } from '../index';
+import { FieldProvider, PropsProvider } from '../index';
 
-import type { ProviderContainer } from '../../base/provider-container';
-import type { TFieldStructure, TPrimitive } from '../../types';
+import type { ProviderContainer } from '../../../base/provider-container';
+import type { TFieldStructure, TPrimitive } from '../../../types';
 
 const FieldWrapper: React.FC<
   TFieldStructure & { providerContainer: ProviderContainer; name: string }
 > = ({ name, field, providerContainer }) => {
   const { render: Component } = field;
-  const fieldAtom = providerContainer.getProvider(FieldFeature).getAtom();
+  const fieldAtom = providerContainer.getProvider(FieldProvider).getAtom();
   const fieldActions = providerContainer
-    .getProvider(FieldFeature)
-    .getActions?.();
-  const propsAtom = providerContainer.getProvider(PropsFeature).getAtom?.();
+    .getProvider(FieldProvider)
+    .getActions();
+  const propsAtom = providerContainer.getProvider(PropsProvider).getAtom();
 
   const Consumer = () => {
     const changeKeyVal = useAction(fieldActions.changeAction);

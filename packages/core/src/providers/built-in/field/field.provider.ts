@@ -1,12 +1,12 @@
 import { Atom, declareAction, declareAtom } from '@reatom/core';
-import { toRxStore } from '../../base/store';
+import { toRxStore } from '../../../base/store';
 
 import type {
   TProviderConfig,
   TProviderService,
   TProviderConsturctorArgs,
-} from '../features.type';
-import type { TPrimitive } from '../../types';
+} from '../../provider.type';
+import type { TPrimitive } from '../../../types';
 import type { Observable } from 'rxjs';
 
 type State = Record<string, TPrimitive>;
@@ -44,7 +44,7 @@ class FieldService implements TProviderService {
   }
 }
 
-export const FieldFeature: TProviderConfig<FieldService> = {
+export const FieldProvider: TProviderConfig<FieldService> = {
   name: 'field',
   useService: FieldService,
 };

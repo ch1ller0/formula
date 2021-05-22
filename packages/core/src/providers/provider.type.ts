@@ -23,9 +23,3 @@ export type TProviderConfig<Srv = TProviderService> = {
 export type TToProviderInstance<Config extends TProviderConfig> = InstanceType<
   Config['useService']
 >;
-
-/**
- * A feature is a reusable singletone of a logic that might contain
- * 1 A service that might be used by other features
- * 2 An atom used only by itself
- */

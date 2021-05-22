@@ -1,6 +1,6 @@
 import { declareAction, declareAtom } from '@reatom/core';
-import { PropsFeature } from '../props/props.feature';
-import { toRxStore } from '../../base/store';
+import { PropsProvider } from '../props.provider';
+import { toRxStore } from '../../../base/store';
 
 import type { Atom } from '@reatom/core';
 import type {
@@ -8,13 +8,13 @@ import type {
   TProviderService,
   TProviderConsturctorArgs,
   TToProviderInstance,
-} from '../features.type';
+} from '../../provider.type';
 
 const stepIncrement = declareAction('step.stepIncrement');
 class StepService implements TProviderService {
   private readonly _globalStore: TProviderConsturctorArgs['globalStore'];
   private readonly _atom: Atom<number>;
-  private readonly _propsService: TToProviderInstance<typeof PropsFeature>;
+  private readonly _propsService: TToProviderInstance<typeof PropsProvider>;
 
   constructor({ deps, globalStore }: TProviderConsturctorArgs) {
     const [propsService] = deps;
@@ -45,8 +45,8 @@ class StepService implements TProviderService {
   }
 }
 
-export const StepFeature: TProviderConfig<StepService> = {
+export const StepProvider: TProviderConfig<StepService> = {
   name: 'step',
   useService: StepService,
-  deps: [PropsFeature],
+  deps: [PropsProvider],
 };

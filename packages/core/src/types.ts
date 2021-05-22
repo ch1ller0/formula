@@ -1,5 +1,6 @@
 import type { FC } from 'react';
-import type { TProviderConfig } from './features/features.type';
+import type { TProviderConfig } from './providers/provider.type';
+import { ProviderContainer } from './base/provider-container';
 
 type TVagueProps = Record<string, any>;
 export type TPrimitive = string | number | boolean;
@@ -15,7 +16,9 @@ export type TFieldConfig<T extends TVagueProps = TVagueProps> = {
 export type TFieldStructure = {
   field: TFieldConfig<TVagueProps>;
   props: TVagueProps;
-  controls?: (getProvider: any) => unknown[];
+  controls?: (
+    getProvider: InstanceType<typeof ProviderContainer>['getProvider'],
+  ) => unknown[];
 };
 export type TStepStructure = Record<string, TFieldStructure>;
 
@@ -31,7 +34,7 @@ export type TBuilderFieldProps = {
 
 export type TBuilderConfig = {
   structure: TStepStructure[];
-  features: TProviderConfig[];
+  providers: TProviderConfig[];
 };
 
 // @TODO NEED BETTER TYPES, CURRENT ARE REALLY VAGUE

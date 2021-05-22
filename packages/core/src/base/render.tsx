@@ -1,7 +1,7 @@
 import React from 'react';
 import { context } from '@reatom/react';
-import { Fields } from '../features/field/field.gen';
-import { StepWrapper } from '../features/step/step.gen';
+import { Fields } from '../providers/built-in/field/field.gen';
+import { StepWrapper } from '../providers/built-in/step/step.gen';
 
 import type { ProviderContainer } from './provider-container';
 

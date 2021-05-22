@@ -5,7 +5,7 @@ import type {
   TProviderConfig,
   TProviderService,
   TProviderConsturctorArgs,
-} from '../features.type';
+} from '../provider.type';
 import type { Atom } from '@reatom/core';
 import { toRxStore } from '../../base/store';
 
@@ -62,7 +62,7 @@ class PropsService implements TProviderService {
   }
 }
 
-export const PropsFeature: TProviderConfig<PropsService> = {
+export const PropsProvider: TProviderConfig<PropsService> = {
   name: 'props',
   useService: PropsService,
 };
