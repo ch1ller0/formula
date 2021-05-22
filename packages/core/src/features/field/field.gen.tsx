@@ -3,7 +3,7 @@ import { useAction, useAtom } from '@reatom/react';
 import toPairs from '@tinkoff/utils/object/toPairs';
 import { FieldFeature, PropsFeature } from '../index';
 
-import type { ProviderContainer } from '../../base/provider-container.ts';
+import type { ProviderContainer } from '../../base/provider-container';
 import type { TFieldStructure, TPrimitive } from '../../types';
 
 const FieldWrapper: React.FC<

@@ -4,7 +4,7 @@ import { toRxStore } from '../../base/store';
 import type {
   TProviderConfig,
   TProviderService,
-  TFeatureConstructorArgs,
+  TProviderConsturctorArgs,
 } from '../features.type';
 import type { TPrimitive } from '../../types';
 import type { Observable } from 'rxjs';
@@ -20,7 +20,7 @@ class FieldService implements TProviderService {
   private readonly _atom: Atom<State>;
   private readonly _rxStore: Observable<State>;
 
-  constructor({ globalStore }: TFeatureConstructorArgs) {
+  constructor({ globalStore }: TProviderConsturctorArgs) {
     // @TODO populate atom instead of {}
     this._atom = declareAtom<State>('field.atom', {}, (on) => [
       on(changeAction, (state, payload) => ({

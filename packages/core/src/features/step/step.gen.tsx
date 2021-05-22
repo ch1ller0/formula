@@ -2,7 +2,7 @@ import React from 'react';
 import { useAtom } from '@reatom/react';
 import { StepFeature } from './step.feature';
 
-import type { ProviderContainer } from '../../base/provider-container.ts';
+import type { ProviderContainer } from '../../base/provider-container';
 
 export const StepWrapper: React.FC<{
   providerContainer: ProviderContainer;
@@ -11,8 +11,7 @@ export const StepWrapper: React.FC<{
     providerContainer: ProviderContainer;
   }>;
 }> = ({ providerContainer, Component }) => {
-  const prov = providerContainer.getProvider(StepFeature);
-  const atom = prov.getAtom();
+  const atom = providerContainer.getProvider(StepFeature).getAtom();
   const currentStep = useAtom(atom);
 
   return (

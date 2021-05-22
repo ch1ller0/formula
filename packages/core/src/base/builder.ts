@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProviderContainer } from './provider-container.ts';
+import { ProviderContainer } from './provider-container';
 import { renderComponent } from './render';
 
 import type { TProviderConfig } from '../features/features.type';

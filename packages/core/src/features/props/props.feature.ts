@@ -4,7 +4,7 @@ import { declareAction, declareAtom } from '@reatom/core';
 import type {
   TProviderConfig,
   TProviderService,
-  TFeatureConstructorArgs,
+  TProviderConsturctorArgs,
 } from '../features.type';
 import type { Atom } from '@reatom/core';
 import { toRxStore } from '../../base/store';
@@ -19,9 +19,9 @@ const changeFieldProps = declareAction<{
 
 class PropsService implements TProviderService {
   private readonly _atom: Atom<State>;
-  private readonly _globalStore: TFeatureConstructorArgs['globalStore'];
+  private readonly _globalStore: TProviderConsturctorArgs['globalStore'];
 
-  constructor({ structure, globalStore }: TFeatureConstructorArgs) {
+  constructor({ structure, globalStore }: TProviderConsturctorArgs) {
     this._globalStore = globalStore;
     const initialState = {} as State;
 

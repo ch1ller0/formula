@@ -3,7 +3,7 @@ import { context } from '@reatom/react';
 import { Fields } from '../features/field/field.gen';
 import { StepWrapper } from '../features/step/step.gen';
 
-import type { ProviderContainer } from './provider-container.ts';
+import type { ProviderContainer } from './provider-container';
 
 const defaultWrapper: React.FC<{}> = ({ children }) => children;
 

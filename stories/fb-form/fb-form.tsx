@@ -9,10 +9,15 @@ import {
   SubmitButtonView,
   ThankYouView,
 } from './fb-form.fields';
-import { FormBuilder, Features } from '../../packages/core/src';
+import { FormBuilder, Providers } from '../../packages/core/src';
 import { requiredValidator, lengthValidator } from './validators';
 
-const { FieldFeature, StepFeature, ValidationFeature, PropsFeature } = Features;
+const {
+  FieldFeature,
+  StepFeature,
+  ValidationFeature,
+  PropsFeature,
+} = Providers;
 
 export const FBForm = new FormBuilder()
   .addFeatures([FieldFeature, StepFeature, ValidationFeature, PropsFeature])

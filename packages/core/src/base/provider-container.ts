@@ -1,29 +1,28 @@
 import toPairs from '@tinkoff/utils/object/toPairs';
-import { createGlobalStore, toRxStore } from '../store';
+import noop from '@tinkoff/utils/function/noop';
+import { createGlobalStore, toRxStore } from './store';
 
-import type { TStepStructure } from '../../types';
+import type { TBuilderConfig } from '../types';
 import type {
   TProviderConfig,
   TProviderService,
-} from '../../features/features.type';
+} from '../features/features.type';
 
 const getName = (name: string) => `feature:${name}`;
 
-type Config = {
-  structure: TStepStructure[];
-  features: TProviderService[];
-};
-
 export class ProviderContainer {
-  private _cfg: Config;
+  private _cfg: TBuilderConfig;
   private _featureProviders = Object.create(null) as Record<
     string,
     TProviderConfig
   >;
   private _globalStore = createGlobalStore();
 
-  constructor({ cfg }) {
+  constructor({ cfg }: { cfg: TBuilderConfig }) {
     this._cfg = cfg;
+    // @ts-ignore
+    this._globalStore.subscribe(noop);
+    window.__formulaStore = this._globalStore;
     // toRxStore(this._globalStore).subscribe((v) => {
     //   console.log('rxGlobalStore', v);
     // });
