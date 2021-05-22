@@ -1,5 +1,5 @@
 import toPairs from '@tinkoff/utils/object/toPairs';
-// import noop from '@tinkoff/utils/function/noop';
+import noop from '@tinkoff/utils/function/noop';
 import { createGlobalStore, toRxStore } from './store';
 
 import type { TBuilderConfig } from '../types/base.types';

@@ -42,7 +42,8 @@ export const InputFieldView = ViewGenerator.field<{
   error: string;
 }>({
   name: 'input',
-  render: ({ value = '', setValue, name, label, error }) => {
+  initialValue: '',
+  render: ({ value, setValue, name, label, error }) => {
     const onChange = (
       e: BaseSyntheticEvent<unknown, unknown, { value: string }>,
     ) => setValue(e.target.value);
@@ -66,6 +67,7 @@ export const SelectFieldView = ViewGenerator.field<{
   error: string;
 }>({
   name: 'select',
+  initialValue: ({ options }) => options[1],
   render: ({ value, setValue, label, options, error, name }) => {
     const onChange = (
       e: BaseSyntheticEvent<unknown, unknown, { value: string }>,
@@ -94,7 +96,10 @@ export const RadioFieldView = ViewGenerator.field<{
   error: string;
 }>({
   name: 'radio',
+  initialValue: ({ options }) => options[1].value,
   render: ({ value: selectedValue, setValue, label, options, name, error }) => {
+    // @TODO The field is broken and only emits value once due to
+    // lack of rebass support of react controlled components
     const onChange = (e: BaseSyntheticEvent<{ value: string }>) => {
       setValue(e.target.value);
     };
@@ -130,7 +135,8 @@ export const CheckboxFieldView = ViewGenerator.field<{
   error: string;
 }>({
   name: 'checkbox',
-  render: ({ value = false, setValue, name, label, error }) => {
+  initialValue: false,
+  render: ({ value, setValue, name, label, error }) => {
     const onChange = (e: BaseSyntheticEvent<{ value: string }>) => {
       setValue(e.target.checked);
     };
@@ -152,6 +158,7 @@ export const SubmitButtonView = ViewGenerator.field<{
   onAction: () => void;
 }>({
   name: 'submit',
+  initialValue: null,
   render: ({ onAction, label, disabled = true }) => (
     <Boxify>
       <Button
@@ -173,6 +180,7 @@ export const ThankYouView = ViewGenerator.field<{
   link: { href: string; label: string };
 }>({
   name: 'final-page',
+  initialValue: null,
   render: ({ title, link: { href, label } }) => (
     <Boxify>
       <Label width={[1]} p={2}>

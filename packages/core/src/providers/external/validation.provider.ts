@@ -5,9 +5,11 @@ import {
   map,
   startWith,
   filter,
+  skip,
 } from 'rxjs/operators';
 import { declareAction, declareAtom } from '@reatom/core';
 import keys from '@tinkoff/utils/object/keys';
+import noop from '@tinkoff/utils/function/noop';
 import { toRxStore } from '../../base/store';
 import { PropsProvider, FieldProvider } from '../built-in/index';
 
@@ -48,6 +50,7 @@ class ValidationService implements TProviderService {
         [payload.name]: payload.errors,
       })),
     ]);
+    this._globalStore.subscribe(this._atom, noop);
   }
 
   toggleDisabled() {
@@ -78,10 +81,16 @@ class ValidationService implements TProviderService {
   validate(validateFns: ValidateFn[]) {
     return ({ initiator: { fieldName } }) => {
       this._fieldRx
-        .pipe(distinctUntilKeyChanged(fieldName), debounceTime(300))
+        .pipe(
+          // filtering field we are interested in
+          distinctUntilKeyChanged(fieldName),
+          // skipping initial field state emit
+          skip(1),
+          debounceTime(30),
+        )
         .subscribe(async (nextValue) => {
           const currentValue = nextValue[fieldName];
-          if (currentValue === undefined) {
+          if (currentValue === null) {
             return;
           }
           const errors = await Promise.all(

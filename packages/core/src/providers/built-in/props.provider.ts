@@ -1,5 +1,8 @@
 import toPairs from '@tinkoff/utils/object/toPairs';
+import noop from '@tinkoff/utils/function/noop';
+import mapObj from '@tinkoff/utils/object/map';
 import { declareAction, declareAtom } from '@reatom/core';
+import { toRxStore } from '../../base/store';
 
 import type {
   TProviderConfig,
@@ -7,7 +10,7 @@ import type {
   TProviderConsturctorArgs,
 } from '../../types/provider.types';
 import type { Atom } from '@reatom/core';
-import { toRxStore } from '../../base/store';
+import type { Observable } from 'rxjs';
 
 type Props = Record<string, unknown>;
 type State = Record<string, Props>;
@@ -20,10 +23,14 @@ const changeFieldProps = declareAction<{
 class PropsService implements TProviderService {
   private readonly _atom: Atom<State>;
   private readonly _globalStore: TProviderConsturctorArgs['globalStore'];
+  private readonly _rxStore: Observable<State>;
 
   constructor({ structure, globalStore }: TProviderConsturctorArgs) {
     this._globalStore = globalStore;
-    const initialState = {} as State;
+    const initialState = mapObj(
+      ({ props }) => props,
+      structure.reduce((acc, cur) => ({ ...acc, ...cur }), {}),
+    );
 
     structure.forEach((step) => {
       toPairs(step).forEach(([fieldName, { props }]) => {
@@ -44,13 +51,14 @@ class PropsService implements TProviderService {
         };
       }),
     ]);
+    this._rxStore = toRxStore(this._globalStore, this._atom);
+
+    // @TODO so that all the methods apply on first render
+    this._globalStore.subscribe(this._atom, noop);
   }
 
   setFieldProp(name: string, value: Props) {
-    // @TODO remove this crutch
-    setTimeout(() => {
-      this._globalStore.dispatch(changeFieldProps({ name, value }));
-    });
+    this._globalStore.dispatch(changeFieldProps({ name, value }));
   }
 
   getAtom() {
@@ -58,7 +66,7 @@ class PropsService implements TProviderService {
   }
 
   getRxStore() {
-    return toRxStore(this._globalStore, this._atom);
+    return this._rxStore;
   }
 }
 
