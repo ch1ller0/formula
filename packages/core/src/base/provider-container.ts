@@ -2,12 +2,12 @@ import toPairs from '@tinkoff/utils/object/toPairs';
 // import noop from '@tinkoff/utils/function/noop';
 import { createGlobalStore, toRxStore } from './store';
 
-import type { TBuilderConfig } from '../types';
+import type { TBuilderConfig } from '../types/base.types';
 import type {
   TProviderConfig,
   TProviderService,
   TToProviderInstance,
-} from '../providers/provider.type';
+} from '../types/provider.types';
 
 const getName = (name: string) => `provider:${name}`;
 

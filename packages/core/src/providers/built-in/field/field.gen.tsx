@@ -4,7 +4,7 @@ import toPairs from '@tinkoff/utils/object/toPairs';
 import { FieldProvider, PropsProvider } from '../index';
 
 import type { ProviderContainer } from '../../../base/provider-container';
-import type { TFieldStructure, TPrimitive } from '../../../types';
+import type { TFieldStructure, TPrimitive } from '../../../types/base.types';
 
 const FieldWrapper: React.FC<
   TFieldStructure & { providerContainer: ProviderContainer; name: string }

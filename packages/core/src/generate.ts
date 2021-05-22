@@ -1,4 +1,4 @@
-import type { TFieldConfig, TStepStructure } from './types';
+import type { TFieldConfig, TStepStructure } from './types/base.types';
 
 type Brand<T> = { _: T };
 

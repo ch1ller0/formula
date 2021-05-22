@@ -16,7 +16,7 @@ import type {
   TProviderConsturctorArgs,
   TProviderService,
   TToProviderInstance,
-} from '../provider.type';
+} from '../../types/provider.types';
 import type { Atom } from '@reatom/core';
 import type { TPrimitive } from '../../types';
 
@@ -77,10 +77,6 @@ class ValidationService implements TProviderService {
 
   validate(validateFns: ValidateFn[]) {
     return ({ initiator: { fieldName } }) => {
-      this._globalStore.dispatch(
-        validateAction({ name: fieldName, errors: [] }),
-      );
-
       this._fieldRx
         .pipe(distinctUntilKeyChanged(fieldName), debounceTime(300))
         .subscribe(async (nextValue) => {

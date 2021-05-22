@@ -5,8 +5,8 @@ import type {
   TProviderConfig,
   TProviderService,
   TProviderConsturctorArgs,
-} from '../../provider.type';
-import type { TPrimitive } from '../../../types';
+} from '../../../types/provider.types';
+import type { TPrimitive } from '../../../types/base.types';
 import type { Observable } from 'rxjs';
 
 type State = Record<string, TPrimitive>;

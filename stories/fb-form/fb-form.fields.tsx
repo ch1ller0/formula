@@ -37,7 +37,10 @@ const Boxify: React.FC<{ error?: string }> = ({ children, error }) => {
   );
 };
 
-export const InputFieldView = ViewGenerator.field<{ label: string }>({
+export const InputFieldView = ViewGenerator.field<{
+  label: string;
+  error: string;
+}>({
   name: 'input',
   render: ({ value = '', setValue, name, label, error }) => {
     const onChange = (

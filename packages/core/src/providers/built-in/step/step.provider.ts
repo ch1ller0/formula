@@ -8,7 +8,7 @@ import type {
   TProviderService,
   TProviderConsturctorArgs,
   TToProviderInstance,
-} from '../../provider.type';
+} from '../../../types/provider.types';
 
 const stepIncrement = declareAction('step.stepIncrement');
 class StepService implements TProviderService {
