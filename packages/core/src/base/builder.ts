@@ -43,6 +43,11 @@ export class FormBuilder {
       throw new Error('No provider container registered');
     }
 
+    console.log(
+      'before-render-state:',
+      this._providerContainer.getStore().getState(),
+    );
+
     return renderComponent(this._providerContainer, CoreWrapper);
   }
 }

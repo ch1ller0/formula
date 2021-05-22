@@ -1,4 +1,5 @@
 import { declareAction, declareAtom } from '@reatom/core';
+import noop from '@tinkoff/utils/function/noop';
 import { PropsProvider } from '../props.provider';
 import { toRxStore } from '../../../base/store';
 
@@ -24,6 +25,7 @@ class StepService implements TProviderService {
     ]);
     this._propsService = propsService;
     this._globalStore = globalStore;
+    this._globalStore.subscribe(this._atom, noop);
   }
 
   getAtom() {

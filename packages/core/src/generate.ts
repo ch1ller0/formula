@@ -9,6 +9,7 @@ export class ViewGenerator {
     return {
       name: fieldCfg.name,
       render: fieldCfg.render,
+      initialValue: fieldCfg.initialValue,
     } as TFieldConfig<Props> & Brand<'field'>;
   }
 

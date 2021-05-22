@@ -44,3 +44,10 @@ export type TProviderConfig<Srv = TProviderService> = {
 export type TToProviderInstance<Config extends TProviderConfig> = InstanceType<
   Config['useService']
 >;
+
+/**
+ * Service might contain methods used for
+ * 1 Binding field`s to some logic (it has an initiator.fieldName key)
+ * 2 Other provider`s service (it might have any interface)
+ * 3 Render logic that needs to watch for state changes
+ */

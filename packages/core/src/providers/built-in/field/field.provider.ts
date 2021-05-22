@@ -1,4 +1,7 @@
 import { Atom, declareAction, declareAtom } from '@reatom/core';
+import mapObj from '@tinkoff/utils/object/map';
+import isFunction from '@tinkoff/utils/is/function';
+import noop from '@tinkoff/utils/function/noop';
 import { toRxStore } from '../../../base/store';
 
 import type {
@@ -9,7 +12,7 @@ import type {
 import type { TPrimitive } from '../../../types/base.types';
 import type { Observable } from 'rxjs';
 
-type State = Record<string, TPrimitive>;
+type State = Record<string, TPrimitive | null>;
 
 const changeAction = declareAction<{
   name: string;
@@ -20,15 +23,22 @@ class FieldService implements TProviderService {
   private readonly _atom: Atom<State>;
   private readonly _rxStore: Observable<State>;
 
-  constructor({ globalStore }: TProviderConsturctorArgs) {
-    // @TODO populate atom instead of {}
-    this._atom = declareAtom<State>('field.atom', {}, (on) => [
+  constructor({ globalStore, structure }: TProviderConsturctorArgs) {
+    const initialState = mapObj(
+      ({ field: { initialValue }, props }) =>
+        isFunction(initialValue) ? initialValue(props) : initialValue,
+      structure.reduce((acc, cur) => ({ ...acc, ...cur }), {}),
+    );
+
+    this._atom = declareAtom<State>('field.atom', initialState, (on) => [
       on(changeAction, (state, payload) => ({
         ...state,
         [payload.name]: payload.value,
       })),
     ]);
     this._rxStore = toRxStore(globalStore, this._atom);
+    // @TODO so that all the methods apply on first render
+    globalStore.subscribe(this._atom, noop);
   }
 
   getRxStore() {

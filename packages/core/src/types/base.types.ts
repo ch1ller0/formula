@@ -10,7 +10,10 @@ export type TPrimitive = string | number | boolean;
 /**
  * Basic field configuration
  */
-export type TFieldConfig<T extends TVagueProps = TVagueProps> = {
+export type TFieldConfig<
+  Prps extends TVagueProps = TVagueProps,
+  FT extends TPrimitive = TPrimitive
+> = {
   /**
    * Field`s name
    */
@@ -18,7 +21,11 @@ export type TFieldConfig<T extends TVagueProps = TVagueProps> = {
   /**
    * React component to render
    */
-  render: FC<TBuilderFieldProps & T>;
+  render: FC<TBuilderFieldProps<FT> & Prps>;
+  /**
+   * The method to get initial value or a primitive
+   */
+  initialValue: FT | ((props: Prps) => FT) | null;
 };
 
 /**
@@ -47,7 +54,7 @@ export type TStepStructure = Record<string, TFieldStructure>;
 /**
  * Props that are passed to a field in form run-time
  */
-export type TBuilderFieldProps = {
+export type TBuilderFieldProps<T extends TPrimitive = TPrimitive> = {
   /**
    * Name passed to a component
    */
@@ -55,11 +62,11 @@ export type TBuilderFieldProps = {
   /**
    * Current field`s value
    */
-  value: TPrimitive;
+  value: T;
   /**
    * Callback for setting the value
    */
-  setValue: (value: TPrimitive) => void;
+  setValue: (value: T) => void;
 };
 
 /**
