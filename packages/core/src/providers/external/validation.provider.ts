@@ -18,7 +18,7 @@ import type {
   TToProviderInstance,
 } from '../../types/provider.types';
 import type { Atom } from '@reatom/core';
-import type { TPrimitive } from '../../types';
+import type { TPrimitive } from '../../types/base.types';
 
 type State = Record<string, string[]>;
 type ValidateFn = (v: TPrimitive) => string | Promise<string>;
