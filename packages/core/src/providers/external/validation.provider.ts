@@ -9,29 +9,34 @@ import {
 import { declareAction, declareAtom } from '@reatom/core';
 import keys from '@tinkoff/utils/object/keys';
 import { toRxStore } from '../../base/store';
-import { FieldFeature, PropsFeature } from '../index';
+import { PropsProvider, FieldProvider } from '../built-in/index';
 
 import type {
-  TFeatureConfig,
-  TFeatureConstructorArgs,
-  TFeatureService,
-} from '../features.type';
+  TProviderConfig,
+  TProviderConsturctorArgs,
+  TProviderService,
+  TToProviderInstance,
+} from '../provider.type';
 import type { Atom } from '@reatom/core';
+import type { TPrimitive } from '../../types';
 
-type State = Record<string, { error: string }>;
-type ValidateFn = (v: string | number) => string | Promise<string>;
+type State = Record<string, string[]>;
+type ValidateFn = (v: TPrimitive) => string | Promise<string>;
 
 const validateAction = declareAction<{
   name: string;
   errors: string[];
 }>('validation.validateAction');
 
-class ValidationService implements TFeatureService {
+class ValidationService implements TProviderService {
   private readonly _atom: Atom<State>;
-  private readonly _globalStore: TFeatureConstructorArgs['globalStore'];
-  private readonly _structure: TFeatureConstructorArgs['structure'];
+  private readonly _globalStore: TProviderConsturctorArgs['globalStore'];
+  private readonly _structure: TProviderConsturctorArgs['structure'];
+  private readonly _fieldRx: ReturnType<
+    TToProviderInstance<typeof FieldProvider>['getRxStore']
+  >;
 
-  constructor({ structure, deps, globalStore }: TFeatureConstructorArgs) {
+  constructor({ structure, deps, globalStore }: TProviderConsturctorArgs) {
     const [fieldService, propsService] = deps;
     this._structure = structure;
     this._fieldRx = fieldService.getRxStore();
@@ -49,9 +54,8 @@ class ValidationService implements TFeatureService {
     const fieldsByStep = this._structure.map(keys);
 
     return ({ initiator: { fieldName } }) => {
-      const stepValidationRequirements = fieldsByStep.find((v) =>
-        v.includes(fieldName),
-      );
+      const stepValidationRequirements =
+        fieldsByStep.find((v) => v.includes(fieldName)) || [];
 
       toRxStore(this._globalStore, this._atom)
         .pipe(
@@ -73,6 +77,10 @@ class ValidationService implements TFeatureService {
 
   validate(validateFns: ValidateFn[]) {
     return ({ initiator: { fieldName } }) => {
+      this._globalStore.dispatch(
+        validateAction({ name: fieldName, errors: [] }),
+      );
+
       this._fieldRx
         .pipe(distinctUntilKeyChanged(fieldName), debounceTime(300))
         .subscribe(async (nextValue) => {
@@ -92,10 +100,14 @@ class ValidationService implements TFeatureService {
         });
     };
   }
+
+  getRxStore() {
+    return toRxStore(this._globalStore, this._atom);
+  }
 }
 
-export const ValidationFeature: TFeatureConfig = {
+export const ValidationProvider: TProviderConfig<ValidationService> = {
   name: 'validation',
   useService: ValidationService,
-  deps: [FieldFeature, PropsFeature],
+  deps: [FieldProvider, PropsProvider],
 };

@@ -2,11 +2,12 @@ import toPairs from '@tinkoff/utils/object/toPairs';
 import { declareAction, declareAtom } from '@reatom/core';
 
 import type {
-  TFeatureConfig,
-  TFeatureService,
-  TFeatureConstructorArgs,
-} from '../features.type';
+  TProviderConfig,
+  TProviderService,
+  TProviderConsturctorArgs,
+} from '../provider.type';
 import type { Atom } from '@reatom/core';
+import { toRxStore } from '../../base/store';
 
 type Props = Record<string, unknown>;
 type State = Record<string, Props>;
@@ -16,11 +17,11 @@ const changeFieldProps = declareAction<{
   value: Props;
 }>('props.changeFieldProps');
 
-class PropsService implements TFeatureService {
+class PropsService implements TProviderService {
   private readonly _atom: Atom<State>;
-  private readonly _globalStore: TFeatureConstructorArgs['globalStore'];
+  private readonly _globalStore: TProviderConsturctorArgs['globalStore'];
 
-  constructor({ structure, globalStore }: TFeatureConstructorArgs) {
+  constructor({ structure, globalStore }: TProviderConsturctorArgs) {
     this._globalStore = globalStore;
     const initialState = {} as State;
 
@@ -55,9 +56,13 @@ class PropsService implements TFeatureService {
   getAtom() {
     return this._atom;
   }
+
+  getRxStore() {
+    return toRxStore(this._globalStore, this._atom);
+  }
 }
 
-export const PropsFeature: TFeatureConfig = {
+export const PropsProvider: TProviderConfig<PropsService> = {
   name: 'props',
   useService: PropsService,
 };

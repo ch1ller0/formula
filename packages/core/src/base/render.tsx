@@ -1,25 +1,30 @@
 import React from 'react';
 import { context } from '@reatom/react';
-import { Fields } from '../features/field/field.gen';
-import { StepWrapper } from '../features/step/step.gen';
+import { Fields } from '../providers/built-in/field/field.gen';
+import { StepWrapper } from '../providers/built-in/step/step.gen';
 
-import type { FeatureRegistry } from './featureRegistry';
+import type { ProviderContainer } from './provider-container';
 
 const defaultWrapper: React.FC<{}> = ({ children }) => children;
 
-const renderWrappers = (registry: FeatureRegistry) => {
-  return <StepWrapper registry={registry} Component={Fields}></StepWrapper>;
+const renderWrappers = (providerContainer: ProviderContainer) => {
+  return (
+    <StepWrapper
+      providerContainer={providerContainer}
+      Component={Fields}
+    ></StepWrapper>
+  );
 };
 
 export const renderComponent = (
-  registry: FeatureRegistry,
+  providerContainer: ProviderContainer,
   Wrapper: React.FC = defaultWrapper,
 ) => {
-  const store = registry.getStore();
+  const store = providerContainer.getStore();
 
   return () => (
     <context.Provider value={store}>
-      <Wrapper>{renderWrappers(registry)}</Wrapper>
+      <Wrapper>{renderWrappers(providerContainer)}</Wrapper>
     </context.Provider>
   );
 };

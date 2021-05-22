@@ -1,20 +1,27 @@
 import React from 'react';
-import { FeatureRegistry } from './featureRegistry';
+import { ProviderContainer } from './provider-container';
 import { renderComponent } from './render';
+import {
+  PropsProvider,
+  StepProvider,
+  FieldProvider,
+} from '../providers/built-in';
 
-import type { TFeatureConfig } from '../features/features.type';
+import type { TProviderConfig } from '../providers/provider.type';
 import type { TBuilderConfig, TFieldStructure } from '../types';
+
+const DEFAULT_PROVIDERS = [PropsProvider, StepProvider, FieldProvider];
 
 export class FormBuilder {
   private _config: TBuilderConfig;
-  private _registry: FeatureRegistry;
+  private _providerContainer: ProviderContainer | undefined;
   private _initInternalDeps() {
-    this._registry.fill(this._config);
+    this._providerContainer = new ProviderContainer({ cfg: this._config });
+    this._providerContainer.fill();
   }
 
   constructor() {
-    this._config = { structure: [], features: [] };
-    this._registry = new FeatureRegistry();
+    this._config = { structure: [], providers: DEFAULT_PROVIDERS };
   }
 
   addStep(stepStructure: Record<string, TFieldStructure>) {
@@ -24,14 +31,18 @@ export class FormBuilder {
     return this;
   }
 
-  addFeatures(ar: TFeatureConfig[]) {
-    this._config.features = this._config.features.concat(ar);
+  addProviders(ar: TProviderConfig[]) {
+    this._config.providers = this._config.providers.concat(ar);
     return this;
   }
 
   toComponent(CoreWrapper?: React.FC): React.ReactNode {
     this._initInternalDeps();
 
-    return renderComponent(this._registry, CoreWrapper);
+    if (!this._providerContainer) {
+      throw new Error('No provider container registered');
+    }
+
+    return renderComponent(this._providerContainer, CoreWrapper);
   }
 }
