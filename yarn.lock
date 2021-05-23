@@ -1345,6 +1345,11 @@
   resolved "https://registry.yarnpkg.com/@reatom/core/-/core-1.1.5.tgz#ad80dc83dfabe222c840d56ae3e8571c242b4f34"
   integrity sha512-Bi28IltJDsY6+3v+DsK6NGXRGBuB/2S7mYsRM9xvASH63IwnVF7h3B5p3egt3NGLI3UUfK8CLA65EvD577rTZg==
 
+"@reatom/debug@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@reatom/debug/-/debug-1.2.0.tgz#1e6d2f05b88882a47a0d59b83f88242ec3dceb55"
+  integrity sha512-Obf1rI++1CKZyp1P8HY3pCCQ5GUGrYDZn8dbMaqCzvWd6kyZDFtaf51gfdnUnLwZZ8EHFYkpwgHtvbJXSv+b3w==
+
 "@reatom/observable@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@reatom/observable/-/observable-1.0.0.tgz#58e18e012a96c2ec98209eef6842f712268364b0"

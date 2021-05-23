@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.13.16",
+    "@reatom/debug": "^1.2.0",
     "@storybook/addon-actions": "^6.2.9",
     "@storybook/addon-essentials": "^6.2.9",
     "@storybook/addon-links": "^6.2.9",
