@@ -36,7 +36,7 @@ class FieldService implements TProviderService {
       structure.reduce((acc, cur) => ({ ...acc, ...cur }), {}),
     );
 
-    this._atom = declareAtom<State>('field.atom', initialState, (on) => [
+    this._atom = declareAtom<State>(['field'], initialState, (on) => [
       on(changeAction, (state, payload) => ({
         ...state,
         [payload.name]: payload.value,

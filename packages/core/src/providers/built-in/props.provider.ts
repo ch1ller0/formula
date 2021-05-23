@@ -38,7 +38,7 @@ class PropsService implements TProviderService {
       });
     });
 
-    this._atom = declareAtom('props.atom', initialState, (on) => [
+    this._atom = declareAtom(['props'], initialState, (on) => [
       on(changeFieldProps, (state, payload) => {
         const prevProps = state[payload.name];
 

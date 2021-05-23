@@ -1,6 +1,5 @@
 import toPairs from '@tinkoff/utils/object/toPairs';
-import noop from '@tinkoff/utils/function/noop';
-import { createGlobalStore, toRxStore } from './store';
+import { createGlobalStore } from './store';
 
 import type { TBuilderConfig } from '../types/base.types';
 import type {
@@ -18,11 +17,14 @@ export class ProviderContainer {
 
   constructor({ cfg }: { cfg: TBuilderConfig }) {
     this._cfg = cfg;
-    // @ts-ignore
-    window.__formulaStore = this._globalStore;
-    // toRxStore(this._globalStore).subscribe((v) => {
-    //   console.log('rxGlobalStore', v);
-    // });
+    if (process.env.NODE_ENV === 'development' && typeof window !== undefined) {
+      // @ts-ignore
+      window.__formula = {
+        store: this._globalStore,
+        providers: this._providers,
+        config: this._cfg,
+      };
+    }
   }
 
   getStore() {

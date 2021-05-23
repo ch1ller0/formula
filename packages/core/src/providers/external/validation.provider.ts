@@ -44,7 +44,7 @@ class ValidationService implements TProviderService {
     this._fieldRx = fieldService.getRxStore();
     this._propsService = propsService;
     this._globalStore = globalStore;
-    this._atom = declareAtom<State>('validation.atom', {}, (on) => [
+    this._atom = declareAtom<State>(['validation'], {}, (on) => [
       on(validateAction, (state, payload) => ({
         ...state,
         [payload.name]: payload.errors,

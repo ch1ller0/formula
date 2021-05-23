@@ -21,7 +21,7 @@ class StepService implements TProviderService {
   constructor({ deps, globalStore }: TProviderConsturctorArgs) {
     const [propsService] = deps;
 
-    this._atom = declareAtom<number>('step.atom', 0, (on) => [
+    this._atom = declareAtom<number>(['step'], 0, (on) => [
       on(stepIncrement, (state) => state + 1),
     ]);
     this._propsService = propsService;
