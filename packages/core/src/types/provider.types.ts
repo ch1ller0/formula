@@ -1,5 +1,7 @@
 import type { Store } from '@reatom/core';
+import React from 'react';
 import type { Observable } from 'rxjs';
+import { RenderProps } from '../base/render';
 import type { TStepStructure } from './base.types';
 
 export type TProviderConsturctorArgs = {
@@ -22,6 +24,10 @@ export interface TProviderService {
    * Method for getting an Observable from Provider`s store
    */
   getRxStore?(): Observable<any>;
+  /**
+   * Wrapper for binding render to self provider
+   */
+  renderWrapper?(): React.FC<RenderProps>;
 }
 
 export type TProviderConfig<Srv = TProviderService> = {
@@ -50,4 +56,10 @@ export type TToProviderInstance<Config extends TProviderConfig> = InstanceType<
  * 1 Binding field`s to some logic (it has an initiator.fieldName key)
  * 2 Other provider`s service (it might have any interface)
  * 3 Render logic that needs to watch for state changes
+ */
+
+/**
+ * Binders - to bind some logic to a field/step
+ * Getters - to get some real-time value
+ * Renderers - to make reract
  */

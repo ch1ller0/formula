@@ -2,6 +2,7 @@ import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import { PropsProvider } from '../props.provider';
 import { toRxStore } from '../../../base/store';
+import { StepWrapperFabric } from './step.gen';
 
 import type { Atom } from '@reatom/core';
 import type {
@@ -28,10 +29,6 @@ class StepService implements TProviderService {
     this._globalStore.subscribe(this._atom, noop);
   }
 
-  getAtom() {
-    return this._atom;
-  }
-
   bindNextStep() {
     return ({ initiator }) => {
       this._propsService.setFieldProp(initiator.fieldName, {
@@ -44,6 +41,10 @@ class StepService implements TProviderService {
 
   getRxStore() {
     return toRxStore(this._globalStore, this._atom);
+  }
+
+  renderWrapper() {
+    return StepWrapperFabric(this._atom);
   }
 }
 
