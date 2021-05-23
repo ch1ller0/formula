@@ -10,6 +10,7 @@ import {
 import type { TProviderConfig } from '../types/provider.types';
 import type { TBuilderConfig, TFieldStructure } from '../types/base.types';
 
+// pack of providers required for form to work
 const DEFAULT_PROVIDERS = [PropsProvider, StepProvider, FieldProvider];
 
 export class FormBuilder {

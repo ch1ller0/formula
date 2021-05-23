@@ -53,7 +53,7 @@ class ValidationService implements TProviderService {
     this._globalStore.subscribe(this._atom, noop);
   }
 
-  toggleDisabled() {
+  bindDisabled() {
     const fieldsByStep = this._structure.map(keys);
 
     return ({ initiator: { fieldName } }) => {
@@ -78,7 +78,7 @@ class ValidationService implements TProviderService {
     };
   }
 
-  validate(validateFns: ValidateFn[]) {
+  bindValidation(validateFns: ValidateFn[]) {
     return ({ initiator: { fieldName } }) => {
       this._fieldRx
         .pipe(

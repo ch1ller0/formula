@@ -61,5 +61,5 @@ export type TToProviderInstance<Config extends TProviderConfig> = InstanceType<
 /**
  * Binders - to bind some logic to a field/step
  * Getters - to get some real-time value
- * Renderers - to make reract
+ * Renderers - to make react bindings
  */

@@ -1,5 +1,3 @@
-import { Box } from 'rebass';
-import { ThemeProvider } from 'emotion-theming';
 import { debounceTime, distinctUntilKeyChanged, pluck } from 'rxjs/operators';
 
 import {
@@ -9,13 +7,14 @@ import {
   CheckboxFieldView,
   SubmitButtonView,
   ThankYouView,
-} from './fb-form.fields';
+} from './shared/fields';
 import {
   FormBuilder,
   BuiltInProviders,
   ExternalProviders,
 } from '../../packages/core/src';
-import { requiredValidator, lengthValidator } from './validators';
+import { requiredValidator, lengthValidator } from './shared/validators';
+import { boxWrapper } from './shared/wrapper';
 import {
   FieldProvider,
   PropsProvider,
@@ -32,7 +31,7 @@ export const FBForm = new FormBuilder()
       // @TODO infer type here
       props: { label: 'Your name' },
       controls: (getProvider) => [
-        getProvider(ValidationProvider).validate([
+        getProvider(ValidationProvider).bindValidation([
           requiredValidator,
           lengthValidator({ min: 6 }),
         ]),
@@ -42,7 +41,11 @@ export const FBForm = new FormBuilder()
       field: SelectFieldView,
       props: {
         label: 'Location',
-        options: ['New York', 'St Petersburg', 'Moscow'],
+        options: [
+          { label: 'New York', value: 'new_york' },
+          { label: 'St Petersburg', value: 'st_petersburg' },
+          { label: 'Moscow', value: 'moscow' },
+        ],
       },
     },
     gender: {
@@ -68,7 +71,7 @@ export const FBForm = new FormBuilder()
       },
       controls: (getProvider) => [
         getProvider(StepProvider).bindNextStep(),
-        getProvider(ValidationProvider).toggleDisabled(),
+        getProvider(ValidationProvider).bindDisabled(),
       ],
     },
   })
@@ -84,7 +87,7 @@ export const FBForm = new FormBuilder()
         value: true,
       },
       controls: (getProvider) => [
-        getProvider(ValidationProvider).validate([
+        getProvider(ValidationProvider).bindValidation([
           (v) => !v && 'Vegging is required',
         ]),
       ],
@@ -96,7 +99,7 @@ export const FBForm = new FormBuilder()
       },
       controls: (getProvider) => [
         getProvider(StepProvider).bindNextStep(),
-        getProvider(ValidationProvider).toggleDisabled(),
+        getProvider(ValidationProvider).bindDisabled(),
       ],
     },
   })
@@ -129,31 +132,4 @@ export const FBForm = new FormBuilder()
       ],
     },
   })
-  .toComponent(({ children }) => {
-    return (
-      <ThemeProvider
-        theme={{
-          colors: {
-            background: 'black',
-            primary: 'tomato',
-            disconnect: '#bbb',
-          },
-          space: [0, 6, 12, 24, 48],
-          fontSizes: [14, 16, 18, 20, 24],
-          radii: {
-            default: 5,
-          },
-        }}
-      >
-        <Box
-          as="form"
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
-          py={3}
-        >
-          {children}
-        </Box>
-      </ThemeProvider>
-    );
-  });
+  .toComponent(boxWrapper);
