@@ -1,25 +1,33 @@
 import React from 'react';
 import { useAction, useAtom } from '@reatom/react';
 import toPairs from '@tinkoff/utils/object/toPairs';
-import { FieldProvider, PropsProvider } from '../index';
 
-import type { ProviderContainer } from '../../../base/provider-container';
 import type { TFieldStructure, TPrimitive } from '../../../types/base.types';
+import type { PayloadActionCreator, Atom } from '@reatom/core';
+import type { RenderProps } from '../../../base/render';
 
-const FieldWrapper: React.FC<
-  TFieldStructure & { providerContainer: ProviderContainer; name: string }
-> = ({ name, field, providerContainer }) => {
-  const { render: Component } = field;
-  const fieldAtom = providerContainer.getProvider(FieldProvider).getAtom();
-  const fieldActions = providerContainer
-    .getProvider(FieldProvider)
-    .getActions();
-  const propsAtom = providerContainer.getProvider(PropsProvider).getAtom();
+type FactoryArgs = {
+  atom: Atom<Record<string, TPrimitive>>;
+  actions: {
+    changeAction: PayloadActionCreator<{
+      name: string;
+      value: TPrimitive;
+    }>;
+  };
+  propsAtom: Atom<Record<string, unknown>>;
+};
+
+const FieldWrapper: React.FC<{
+  selfProps: TFieldStructure;
+  name: string;
+  args: FactoryArgs;
+}> = ({ selfProps, name, args }) => {
+  const { render: Component } = selfProps.field;
 
   const Consumer = () => {
-    const changeKeyVal = useAction(fieldActions.changeAction);
-    const fieldValue = useAtom(fieldAtom, (atom) => atom[name], []);
-    const fieldProps = useAtom(propsAtom, (atom) => atom[name], []);
+    const changeKeyVal = useAction(args.actions.changeAction);
+    const fieldValue = useAtom(args.atom, (atom) => atom[name], []);
+    const fieldProps = useAtom(args.propsAtom, (atom) => atom[name], []);
 
     const props = {
       name,
@@ -41,23 +49,37 @@ const FieldWrapper: React.FC<
   return <Consumer />;
 };
 
-export const Fields: React.FC<{
-  providerContainer: ProviderContainer;
-  currentStep: number;
-}> = ({ providerContainer, currentStep }) => {
-  const { structure } = providerContainer.getConfig();
-  const paired = toPairs(structure[currentStep]);
+export const FieldsFactory = ({
+  atom,
+  actions,
+  propsAtom,
+}: {
+  atom: Atom<Record<string, TPrimitive | null>>;
+  actions: {
+    changeAction: PayloadActionCreator<{
+      name: string;
+      value: TPrimitive;
+    }>;
+  };
+  propsAtom: Atom<Record<string, unknown>>;
+}): React.FC<RenderProps> => ({ children, structure }) => {
+  const paired = toPairs(structure[0]);
 
   return (
     <>
-      {paired.map(([name, innerProps]) => (
-        <FieldWrapper
-          name={name}
-          key={name}
-          providerContainer={providerContainer}
-          {...innerProps}
-        />
-      ))}
+      {paired.map(([name, selfProps]) => {
+        const args = { atom, actions, propsAtom };
+
+        return (
+          <FieldWrapper
+            name={name}
+            key={name}
+            selfProps={selfProps}
+            args={args}
+          />
+        );
+      })}
+      {children}
     </>
   );
 };

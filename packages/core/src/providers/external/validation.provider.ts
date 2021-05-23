@@ -44,7 +44,7 @@ class ValidationService implements TProviderService {
     this._fieldRx = fieldService.getRxStore();
     this._propsService = propsService;
     this._globalStore = globalStore;
-    this._atom = declareAtom<State>('validation.atom', {}, (on) => [
+    this._atom = declareAtom<State>(['validation'], {}, (on) => [
       on(validateAction, (state, payload) => ({
         ...state,
         [payload.name]: payload.errors,
@@ -53,7 +53,7 @@ class ValidationService implements TProviderService {
     this._globalStore.subscribe(this._atom, noop);
   }
 
-  toggleDisabled() {
+  bindDisabled() {
     const fieldsByStep = this._structure.map(keys);
 
     return ({ initiator: { fieldName } }) => {
@@ -78,7 +78,7 @@ class ValidationService implements TProviderService {
     };
   }
 
-  validate(validateFns: ValidateFn[]) {
+  bindValidation(validateFns: ValidateFn[]) {
     return ({ initiator: { fieldName } }) => {
       this._fieldRx
         .pipe(

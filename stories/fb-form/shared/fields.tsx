@@ -1,7 +1,7 @@
 import { Label, Input, Select, Radio, Checkbox } from '@rebass/forms';
 import { Button, Box, Flex, Text as RText } from 'rebass';
 import { BaseSyntheticEvent } from 'react';
-import { ViewGenerator } from '../../packages/core/src';
+import { ViewGenerator } from '../../../packages/core/src';
 
 const Text = (props: any) => (
   <RText
@@ -63,15 +63,21 @@ export const InputFieldView = ViewGenerator.field<{
 
 export const SelectFieldView = ViewGenerator.field<{
   label: string;
-  options: string[];
+  options: { label: string; value: string }[];
   error: string;
 }>({
   name: 'select',
-  initialValue: ({ options }) => options[1],
+  initialValue: ({ options }) => options[0].value,
   render: ({ value, setValue, label, options, error, name }) => {
     const onChange = (
       e: BaseSyntheticEvent<unknown, unknown, { value: string }>,
-    ) => setValue(e.target.value);
+    ) => {
+      const value =
+        options.find((v) => v.label === e.target.value)?.value ||
+        options[0].value;
+      setValue(value);
+    };
+    const selectLabel = options.find((v) => v.value === value)?.label;
 
     return (
       <Boxify error={error}>
@@ -80,9 +86,9 @@ export const SelectFieldView = ViewGenerator.field<{
             <Text>{label}</Text>
           </Label>
         )}
-        <Select id={name} name={name} value={value} onChange={onChange}>
-          {options.map((v) => (
-            <option key={v}>{v}</option>
+        <Select id={name} name={name} value={selectLabel} onChange={onChange}>
+          {options.map(({ label }) => (
+            <option key={label}>{label}</option>
           ))}
         </Select>
       </Boxify>
@@ -96,7 +102,7 @@ export const RadioFieldView = ViewGenerator.field<{
   error: string;
 }>({
   name: 'radio',
-  initialValue: ({ options }) => options[1].value,
+  initialValue: ({ options }) => options[0].value,
   render: ({ value: selectedValue, setValue, label, options, name, error }) => {
     // @TODO The field is broken and only emits value once due to
     // lack of rebass support of react controlled components
@@ -159,7 +165,7 @@ export const SubmitButtonView = ViewGenerator.field<{
 }>({
   name: 'submit',
   initialValue: null,
-  render: ({ onAction, label, disabled = true }) => (
+  render: ({ onAction, label, disabled }) => (
     <Boxify>
       <Button
         onClick={onAction}
