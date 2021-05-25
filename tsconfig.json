@@ -21,7 +21,7 @@
             "es2019",
             "dom"
         ],
-        "baseUrl": "./src",
+        "baseUrl": ".",
         "typeRoots": [
             "node_modules/@types",
             "node_modules/@fridgefm-web/typings",

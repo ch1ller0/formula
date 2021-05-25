@@ -39,7 +39,8 @@
   ],
   "scripts": {
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
-    "lint:fix": "eslint ./src ./stories -c .eslintrc.js --fix"
+    "build:storybook": "build-storybook",
+    "lint:fix": "eslint ./src ./stories -c .eslintrc.js --fix",
+    "test:types": "tsc --build tsconfig.json"
   }
 }
