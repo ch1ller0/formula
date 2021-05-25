@@ -1,6 +1,5 @@
 const path = require('path')
 const fs = require('fs')
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 
 module.exports = {
   stories: [
@@ -29,7 +28,6 @@ module.exports = {
     console.log('alias', alias)
     
     config.resolve.alias = alias
-    // config.resolve.plugins.push(new TsconfigPathsPlugin());
-  return config;
+    return config;
   },
 }
