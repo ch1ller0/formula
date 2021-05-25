@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "composite": true,
         "allowJs": true,
         "target": "es5",
         "outDir": "./build",
@@ -20,6 +21,7 @@
             "es2019",
             "dom"
         ],
+        "baseUrl": "./src",
         "typeRoots": [
             "node_modules/@types",
             "node_modules/@fridgefm-web/typings",
@@ -33,15 +35,15 @@
         "resolveJsonModule": true,
         "isolatedModules": true
     },
-    "include": [
-        "./src/**/*.tsx",
-        "./src/**/*.ts",
-        "./src/**/*.js",
-        "./stories/**/*.ts",
-        "./stories/**/*.tsx",
-        "./stories/**/*.js"
-    ],
     "exclude": [
-        "./node_modules"
-    ]
+        "./node_modules",
+        "dist"
+    ],
+    "include": [
+        "packages/**/*.ts",
+        "packages/**/*.tsx"
+    ],
+    "paths": {
+      "@formula": "packages/*"
+    }
 }

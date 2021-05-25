@@ -1,5 +1,8 @@
 import { debounceTime, distinctUntilKeyChanged, pluck } from 'rxjs/operators';
 
+import { FormBuilder, BuiltInProviders } from '@formula/core';
+import { ValidationProvider } from '@formula/provider-validation';
+
 import {
   InputFieldView,
   SelectFieldView,
@@ -8,20 +11,10 @@ import {
   SubmitButtonView,
   ThankYouView,
 } from './shared/fields';
-import {
-  FormBuilder,
-  BuiltInProviders,
-  ExternalProviders,
-} from '../../packages/core/src';
 import { requiredValidator, lengthValidator } from './shared/validators';
 import { boxWrapper } from './shared/wrapper';
-import {
-  FieldProvider,
-  PropsProvider,
-} from '../../packages/core/src/providers/built-in';
 
-const { StepProvider } = BuiltInProviders;
-const { ValidationProvider } = ExternalProviders;
+const { StepProvider, FieldProvider, PropsProvider } = BuiltInProviders;
 
 export const FBForm = new FormBuilder()
   .addProviders([ValidationProvider])
