@@ -1,0 +1,12 @@
+{
+  "name": "@formula/provider-validation",
+  "version": "0.0.0-stub",
+  "description": "Code of validation provider",
+  "sideEffects": false,
+  "private": true,
+  "main": "src",
+  "typings": "src",
+  "files": [
+    "lib"
+  ]
+}

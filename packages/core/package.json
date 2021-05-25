@@ -1,0 +1,12 @@
+{
+  "name": "@formula/core",
+  "version": "0.0.0-stub",
+  "description": "Formula engine core",
+  "sideEffects": false,
+  "private": true,
+  "main": "lib",
+  "typings": "src",
+  "files": [
+    "lib"
+  ]
+}

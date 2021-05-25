@@ -33,9 +33,13 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
-    "lint:fix": "eslint ./src ./stories -c .eslintrc.js --fix"
+    "build:storybook": "build-storybook",
+    "lint:fix": "eslint ./src ./stories -c .eslintrc.js --fix",
+    "test:types": "tsc --build tsconfig.json"
   }
 }

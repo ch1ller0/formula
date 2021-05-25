@@ -10,37 +10,37 @@ import {
 import { declareAction, declareAtom } from '@reatom/core';
 import keys from '@tinkoff/utils/object/keys';
 import noop from '@tinkoff/utils/function/noop';
-import { toRxStore } from '../../base/store';
-import { PropsProvider, FieldProvider } from '../built-in/index';
+import { toRxStore, BuiltInProviders } from '@formula/core';
 
-import type {
-  TProviderConfig,
-  TProviderConsturctorArgs,
-  TProviderService,
-  TToProviderInstance,
-} from '../../types/provider.types';
+import type { TProvider, TBase } from '@formula/core';
 import type { Atom } from '@reatom/core';
-import type { TPrimitive } from '../../types/base.types';
+
+const { FieldProvider, PropsProvider } = BuiltInProviders;
 
 type State = Record<string, string[]>;
-type ValidateFn = (v: TPrimitive) => string | Promise<string>;
+type ValidateFn = (v: TBase.TPrimitive) => string | Promise<string>;
 
 const validateAction = declareAction<{
   name: string;
   errors: string[];
 }>('validation.validateAction');
 
-class ValidationService implements TProviderService {
+class ValidationService implements TProvider.TProviderService {
   private readonly _atom: Atom<State>;
-  private readonly _globalStore: TProviderConsturctorArgs['globalStore'];
-  private readonly _structure: TProviderConsturctorArgs['structure'];
+  private readonly _globalStore: TProvider.TProviderConsturctorArgs['globalStore'];
+  private readonly _structure: TProvider.TProviderConsturctorArgs['structure'];
   private readonly _fieldRx: ReturnType<
-    TToProviderInstance<typeof FieldProvider>['getRxStore']
+    TProvider.TToProviderInstance<typeof FieldProvider>['getRxStore']
   >;
 
-  constructor({ structure, deps, globalStore }: TProviderConsturctorArgs) {
+  constructor({
+    structure,
+    deps,
+    globalStore,
+  }: TProvider.TProviderConsturctorArgs) {
     const [fieldService, propsService] = deps;
     this._structure = structure;
+
     this._fieldRx = fieldService.getRxStore();
     this._propsService = propsService;
     this._globalStore = globalStore;
@@ -111,7 +111,7 @@ class ValidationService implements TProviderService {
   }
 }
 
-export const ValidationProvider: TProviderConfig<ValidationService> = {
+export const ValidationProvider: TProvider.TProviderConfig<ValidationService> = {
   name: 'validation',
   useService: ValidationService,
   deps: [FieldProvider, PropsProvider],

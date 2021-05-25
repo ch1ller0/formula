@@ -1,7 +1,7 @@
 import { Label, Input, Select, Radio, Checkbox } from '@rebass/forms';
 import { Button, Box, Flex, Text as RText } from 'rebass';
 import { BaseSyntheticEvent } from 'react';
-import { ViewGenerator } from '../../../packages/core/src';
+import { ViewGenerator } from '@formula/core';
 
 const Text = (props: any) => (
   <RText

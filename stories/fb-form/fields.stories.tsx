@@ -6,16 +6,16 @@ import {
   SubmitButtonView,
   ThankYouView,
 } from './shared/fields';
-import { FormBuilder } from '../../packages/core/src';
+import { FormBuilder } from '@formula/core';
 import { boxWrapper } from './shared/wrapper';
-import type { TStepStructure } from '../../packages/core/src/types/base.types';
+import type { TBase } from '@formula/core';
 
 export default {
   title: 'Example/Fields',
   component: <div>placeholder</div>,
 };
 
-const SingleField = (step: TStepStructure) => {
+const SingleField = (step: TBase.TStepStructure) => {
   const CMP = new FormBuilder().addStep(step).toComponent(boxWrapper);
   return <CMP />;
 };
