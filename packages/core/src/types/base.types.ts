@@ -1,5 +1,9 @@
 import type { FC } from 'react';
-import type { TProviderConfig } from './provider.types';
+import type {
+  TProviderConfig,
+  BinderFactory,
+  TProviderService,
+} from './provider.types';
 import { ProviderContainer } from '../base/provider-container';
 
 type TVagueProps = Record<string, any>;
@@ -43,9 +47,12 @@ export type TFieldStructure = {
   /**
    * Controls to manipulate behaviour on the field
    */
-  controls?: (
-    getProvider: InstanceType<typeof ProviderContainer>['getProvider'],
-  ) => unknown[];
+  controls?: (arg: {
+    getService: InstanceType<typeof ProviderContainer>['getService'];
+    getBinders: (
+      s: TProviderConfig<TProviderService>,
+    ) => Record<string, BinderFactory> | undefined;
+  }) => unknown[];
 };
 export type TStepStructure = Record<string, TFieldStructure>;
 

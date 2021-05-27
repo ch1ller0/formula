@@ -14,6 +14,7 @@ import { toRxStore, BuiltInProviders } from '@formula/core';
 
 import type { TProvider, TBase } from '@formula/core';
 import type { Atom } from '@reatom/core';
+import { TToProviderInstance } from 'packages/core/src/types/provider.types';
 
 const { FieldProvider, PropsProvider } = BuiltInProviders;
 
@@ -29,9 +30,8 @@ class ValidationService implements TProvider.TProviderService {
   private readonly _atom: Atom<State>;
   private readonly _globalStore: TProvider.TProviderConsturctorArgs['globalStore'];
   private readonly _structure: TProvider.TProviderConsturctorArgs['structure'];
-  private readonly _fieldRx: ReturnType<
-    TProvider.TToProviderInstance<typeof FieldProvider>['getRxStore']
-  >;
+  private readonly _fieldService: TToProviderInstance<typeof FieldProvider>;
+  private readonly _propsService: TToProviderInstance<typeof PropsProvider>;
 
   constructor({
     structure,
@@ -41,7 +41,7 @@ class ValidationService implements TProvider.TProviderService {
     const [fieldService, propsService] = deps;
     this._structure = structure;
 
-    this._fieldRx = fieldService.getRxStore();
+    this._fieldService = fieldService;
     this._propsService = propsService;
     this._globalStore = globalStore;
     this._atom = declareAtom<State>(['validation'], {}, (on) => [
@@ -53,62 +53,114 @@ class ValidationService implements TProvider.TProviderService {
     this._globalStore.subscribe(this._atom, noop);
   }
 
-  bindDisabled() {
-    const fieldsByStep = this._structure.map(keys);
+  // bindDisabled() {
+  //   const fieldsByStep = this._structure.map(keys);
 
-    return ({ initiator: { fieldName } }) => {
-      const stepValidationRequirements =
-        fieldsByStep.find((v) => v.includes(fieldName)) || [];
+  //   return ({ initiator: { fieldName } }) => {
+  //     const stepValidationRequirements =
+  //       fieldsByStep.find((v) => v.includes(fieldName)) || [];
 
-      toRxStore(this._globalStore, this._atom)
-        .pipe(
-          distinctUntilChanged(),
-          filter((v) =>
-            keys(v).some((fieldName) =>
-              stepValidationRequirements.includes(fieldName),
+  //     toRxStore(this._globalStore, this._atom)
+  //       .pipe(
+  //         distinctUntilChanged(),
+  //         filter((v) =>
+  //           keys(v).some((fieldName) =>
+  //             stepValidationRequirements.includes(fieldName),
+  //           ),
+  //         ),
+  //         map((v) => stepValidationRequirements.some((x) => v[x]?.length)),
+  //         distinctUntilChanged(),
+  //         startWith(true), // disable at first render
+  //       )
+  //       .subscribe((disabled) => {
+  //         this._propsService.setFieldProp(fieldName, { disabled });
+  //       });
+  //   };
+  // }
+
+  useBinders() {
+    return {
+      validateField: (validateFns: ValidateFn[]) => (fieldName: string) => {
+        this._fieldService
+          .getRxStore()
+          .pipe(
+            // filtering field we are interested in
+            distinctUntilKeyChanged(fieldName),
+            // skipping initial field state emit
+            skip(1),
+            debounceTime(30),
+          )
+          .subscribe(async (nextValue) => {
+            const currentValue = nextValue[fieldName];
+            if (currentValue === null) {
+              return;
+            }
+            const errors = await Promise.all(
+              validateFns.map((v) => v(currentValue)),
+            ).then((a) => a.filter((x) => !!x));
+
+            this._globalStore.dispatch(
+              validateAction({ name: fieldName, errors }),
+            );
+
+            this._propsService.setFieldProp(fieldName, { error: errors[0] });
+          });
+      },
+      stepDisabled: () => (fieldName: string) => {
+        const fieldsByStep = this._structure.map(keys);
+
+        const stepValidationRequirements =
+          fieldsByStep.find((v) => v.includes(fieldName)) || [];
+
+        toRxStore(this._globalStore, this._atom)
+          .pipe(
+            distinctUntilChanged(),
+            filter((v) =>
+              keys(v).some((fieldName) =>
+                stepValidationRequirements.includes(fieldName),
+              ),
             ),
-          ),
-          map((v) => stepValidationRequirements.some((x) => v[x]?.length)),
-          distinctUntilChanged(),
-          startWith(true), // disable at first render
-        )
-        .subscribe((disabled) => {
-          this._propsService.setFieldProp(fieldName, { disabled });
-        });
+            map((v) => stepValidationRequirements.some((x) => v[x]?.length)),
+            distinctUntilChanged(),
+            startWith(true), // disable at first render
+          )
+          .subscribe((disabled) => {
+            this._propsService.setFieldProp(fieldName, { disabled });
+          });
+      },
     };
   }
 
-  bindValidation(validateFns: ValidateFn[]) {
-    return ({ initiator: { fieldName } }) => {
-      this._fieldRx
-        .pipe(
-          // filtering field we are interested in
-          distinctUntilKeyChanged(fieldName),
-          // skipping initial field state emit
-          skip(1),
-          debounceTime(30),
-        )
-        .subscribe(async (nextValue) => {
-          const currentValue = nextValue[fieldName];
-          if (currentValue === null) {
-            return;
-          }
-          const errors = await Promise.all(
-            validateFns.map((v) => v(currentValue)),
-          ).then((a) => a.filter((x) => !!x));
+  // bindValidation(validateFns: ValidateFn[]) {
+  //   return ({ initiator: { fieldName } }) => {
+  //     this._fieldRx
+  //       .pipe(
+  //         // filtering field we are interested in
+  //         distinctUntilKeyChanged(fieldName),
+  //         // skipping initial field state emit
+  //         skip(1),
+  //         debounceTime(30),
+  //       )
+  //       .subscribe(async (nextValue) => {
+  //         const currentValue = nextValue[fieldName];
+  //         if (currentValue === null) {
+  //           return;
+  //         }
+  //         const errors = await Promise.all(
+  //           validateFns.map((v) => v(currentValue)),
+  //         ).then((a) => a.filter((x) => !!x));
 
-          this._globalStore.dispatch(
-            validateAction({ name: fieldName, errors }),
-          );
+  //         this._globalStore.dispatch(
+  //           validateAction({ name: fieldName, errors }),
+  //         );
 
-          this._propsService.setFieldProp(fieldName, { error: errors[0] });
-        });
-    };
-  }
+  //         this._propsService.setFieldProp(fieldName, { error: errors[0] });
+  //       });
+  //   };
+  // }
 
-  getRxStore() {
-    return toRxStore(this._globalStore, this._atom);
-  }
+  // return toRxStore(this._globalStore, this._atom);
+  // }
 }
 
 export const ValidationProvider: TProvider.TProviderConfig<ValidationService> = {

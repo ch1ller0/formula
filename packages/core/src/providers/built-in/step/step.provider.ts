@@ -21,7 +21,7 @@ class StepService implements TProviderService {
   constructor({ deps, globalStore }: TProviderConsturctorArgs) {
     const [propsService] = deps;
 
-    this._atom = declareAtom<number>(['step'], 0, (on) => [
+    this._atom = declareAtom<number>(['step'], 1, (on) => [
       on(stepIncrement, (state) => state + 1),
     ]);
     this._propsService = propsService;
@@ -29,13 +29,15 @@ class StepService implements TProviderService {
     this._globalStore.subscribe(this._atom, noop);
   }
 
-  bindNextStep() {
-    return ({ initiator }) => {
-      this._propsService.setFieldProp(initiator.fieldName, {
-        onAction: () => {
-          this._globalStore.dispatch(stepIncrement());
-        },
-      });
+  useBinders() {
+    return {
+      nextStep: () => (fieldName: string) => {
+        this._propsService.setFieldProp(fieldName, {
+          onAction: () => {
+            this._globalStore.dispatch(stepIncrement());
+          },
+        });
+      },
     };
   }
 

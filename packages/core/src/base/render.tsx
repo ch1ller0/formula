@@ -19,7 +19,7 @@ const ren = (arr: TProviderConfig[], providerContainer: ProviderContainer) =>
     (Resulting, currentProvider) => {
       const Cmp =
         (providerContainer
-          .getProvider(currentProvider)
+          .getService(currentProvider)
           .renderWrapper?.() as React.FC<RenderProps>) || defaultWrapper;
       const displayName = `${currentProvider.name}-wrapper`;
 
