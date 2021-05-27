@@ -4,7 +4,7 @@ import isFunction from '@tinkoff/utils/is/function';
 import noop from '@tinkoff/utils/function/noop';
 import { FieldsFactory } from './field.gen';
 import { toRxStore } from '../../../base/store';
-import { PropsProvider } from '../props.provider';
+import { PropsProvider } from '../';
 
 import type {
   TProviderConfig,

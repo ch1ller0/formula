@@ -1,4 +1,4 @@
-import { PropsProvider } from '../props.provider';
+import { PropsProvider } from '../';
 import { StepWrapperFabric } from './step.gen';
 import { useState } from './step.state';
 
