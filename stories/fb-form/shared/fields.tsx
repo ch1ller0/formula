@@ -169,7 +169,7 @@ export const SubmitButtonView = ViewGenerator.field<{
     <Boxify>
       <Button
         onClick={onAction}
-        disabled={disabled}
+        // disabled={disabled}
         bg={disabled ? 'disconnect' : 'primary'}
         style={{
           cursor: 'pointer',

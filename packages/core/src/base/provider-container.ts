@@ -48,7 +48,7 @@ export class ProviderContainer {
   getBinders<Pr extends TProviderConfig>({
     name,
   }: Pr): ReturnType<TToProviderInstance<Pr>['useBinders']> {
-    return this._providers[getName(name)].useBinders?.() || {};
+    return this._providers[getName(name)].useBinders?.();
   }
 
   fill() {

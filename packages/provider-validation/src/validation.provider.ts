@@ -53,31 +53,6 @@ class ValidationService implements TProvider.TProviderService {
     this._globalStore.subscribe(this._atom, noop);
   }
 
-  // bindDisabled() {
-  //   const fieldsByStep = this._structure.map(keys);
-
-  //   return ({ initiator: { fieldName } }) => {
-  //     const stepValidationRequirements =
-  //       fieldsByStep.find((v) => v.includes(fieldName)) || [];
-
-  //     toRxStore(this._globalStore, this._atom)
-  //       .pipe(
-  //         distinctUntilChanged(),
-  //         filter((v) =>
-  //           keys(v).some((fieldName) =>
-  //             stepValidationRequirements.includes(fieldName),
-  //           ),
-  //         ),
-  //         map((v) => stepValidationRequirements.some((x) => v[x]?.length)),
-  //         distinctUntilChanged(),
-  //         startWith(true), // disable at first render
-  //       )
-  //       .subscribe((disabled) => {
-  //         this._propsService.setFieldProp(fieldName, { disabled });
-  //       });
-  //   };
-  // }
-
   useBinders() {
     return {
       validateField: (validateFns: ValidateFn[]) => (fieldName: string) => {
@@ -130,37 +105,6 @@ class ValidationService implements TProvider.TProviderService {
       },
     };
   }
-
-  // bindValidation(validateFns: ValidateFn[]) {
-  //   return ({ initiator: { fieldName } }) => {
-  //     this._fieldRx
-  //       .pipe(
-  //         // filtering field we are interested in
-  //         distinctUntilKeyChanged(fieldName),
-  //         // skipping initial field state emit
-  //         skip(1),
-  //         debounceTime(30),
-  //       )
-  //       .subscribe(async (nextValue) => {
-  //         const currentValue = nextValue[fieldName];
-  //         if (currentValue === null) {
-  //           return;
-  //         }
-  //         const errors = await Promise.all(
-  //           validateFns.map((v) => v(currentValue)),
-  //         ).then((a) => a.filter((x) => !!x));
-
-  //         this._globalStore.dispatch(
-  //           validateAction({ name: fieldName, errors }),
-  //         );
-
-  //         this._propsService.setFieldProp(fieldName, { error: errors[0] });
-  //       });
-  //   };
-  // }
-
-  // return toRxStore(this._globalStore, this._atom);
-  // }
 }
 
 export const ValidationProvider: TProvider.TProviderConfig<ValidationService> = {

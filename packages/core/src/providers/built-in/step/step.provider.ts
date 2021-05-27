@@ -1,10 +1,7 @@
-import { declareAction, declareAtom } from '@reatom/core';
-import noop from '@tinkoff/utils/function/noop';
 import { PropsProvider } from '../props.provider';
-import { toRxStore } from '../../../base/store';
 import { StepWrapperFabric } from './step.gen';
+import { useState } from './step.state';
 
-import type { Atom } from '@reatom/core';
 import type {
   TProviderConfig,
   TProviderService,
@@ -12,21 +9,14 @@ import type {
   TToProviderInstance,
 } from '../../../types/provider.types';
 
-const stepIncrement = declareAction('step.stepIncrement');
 class StepService implements TProviderService {
-  private readonly _globalStore: TProviderConsturctorArgs['globalStore'];
-  private readonly _atom: Atom<number>;
+  private readonly _selfState: ReturnType<typeof useState>;
   private readonly _propsService: TToProviderInstance<typeof PropsProvider>;
 
-  constructor({ deps, globalStore }: TProviderConsturctorArgs) {
-    const [propsService] = deps;
-
-    this._atom = declareAtom<number>(['step'], 1, (on) => [
-      on(stepIncrement, (state) => state + 1),
-    ]);
+  constructor(args: TProviderConsturctorArgs) {
+    const [propsService] = args.deps;
     this._propsService = propsService;
-    this._globalStore = globalStore;
-    this._globalStore.subscribe(this._atom, noop);
+    this._selfState = useState(args);
   }
 
   useBinders() {
@@ -34,7 +24,7 @@ class StepService implements TProviderService {
       nextStep: () => (fieldName: string) => {
         this._propsService.setFieldProp(fieldName, {
           onAction: () => {
-            this._globalStore.dispatch(stepIncrement());
+            this._selfState.actions.stepIncrement();
           },
         });
       },
@@ -42,11 +32,11 @@ class StepService implements TProviderService {
   }
 
   getRxStore() {
-    return toRxStore(this._globalStore, this._atom);
+    return this._selfState.rx;
   }
 
   renderWrapper() {
-    return StepWrapperFabric(this._atom);
+    return StepWrapperFabric(this._selfState._atom);
   }
 }
 
