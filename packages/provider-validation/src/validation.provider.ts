@@ -7,50 +7,30 @@ import {
   filter,
   skip,
 } from 'rxjs/operators';
-import { declareAction, declareAtom } from '@reatom/core';
 import keys from '@tinkoff/utils/object/keys';
-import noop from '@tinkoff/utils/function/noop';
-import { toRxStore, BuiltInProviders } from '@formula/core';
+import { BuiltInProviders } from '@formula/core';
+import { useState } from './validation.state';
 
 import type { TProvider, TBase } from '@formula/core';
-import type { Atom } from '@reatom/core';
-import { TToProviderInstance } from 'packages/core/src/types/provider.types';
+import type { TToProviderInstance } from 'packages/core/src/types/provider.types';
 
 const { FieldProvider, PropsProvider } = BuiltInProviders;
 
-type State = Record<string, string[]>;
 type ValidateFn = (v: TBase.TPrimitive) => string | Promise<string>;
 
-const validateAction = declareAction<{
-  name: string;
-  errors: string[];
-}>('validation.validateAction');
-
 class ValidationService implements TProvider.TProviderService {
-  private readonly _atom: Atom<State>;
-  private readonly _globalStore: TProvider.TProviderConsturctorArgs['globalStore'];
   private readonly _structure: TProvider.TProviderConsturctorArgs['structure'];
   private readonly _fieldService: TToProviderInstance<typeof FieldProvider>;
   private readonly _propsService: TToProviderInstance<typeof PropsProvider>;
+  private readonly _selfState: ReturnType<typeof useState>;
 
-  constructor({
-    structure,
-    deps,
-    globalStore,
-  }: TProvider.TProviderConsturctorArgs) {
-    const [fieldService, propsService] = deps;
-    this._structure = structure;
+  constructor(args: TProvider.TProviderConsturctorArgs) {
+    const [fieldService, propsService] = args.deps;
+    this._structure = args.structure;
+    this._selfState = useState(args);
 
     this._fieldService = fieldService;
     this._propsService = propsService;
-    this._globalStore = globalStore;
-    this._atom = declareAtom<State>(['validation'], {}, (on) => [
-      on(validateAction, (state, payload) => ({
-        ...state,
-        [payload.name]: payload.errors,
-      })),
-    ]);
-    this._globalStore.subscribe(this._atom, noop);
   }
 
   useBinders() {
@@ -74,10 +54,7 @@ class ValidationService implements TProvider.TProviderService {
               validateFns.map((v) => v(currentValue)),
             ).then((a) => a.filter((x) => !!x));
 
-            this._globalStore.dispatch(
-              validateAction({ name: fieldName, errors }),
-            );
-
+            this._selfState.actions.validateAction({ name: fieldName, errors });
             this._propsService.setFieldProp(fieldName, { error: errors[0] });
           });
       },
@@ -87,7 +64,7 @@ class ValidationService implements TProvider.TProviderService {
         const stepValidationRequirements =
           fieldsByStep.find((v) => v.includes(fieldName)) || [];
 
-        toRxStore(this._globalStore, this._atom)
+        this._selfState.rx
           .pipe(
             distinctUntilChanged(),
             filter((v) =>

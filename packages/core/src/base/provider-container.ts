@@ -3,7 +3,6 @@ import { createGlobalStore } from './store';
 
 import type { TBuilderConfig } from '../types/base.types';
 import type {
-  BinderFactory,
   TProviderConfig,
   TProviderService,
   TToProviderInstance,
