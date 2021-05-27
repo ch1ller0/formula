@@ -1,10 +1,6 @@
-import { Atom, declareAction, declareAtom } from '@reatom/core';
-import mapObj from '@tinkoff/utils/object/map';
-import isFunction from '@tinkoff/utils/is/function';
-import noop from '@tinkoff/utils/function/noop';
 import { FieldsFactory } from './field.gen';
-import { toRxStore } from '../../../base/store';
 import { PropsProvider } from '../';
+import { useState } from './field.state';
 
 import type {
   TProviderConfig,
@@ -12,49 +8,25 @@ import type {
   TProviderConsturctorArgs,
   TToProviderInstance,
 } from '../../../types/provider.types';
-import type { TPrimitive } from '../../../types/base.types';
-import type { Observable } from 'rxjs';
-
-type State = Record<string, TPrimitive | null>;
-
-const changeAction = declareAction<{
-  name: string;
-  value: TPrimitive;
-}>('field.changeAction');
 
 class FieldService implements TProviderService {
-  private readonly _atom: Atom<State>;
-  private readonly _rxStore: Observable<State>;
   private readonly _propsService: TToProviderInstance<typeof PropsProvider>;
+  private readonly _selfState: ReturnType<typeof useState>;
 
-  constructor({ globalStore, structure, deps }: TProviderConsturctorArgs) {
-    const [propsService] = deps;
+  constructor(args: TProviderConsturctorArgs) {
+    const [propsService] = args.deps;
     this._propsService = propsService;
-    const initialState = mapObj(
-      ({ field: { initialValue }, props }) =>
-        isFunction(initialValue) ? initialValue(props) : initialValue,
-      structure.reduce((acc, cur) => ({ ...acc, ...cur }), {}),
-    );
-
-    this._atom = declareAtom<State>(['field'], initialState, (on) => [
-      on(changeAction, (state, payload) => ({
-        ...state,
-        [payload.name]: payload.value,
-      })),
-    ]);
-    this._rxStore = toRxStore(globalStore, this._atom);
-    // @TODO so that all the methods apply on first render
-    globalStore.subscribe(this._atom, noop);
+    this._selfState = useState(args);
   }
 
   getRxStore() {
-    return this._rxStore;
+    return this._selfState.rx;
   }
 
   renderWrapper() {
     return FieldsFactory({
-      atom: this._atom,
-      actions: { changeAction },
+      atom: this._selfState._atom,
+      actions: this._selfState._actions,
       propsAtom: this._propsService.getAtom(),
     });
   }

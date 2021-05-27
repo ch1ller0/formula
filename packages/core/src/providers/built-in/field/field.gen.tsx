@@ -9,7 +9,7 @@ import type { RenderProps } from '../../../base/render';
 type FactoryArgs = {
   atom: Atom<Record<string, TPrimitive>>;
   actions: {
-    changeAction: PayloadActionCreator<{
+    changeKeyVal: PayloadActionCreator<{
       name: string;
       value: TPrimitive;
     }>;
@@ -25,7 +25,7 @@ const FieldWrapper: React.FC<{
   const { render: Component } = selfProps.field;
 
   const Consumer = () => {
-    const changeKeyVal = useAction(args.actions.changeAction);
+    const changeKeyVal = useAction(args.actions.changeKeyVal);
     const fieldValue = useAtom(args.atom, (atom) => atom[name], []);
     const fieldProps = useAtom(args.propsAtom, (atom) => atom[name], []);
 
@@ -56,7 +56,7 @@ export const FieldsFactory = ({
 }: {
   atom: Atom<Record<string, TPrimitive | null>>;
   actions: {
-    changeAction: PayloadActionCreator<{
+    changeKeyVal: PayloadActionCreator<{
       name: string;
       value: TPrimitive;
     }>;
