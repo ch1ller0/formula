@@ -1,4 +1,5 @@
-import { PropsProvider } from '../';
+import { filter } from 'rxjs/operators';
+import { FieldProvider } from '../';
 import { StepWrapperFabric } from './step.gen';
 import { useState } from './step.state';
 
@@ -11,22 +12,24 @@ import type {
 
 class StepService implements TProviderService {
   private readonly _selfState: ReturnType<typeof useState>;
-  private readonly _propsService: TToProviderInstance<typeof PropsProvider>;
+  private readonly _fieldService: TToProviderInstance<typeof FieldProvider>;
 
   constructor(args: TProviderConsturctorArgs) {
-    const [propsService] = args.deps;
-    this._propsService = propsService;
+    const [fieldService] = args.deps;
+    this._fieldService = fieldService;
     this._selfState = useState(args);
   }
 
   useBinders() {
     return {
       nextStep: () => (fieldName: string) => {
-        this._propsService.setFieldProp(fieldName, {
-          onAction: () => {
+        this._fieldService
+          .getDiffRx()
+          // watch only for this button clicked
+          .pipe(filter(({ name }) => name === fieldName))
+          .subscribe(() => {
             this._selfState.actions.stepIncrement();
-          },
-        });
+          });
       },
     };
   }
@@ -43,5 +46,5 @@ class StepService implements TProviderService {
 export const StepProvider: TProviderConfig<StepService> = {
   name: 'step',
   useService: StepService,
-  deps: [PropsProvider],
+  deps: [FieldProvider],
 };

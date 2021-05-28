@@ -7,8 +7,8 @@ import { toRxStore } from '../../../base/store';
 import type { TProviderConsturctorArgs } from '../../../types/provider.types';
 import type { TPrimitive } from '../../../types/base.types';
 
-type State = Record<string, TPrimitive | null>;
-type ChangeKeyValArgs = {
+export type State = Record<string, TPrimitive | null>;
+export type ChangeKeyValArgs = {
   name: string;
   value: TPrimitive;
 };
@@ -41,8 +41,9 @@ export const useState = ({
       changeKeyVal,
     },
     actions: {
-      changeKeyVal: (a: ChangeKeyValArgs) =>
-        globalStore.dispatch(changeKeyVal(a)),
+      changeKeyVal: (a: ChangeKeyValArgs) => {
+        globalStore.dispatch(changeKeyVal(a));
+      },
     },
   };
 };
