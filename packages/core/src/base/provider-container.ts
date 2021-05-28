@@ -54,23 +54,25 @@ export class ProviderContainer {
     const { structure, providers } = this._cfg;
     const constructService = (cfg: TProviderConfig): TProviderService => {
       const alreadyRegisteredDep = this.getService(cfg);
+
       if (alreadyRegisteredDep !== undefined) {
         return alreadyRegisteredDep;
       }
 
       const resolvedDeps = cfg.deps?.map(constructService) || [];
 
-      return new cfg.useService({
+      const service = new cfg.useService({
         structure,
         deps: resolvedDeps,
         globalStore: this.getStore(),
       });
+
+      this._providers[getName(cfg.name)] = service;
+
+      return service;
     };
 
-    providers.forEach((cfg) => {
-      const key = getName(cfg.name);
-      this._providers[key] = constructService(cfg);
-    });
+    providers.forEach(constructService);
 
     structure.forEach((step) => {
       toPairs(step).forEach(([fieldName, { controls }]) => {
