@@ -40,6 +40,16 @@ export const FBForm = new FormBuilder()
           { label: 'Moscow', value: 'moscow' },
         ],
       },
+      controls: ({ getBinders }) => [
+        getBinders(ValidationProvider).validateField([
+          requiredValidator,
+          (value: string) => {
+            return ['st_petersburg', 'moscow'].includes(value)
+              ? undefined
+              : 'Only russian cities are currently supported';
+          },
+        ]),
+      ],
     },
     gender: {
       field: RadioFieldView,

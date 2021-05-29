@@ -1,13 +1,18 @@
 import {
   distinctUntilKeyChanged,
-  distinctUntilChanged,
   debounceTime,
-  map,
-  startWith,
   filter,
+  pluck,
+  mergeMap,
+  map,
   skip,
+  distinctUntilChanged,
+  startWith,
 } from 'rxjs/operators';
 import keys from '@tinkoff/utils/object/keys';
+import filterObj from '@tinkoff/utils/object/filter';
+import eachObj from '@tinkoff/utils/object/each';
+import { combineLatest } from 'rxjs';
 import { BuiltInProviders } from '@formula/core';
 import { useState } from './validation.state';
 
@@ -23,6 +28,7 @@ class ValidationService implements TProvider.TProviderService {
   private readonly _fieldService: TToProviderInstance<typeof FieldProvider>;
   private readonly _propsService: TToProviderInstance<typeof PropsProvider>;
   private readonly _selfState: ReturnType<typeof useState>;
+  private readonly _validators: Record<string, ValidateFn[]>;
 
   constructor(args: TProvider.TProviderConsturctorArgs) {
     const [fieldService, propsService] = args.deps;
@@ -31,53 +37,77 @@ class ValidationService implements TProvider.TProviderService {
 
     this._fieldService = fieldService;
     this._propsService = propsService;
+    this._validators = {};
   }
 
   useBinders() {
     return {
       validateField: (validateFns: ValidateFn[]) => (fieldName: string) => {
+        this._validators[fieldName] = validateFns;
         this._fieldService
           .getRxStore()
           .pipe(
             // filtering field we are interested in
             distinctUntilKeyChanged(fieldName),
-            // skipping initial field state emit
-            skip(1),
-            debounceTime(30),
-          )
-          .subscribe(async (nextValue) => {
-            const currentValue = nextValue[fieldName];
-            if (currentValue === null) {
-              return;
-            }
-            const errors = await Promise.all(
-              validateFns.map((v) => v(currentValue)),
-            ).then((a) => a.filter((x) => !!x));
-
-            this._selfState.actions.validateAction({ name: fieldName, errors });
-            this._propsService.setFieldProp(fieldName, { error: errors[0] });
-          });
-      },
-      stepDisabled: () => (fieldName: string) => {
-        const fieldsByStep = this._structure.map(keys);
-
-        const stepValidationRequirements =
-          fieldsByStep.find((v) => v.includes(fieldName)) || [];
-
-        this._selfState.rx
-          .pipe(
-            distinctUntilChanged(),
-            filter((v) =>
-              keys(v).some((fieldName) =>
-                stepValidationRequirements.includes(fieldName),
+            debounceTime(100),
+            pluck(fieldName),
+            mergeMap((nextValue) =>
+              // apply validator functions
+              Promise.all(validateFns.map((v) => v(nextValue))).then((a) =>
+                a.filter((x) => !!x),
               ),
             ),
-            map((v) => stepValidationRequirements.some((x) => v[x]?.length)),
-            distinctUntilChanged(),
-            startWith(true), // disable at first render
+          )
+          .subscribe((errors) => {
+            this._selfState.actions.validateAction({ name: fieldName, errors });
+          });
+      },
+      stepDisabled: () => (buttonName: string) => {
+        this._propsService.setFieldProp(buttonName, { disabled: true });
+        // @TODO Potentially bad code as structure might change in the future
+        const stepValidationRequirements =
+          this._structure.map(keys).find((v) => v.includes(buttonName)) || [];
+
+        const buttonClick$ = this._fieldService
+          .getDiffRx()
+          // filter current button click
+          .pipe(filter(({ name }) => name === buttonName));
+
+        const currentStepValidation$ = this._selfState.rx.pipe(
+          map((validationState) =>
+            filterObj(
+              (_, key) => stepValidationRequirements.includes(key),
+              validationState,
+            ),
+          ),
+          distinctUntilChanged(),
+        );
+
+        // setting errors for current step fields
+        // combine button clicks with step`s validation state
+        // starts emitting after button was clicked once
+        combineLatest([currentStepValidation$, buttonClick$])
+          .pipe(map((v) => v[0]))
+          .subscribe((stepValidation) =>
+            eachObj((errors, fieldName) => {
+              this._propsService.setFieldProp(fieldName, {
+                error: errors?.[0],
+              });
+            }, stepValidation),
+          );
+
+        // setting button validation view
+        currentStepValidation$
+          .pipe(
+            // skip initial validation state - it is not ready yet
+            skip(1),
+            map((stepValidation) =>
+              keys(stepValidation).some((key) => !!stepValidation[key]?.length),
+            ),
+            startWith(true),
           )
           .subscribe((disabled) => {
-            this._propsService.setFieldProp(fieldName, { disabled });
+            this._propsService.setFieldProp(buttonName, { disabled });
           });
       },
     };

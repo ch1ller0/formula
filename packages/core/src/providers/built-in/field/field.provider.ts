@@ -27,7 +27,7 @@ class FieldService implements TProviderService {
   }
 
   /**
-   * Return stream of changeKeyVal events
+   * Return observable of changeKeyVal events
    */
   getDiffRx() {
     return this._diffStream.asObservable();

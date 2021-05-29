@@ -19,7 +19,7 @@ export type TProviderConsturctorArgs = {
   structure: TStepStructure[];
 };
 
-export type BinderFactory = (config: any) => (fieldName: string) => void;
+export type BinderFactory = (config?: any) => (fieldName: string) => void;
 
 export interface TProviderService {
   /**
