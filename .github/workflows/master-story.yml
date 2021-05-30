@@ -18,6 +18,7 @@ jobs:
     - name: Building storybook
       run: yarn build:storybook
     - name: Installing Surge
-      run: yarn global add surge
+     # for whatever reason yarn wont work https://github.com/actions/setup-node/issues/85
+      run: npm install -g surge
     - name: Deploy to Surge
       run:  surge ./storybook-static formula-master.surge.sh --token ${{secrets.SURGE_TOKEN}}
