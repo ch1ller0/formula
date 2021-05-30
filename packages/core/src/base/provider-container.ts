@@ -12,7 +12,10 @@ const getName = (name: string) => `provider:${name}`;
 
 export class ProviderContainer {
   private _cfg: TBuilderConfig;
-  private _providers = Object.create(null) as Record<string, TProviderConfig>;
+  private _providers = Object.create(null) as Record<
+    string,
+    TToProviderInstance<TProviderConfig>
+  >;
   private _globalStore = createGlobalStore();
 
   constructor({ cfg }: { cfg: TBuilderConfig }) {
@@ -35,40 +38,51 @@ export class ProviderContainer {
     return this._cfg;
   }
 
-  getProvider<Pr extends TProviderConfig>({
+  getService<Pr extends TProviderConfig>({
     name,
   }: Pr): TToProviderInstance<Pr> {
     return this._providers[getName(name)];
   }
 
+  getBinders<Pr extends TProviderConfig>({
+    name,
+  }: Pr): ReturnType<TToProviderInstance<Pr>['useBinders']> {
+    return this._providers[getName(name)].useBinders?.();
+  }
+
   fill() {
     const { structure, providers } = this._cfg;
     const constructService = (cfg: TProviderConfig): TProviderService => {
-      const alreadyRegisteredDep = this.getProvider(cfg);
+      const alreadyRegisteredDep = this.getService(cfg);
+
       if (alreadyRegisteredDep !== undefined) {
         return alreadyRegisteredDep;
       }
 
       const resolvedDeps = cfg.deps?.map(constructService) || [];
 
-      return new cfg.useService({
+      const service = new cfg.useService({
         structure,
         deps: resolvedDeps,
         globalStore: this.getStore(),
       });
+
+      this._providers[getName(cfg.name)] = service;
+
+      return service;
     };
 
-    providers.forEach((cfg) => {
-      const key = getName(cfg.name);
-      this._providers[key] = constructService(cfg);
-    });
+    providers.forEach(constructService);
 
     structure.forEach((step) => {
       toPairs(step).forEach(([fieldName, { controls }]) => {
         if (controls) {
-          const fieldControls = controls(this.getProvider.bind(this));
+          const fieldControls = controls({
+            getBinders: this.getBinders.bind(this),
+            getService: this.getService.bind(this),
+          });
           fieldControls.forEach((element) => {
-            element({ initiator: { fieldName } });
+            element(fieldName);
           });
         }
       });

@@ -19,6 +19,8 @@ export type TProviderConsturctorArgs = {
   structure: TStepStructure[];
 };
 
+export type BinderFactory = (config?: any) => (fieldName: string) => void;
+
 export interface TProviderService {
   /**
    * Method for getting an Observable from Provider`s store
@@ -28,6 +30,10 @@ export interface TProviderService {
    * Wrapper for binding render to self provider
    */
   renderWrapper?(): React.FC<RenderProps>;
+  /**
+   * Method that creates binders for fields
+   */
+  useBinders?(): Record<string, BinderFactory>;
 }
 
 export type TProviderConfig<Srv = TProviderService> = {

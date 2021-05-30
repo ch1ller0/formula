@@ -23,8 +23,8 @@ export const FBForm = new FormBuilder()
       field: InputFieldView,
       // @TODO infer type here
       props: { label: 'Your name' },
-      controls: (getProvider) => [
-        getProvider(ValidationProvider).bindValidation([
+      controls: ({ getBinders }) => [
+        getBinders(ValidationProvider).validateField([
           requiredValidator,
           lengthValidator({ min: 6 }),
         ]),
@@ -40,6 +40,16 @@ export const FBForm = new FormBuilder()
           { label: 'Moscow', value: 'moscow' },
         ],
       },
+      controls: ({ getBinders }) => [
+        getBinders(ValidationProvider).validateField([
+          requiredValidator,
+          (value: string) => {
+            return ['st_petersburg', 'moscow'].includes(value)
+              ? undefined
+              : 'Only russian cities are currently supported';
+          },
+        ]),
+      ],
     },
     gender: {
       field: RadioFieldView,
@@ -62,9 +72,9 @@ export const FBForm = new FormBuilder()
       props: {
         label: 'Next',
       },
-      controls: (getProvider) => [
-        getProvider(StepProvider).bindNextStep(),
-        getProvider(ValidationProvider).bindDisabled(),
+      controls: ({ getBinders }) => [
+        getBinders(StepProvider).nextStep(),
+        getBinders(ValidationProvider).stepDisabled(),
       ],
     },
   })
@@ -79,8 +89,8 @@ export const FBForm = new FormBuilder()
         label: 'I am a vegaterian',
         value: true,
       },
-      controls: (getProvider) => [
-        getProvider(ValidationProvider).bindValidation([
+      controls: ({ getBinders }) => [
+        getBinders(ValidationProvider).validateField([
           (v) => !v && 'Vegging is required',
         ]),
       ],
@@ -90,9 +100,9 @@ export const FBForm = new FormBuilder()
       props: {
         label: 'Finalize',
       },
-      controls: (getProvider) => [
-        getProvider(StepProvider).bindNextStep(),
-        getProvider(ValidationProvider).bindDisabled(),
+      controls: ({ getBinders }) => [
+        getBinders(StepProvider).nextStep(),
+        getBinders(ValidationProvider).stepDisabled(),
       ],
     },
   })
@@ -107,10 +117,10 @@ export const FBForm = new FormBuilder()
         },
       },
       // custom feature for this field
-      controls: (getProvider) => [
-        ({ initiator: { fieldName } }) => {
+      controls: ({ getService }) => [
+        (fieldName) => {
           const watchField = 'first_name';
-          getProvider(FieldProvider)
+          getService(FieldProvider)
             .getRxStore()
             .pipe(
               distinctUntilKeyChanged(watchField),
@@ -119,7 +129,7 @@ export const FBForm = new FormBuilder()
             )
             .subscribe((firstName) => {
               const title = `Thank you for your feedback, ${firstName}`;
-              getProvider(PropsProvider).setFieldProp(fieldName, { title });
+              getService(PropsProvider).setFieldProp(fieldName, { title });
             });
         },
       ],

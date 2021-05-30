@@ -161,24 +161,29 @@ export const CheckboxFieldView = ViewGenerator.field<{
 export const SubmitButtonView = ViewGenerator.field<{
   label: string;
   disabled: boolean;
-  onAction: () => void;
 }>({
   name: 'submit',
   initialValue: null,
-  render: ({ onAction, label, disabled }) => (
-    <Boxify>
-      <Button
-        onClick={onAction}
-        disabled={disabled}
-        bg={disabled ? 'disconnect' : 'primary'}
-        style={{
-          cursor: 'pointer',
-        }}
-      >
-        <Text color={disabled ? 'white' : 'black'}>{label}</Text>
-      </Button>
-    </Boxify>
-  ),
+  render: ({ setValue, label, disabled }) => {
+    const onClick = () => {
+      setValue(null);
+    };
+
+    return (
+      <Boxify>
+        <Button
+          onClick={onClick}
+          // disabled={disabled}
+          bg={disabled ? 'disconnect' : 'primary'}
+          style={{
+            cursor: 'pointer',
+          }}
+        >
+          <Text color={disabled ? 'white' : 'black'}>{label}</Text>
+        </Button>
+      </Boxify>
+    );
+  },
 });
 
 export const ThankYouView = ViewGenerator.field<{

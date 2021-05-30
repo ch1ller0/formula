@@ -5,16 +5,15 @@ import toPairs from '@tinkoff/utils/object/toPairs';
 import type { TFieldStructure, TPrimitive } from '../../../types/base.types';
 import type { PayloadActionCreator, Atom } from '@reatom/core';
 import type { RenderProps } from '../../../base/render';
+import type { ChangeKeyValArgs } from './field.state';
 
 type FactoryArgs = {
   atom: Atom<Record<string, TPrimitive>>;
   actions: {
-    changeAction: PayloadActionCreator<{
-      name: string;
-      value: TPrimitive;
-    }>;
+    changeKeyVal: PayloadActionCreator<ChangeKeyValArgs>;
   };
   propsAtom: Atom<Record<string, unknown>>;
+  onChange: (a: ChangeKeyValArgs) => void;
 };
 
 const FieldWrapper: React.FC<{
@@ -25,7 +24,7 @@ const FieldWrapper: React.FC<{
   const { render: Component } = selfProps.field;
 
   const Consumer = () => {
-    const changeKeyVal = useAction(args.actions.changeAction);
+    const changeKeyVal = useAction(args.actions.changeKeyVal);
     const fieldValue = useAtom(args.atom, (atom) => atom[name], []);
     const fieldProps = useAtom(args.propsAtom, (atom) => atom[name], []);
 
@@ -33,6 +32,7 @@ const FieldWrapper: React.FC<{
       name,
       value: fieldValue,
       setValue: (value: TPrimitive) => {
+        args.onChange({ name, value });
         changeKeyVal({ name, value });
       },
     };
@@ -53,22 +53,14 @@ export const FieldsFactory = ({
   atom,
   actions,
   propsAtom,
-}: {
-  atom: Atom<Record<string, TPrimitive | null>>;
-  actions: {
-    changeAction: PayloadActionCreator<{
-      name: string;
-      value: TPrimitive;
-    }>;
-  };
-  propsAtom: Atom<Record<string, unknown>>;
-}): React.FC<RenderProps> => ({ children, structure }) => {
+  onChange,
+}: FactoryArgs): React.FC<RenderProps> => ({ children, structure }) => {
   const paired = toPairs(structure[0]);
 
   return (
     <>
       {paired.map(([name, selfProps]) => {
-        const args = { atom, actions, propsAtom };
+        const args = { atom, actions, propsAtom, onChange };
 
         return (
           <FieldWrapper
