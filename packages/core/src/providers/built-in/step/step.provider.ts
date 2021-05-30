@@ -1,7 +1,13 @@
-import { filter } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  filter,
+  mapTo,
+  sample,
+  map,
+} from 'rxjs/operators';
 import { FieldProvider } from '../';
 import { StepWrapperFabric } from './step.gen';
-import { useState } from './step.state';
+import { useState, SetBlockArgs } from './step.state';
 
 import type {
   TProviderConfig,
@@ -23,12 +29,26 @@ class StepService implements TProviderService {
   useBinders() {
     return {
       nextStep: () => (fieldName: string) => {
-        this._fieldService
-          .getDiffRx()
+        const buttonClick$ = this._fieldService.getDiffRx().pipe(
           // watch only for this button clicked
-          .pipe(filter(({ name }) => name === fieldName))
-          .subscribe(() => {
-            this._selfState.actions.stepIncrement();
+          filter(({ name }) => name === fieldName),
+          // need nothing from data - only timings
+          mapTo(`click$:${fieldName}`),
+        );
+
+        this._selfState.rx
+          .pipe(
+            // @TODO need optimization - value should not be emitted if states are equal
+            distinctUntilChanged(),
+            // emit only when button pressed
+            sample(buttonClick$),
+            // get boolean of ability to go to next step
+            map(({ currentStep, blocked }) => blocked[currentStep]),
+          )
+          .subscribe((stepBlocked) => {
+            if (!stepBlocked) {
+              this._selfState.actions.stepIncrement();
+            }
           });
       },
     };
@@ -40,6 +60,10 @@ class StepService implements TProviderService {
 
   renderWrapper() {
     return StepWrapperFabric(this._selfState._atom);
+  }
+
+  setBlocked(args: SetBlockArgs) {
+    this._selfState.actions.stepBlock(args);
   }
 }
 

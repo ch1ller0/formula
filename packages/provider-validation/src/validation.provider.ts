@@ -19,7 +19,7 @@ import { useState } from './validation.state';
 import type { TProvider, TBase } from '@formula/core';
 import type { TToProviderInstance } from 'packages/core/src/types/provider.types';
 
-const { FieldProvider, PropsProvider } = BuiltInProviders;
+const { FieldProvider, PropsProvider, StepProvider } = BuiltInProviders;
 
 type ValidateFn = (v: TBase.TPrimitive) => string | Promise<string>;
 
@@ -27,23 +27,22 @@ class ValidationService implements TProvider.TProviderService {
   private readonly _structure: TProvider.TProviderConsturctorArgs['structure'];
   private readonly _fieldService: TToProviderInstance<typeof FieldProvider>;
   private readonly _propsService: TToProviderInstance<typeof PropsProvider>;
+  private readonly _stepService: TToProviderInstance<typeof StepProvider>;
   private readonly _selfState: ReturnType<typeof useState>;
-  private readonly _validators: Record<string, ValidateFn[]>;
 
   constructor(args: TProvider.TProviderConsturctorArgs) {
-    const [fieldService, propsService] = args.deps;
+    const [fieldService, propsService, stepService] = args.deps;
     this._structure = args.structure;
     this._selfState = useState(args);
 
     this._fieldService = fieldService;
     this._propsService = propsService;
-    this._validators = {};
+    this._stepService = stepService;
   }
 
   useBinders() {
     return {
       validateField: (validateFns: ValidateFn[]) => (fieldName: string) => {
-        this._validators[fieldName] = validateFns;
         this._fieldService
           .getRxStore()
           .pipe(
@@ -101,12 +100,18 @@ class ValidationService implements TProvider.TProviderService {
           .pipe(
             // skip initial validation state - it is not ready yet
             skip(1),
+            debounceTime(100),
             map((stepValidation) =>
               keys(stepValidation).some((key) => !!stepValidation[key]?.length),
             ),
             startWith(true),
           )
           .subscribe((disabled) => {
+            const stepNum = this._structure
+              .map(keys)
+              .findIndex((a) => a.includes(buttonName));
+
+            this._stepService.setBlocked({ stepNum, value: disabled });
             this._propsService.setFieldProp(buttonName, { disabled });
           });
       },
@@ -117,5 +122,5 @@ class ValidationService implements TProvider.TProviderService {
 export const ValidationProvider: TProvider.TProviderConfig<ValidationService> = {
   name: 'validation',
   useService: ValidationService,
-  deps: [FieldProvider, PropsProvider],
+  deps: [FieldProvider, PropsProvider, StepProvider],
 };

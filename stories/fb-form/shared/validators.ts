@@ -16,6 +16,6 @@ export const lengthValidator = ({
         res(`Length should be between ${min} and ${max}`);
       }
       res(undefined);
-    }, 50);
+    }, 200);
   });
 };
