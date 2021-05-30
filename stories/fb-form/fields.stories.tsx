@@ -85,7 +85,7 @@ export const Result = () =>
         title: 'That`s all folks',
         link: {
           title: 'There link',
-          href: 'https://frifgefm.com',
+          href: 'https://fridgefm.com',
         },
       },
     },

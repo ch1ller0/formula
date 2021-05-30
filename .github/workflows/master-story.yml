@@ -1,0 +1,23 @@
+name: Storybook
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2.1.5
+      with:
+        node-version: '14'
+    - name: Installing dependencies
+      run: yarn install
+    - name: Building storybook
+      run: yarn build:storybook
+    - name: Installing Surge
+      run: yarn add -g surge
+    - name: Deploy to Surge
+      run:  surge ./storybook-static formula-master.surge.sh --token ${{secrets.SURGE_TOKEN}}
