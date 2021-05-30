@@ -18,6 +18,6 @@ jobs:
     - name: Building storybook
       run: yarn build:storybook
     - name: Installing Surge
-      run: yarn add -g surge
+      run: yarn global add surge
     - name: Deploy to Surge
       run:  surge ./storybook-static formula-master.surge.sh --token ${{secrets.SURGE_TOKEN}}
