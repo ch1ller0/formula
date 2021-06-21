@@ -7,7 +7,6 @@ import {
   ThankYouView,
 } from './shared/fields';
 import { FormBuilder } from '@formula/core';
-import { boxWrapper } from './shared/wrapper';
 import type { TBase } from '@formula/core';
 
 export default {
@@ -16,7 +15,9 @@ export default {
 };
 
 const SingleField = (step: TBase.TStepStructure) => {
-  const CMP = new FormBuilder().addStep(step).toComponent(boxWrapper);
+  const CMP = new FormBuilder()
+    .addStep(step)
+    .toComponent(({ children }) => <form>{children}</form>);
   return <CMP />;
 };
 

@@ -1,31 +1,14 @@
-import { Box } from 'rebass';
-import { ThemeProvider } from 'emotion-theming';
+import { Panel } from 'rsuite';
 
 export const boxWrapper: React.FC = ({ children }) => {
   return (
-    <ThemeProvider
-      theme={{
-        colors: {
-          background: 'black',
-          primary: 'tomato',
-          disconnect: '#bbb',
-        },
-        space: [0, 6, 12, 24, 48],
-        fontSizes: [14, 16, 18, 20, 24],
-        radii: {
-          default: 5,
-        },
+    <Panel
+      shaded
+      style={{
+        minHeight: 250,
       }}
     >
-      <Box
-        as="form"
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-        py={3}
-      >
-        {children}
-      </Box>
-    </ThemeProvider>
+      <form>{children}</form>
+    </Panel>
   );
 };
