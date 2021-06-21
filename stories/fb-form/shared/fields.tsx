@@ -1,6 +1,6 @@
-import { Label, Select, Radio, Checkbox } from '@rebass/forms';
+import { Label, Radio, Checkbox } from '@rebass/forms';
 import { Box, Flex, Text as RText } from 'rebass';
-import { Button, Input } from 'rsuite';
+import { Button, Input, SelectPicker } from 'rsuite';
 import { BaseSyntheticEvent } from 'react';
 import { ViewGenerator } from '@formula/core';
 import 'rsuite/dist/styles/rsuite-default.css';
@@ -78,15 +78,9 @@ export const SelectFieldView = ViewGenerator.field<{
   name: 'select',
   initialValue: ({ options }) => options[0].value,
   render: ({ value, setValue, label, options, error, name }) => {
-    const onChange = (
-      e: BaseSyntheticEvent<unknown, unknown, { value: string }>,
-    ) => {
-      const value =
-        options.find((v) => v.label === e.target.value)?.value ||
-        options[0].value;
+    const onChange = (value: string) => {
       setValue(value);
     };
-    const selectLabel = options.find((v) => v.value === value)?.label;
 
     return (
       <Boxify error={error}>
@@ -95,11 +89,17 @@ export const SelectFieldView = ViewGenerator.field<{
             <Text>{label}</Text>
           </Label>
         )}
-        <Select id={name} name={name} value={selectLabel} onChange={onChange}>
-          {options.map(({ label }) => (
-            <option key={label}>{label}</option>
-          ))}
-        </Select>
+        <SelectPicker
+          data={options}
+          block
+          searchable={false}
+          cleanable={false}
+          size="lg"
+          id={name}
+          name={name}
+          value={value}
+          onChange={onChange}
+        />
       </Boxify>
     );
   },
