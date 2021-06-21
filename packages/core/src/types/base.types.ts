@@ -7,7 +7,7 @@ import type {
 import { ProviderContainer } from '../base/provider-container';
 
 type TVagueProps = Record<string, any>;
-export type TPrimitive = string | number | boolean;
+export type TPrimitive = string | number | boolean | null;
 
 // #### VIEW
 
@@ -29,7 +29,7 @@ export type TFieldConfig<
   /**
    * The method to get initial value or a primitive
    */
-  initialValue: FT | ((props: Prps) => FT) | null;
+  initialValue: FT | ((props: Prps) => FT);
 };
 
 /**

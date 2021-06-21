@@ -1,6 +1,6 @@
-import { Label, Input, Select, Radio, Checkbox } from '@rebass/forms';
+import { Label, Select, Radio, Checkbox } from '@rebass/forms';
 import { Box, Flex, Text as RText } from 'rebass';
-import { Button } from 'rsuite';
+import { Button, Input } from 'rsuite';
 import { BaseSyntheticEvent } from 'react';
 import { ViewGenerator } from '@formula/core';
 import 'rsuite/dist/styles/rsuite-default.css';
@@ -46,9 +46,9 @@ export const InputFieldView = ViewGenerator.field<{
   name: 'input',
   initialValue: '',
   render: ({ value, setValue, name, label, error }) => {
-    const onChange = (
-      e: BaseSyntheticEvent<unknown, unknown, { value: string }>,
-    ) => setValue(e.target.value);
+    const onChange = (value: string) => {
+      setValue(value);
+    };
 
     return (
       <Boxify error={error}>
@@ -57,7 +57,14 @@ export const InputFieldView = ViewGenerator.field<{
             <Text>{label}</Text>
           </Label>
         )}
-        <Input id={name} name={name} value={value} onChange={onChange} />
+        <Input
+          id={name}
+          name={name}
+          // @TODO infer type instead of TPrimitive
+          value={value}
+          onChange={onChange}
+          size="lg"
+        />
       </Boxify>
     );
   },
