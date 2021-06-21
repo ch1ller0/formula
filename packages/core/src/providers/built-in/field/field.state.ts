@@ -1,7 +1,6 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import mapObj from '@tinkoff/utils/object/map';
-import isFunction from '@tinkoff/utils/is/function';
 import { toRxStore } from '../../../base/store';
 
 import type { TProviderConsturctorArgs } from '../../../types/provider.types';
@@ -20,8 +19,7 @@ export const useState = ({
   structure,
 }: TProviderConsturctorArgs) => {
   const initialState = mapObj(
-    ({ field: { initialValue }, props }) =>
-      isFunction(initialValue) ? initialValue(props) : initialValue,
+    ({ field: { initialValue }, props }) => initialValue(props),
     structure.reduce((acc, cur) => ({ ...acc, ...cur }), {}),
   );
 

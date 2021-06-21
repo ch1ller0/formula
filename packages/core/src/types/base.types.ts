@@ -29,7 +29,7 @@ export type TFieldConfig<
   /**
    * The method to get initial value or a primitive
    */
-  initialValue: FT | ((props: Prps) => FT);
+  initialValue: (props: Prps) => FT;
 };
 
 /**

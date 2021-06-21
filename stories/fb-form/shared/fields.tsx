@@ -1,7 +1,13 @@
-import { Label, Checkbox } from '@rebass/forms';
+import { Label } from '@rebass/forms';
 import { Box, Text as RText } from 'rebass';
-import { Button, Input, SelectPicker, RadioGroup, Radio } from 'rsuite';
-import { BaseSyntheticEvent } from 'react';
+import {
+  Button,
+  Input,
+  SelectPicker,
+  RadioGroup,
+  Radio,
+  Checkbox,
+} from 'rsuite';
 import { ViewGenerator } from '@formula/core';
 import 'rsuite/dist/styles/rsuite-default.css';
 
@@ -44,7 +50,7 @@ export const InputFieldView = ViewGenerator.field<{
   error: string;
 }>({
   name: 'input',
-  initialValue: '',
+  initialValue: () => '',
   render: ({ value, setValue, name, label, error }) => {
     const onChange = (value: string) => {
       setValue(value);
@@ -147,18 +153,26 @@ export const CheckboxFieldView = ViewGenerator.field<{
   error: string;
 }>({
   name: 'checkbox',
-  initialValue: false,
+  initialValue: () => false,
   render: ({ value, setValue, name, label, error }) => {
-    const onChange = (e: BaseSyntheticEvent<{ value: string }>) => {
-      setValue(e.target.checked);
+    const onChange = (_, value: boolean) => {
+      setValue(value);
     };
 
     return (
       <Boxify error={error}>
-        <Label width={[1 / 2]} p={2}>
-          <Checkbox id={name} name={name} onChange={onChange} checked={value} />
-          <Text fontSize={2}>{label}</Text>
-        </Label>
+        <Checkbox
+          style={{
+            marginLeft: 0,
+          }}
+          id={name}
+          name={name}
+          onChange={onChange}
+          checked={value}
+          inline
+        >
+          {label}
+        </Checkbox>
       </Boxify>
     );
   },
@@ -169,7 +183,7 @@ export const SubmitButtonView = ViewGenerator.field<{
   disabled: boolean;
 }>({
   name: 'submit',
-  initialValue: null,
+  initialValue: () => null,
   render: ({ setValue, label, disabled }) => {
     const onClick = () => {
       setValue(null);
@@ -194,7 +208,7 @@ export const ThankYouView = ViewGenerator.field<{
   link: { href: string; label: string };
 }>({
   name: 'final-page',
-  initialValue: null,
+  initialValue: () => null,
   render: ({ title, link: { href, label } }) => (
     <Boxify>
       <Label width={[1]} p={2}>
