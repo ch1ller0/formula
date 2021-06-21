@@ -1369,13 +1369,6 @@
   resolved "https://registry.yarnpkg.com/@reatom/react/-/react-1.1.4.tgz#e2d7786b7d688a27247770d21c6cfb5080e2932c"
   integrity sha512-F7Tdp9V45XvNda7DAxVhPbIb+IGOtxss+Jol4MS6ogcCzOizC8GWY7mknSpFDkdc9Y1/h3c2PH8245lxoNk4nQ==
 
-"@rebass/forms@^4.0.6":
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/@rebass/forms/-/forms-4.0.6.tgz#19a3af64f855baa65dec65aecadda5cd95a09dd7"
-  integrity sha512-20dHAlb5V0Na2HxCr73Jjoc4hD1ElimmlBpQtclXMoXUsjJ7ORdCNL1S9R54MX5f7iU2VrLGHU42eL7+nONNPQ==
-  dependencies:
-    reflexbox "^4.0.6"
-
 "@storybook/addon-actions@6.2.9", "@storybook/addon-actions@^6.2.9":
   version "6.2.9"
   resolved "https://registry.yarnpkg.com/@storybook/addon-actions/-/addon-actions-6.2.9.tgz#688413ac77410690755a5da3c277bfa0ff1a10b0"
@@ -2343,7 +2336,7 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/rebass@*", "@types/rebass@^4.0.8":
+"@types/rebass@^4.0.8":
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/@types/rebass/-/rebass-4.0.8.tgz#06d7f1ae0078aa6fb08168fe2336b9383c7bea68"
   integrity sha512-IxYGm8KlZ1c7VHlybGFRpkF+CPVaBZXtkHlZ/4qGjk89cZ82MK7gV26Dolmd1i1kY05Yy5ebh5YUET4ko588Nw==
@@ -2352,15 +2345,6 @@
     "@types/styled-components" "*"
     "@types/styled-system" "*"
     "@types/styled-system__css" "*"
-
-"@types/rebass__forms@^4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@types/rebass__forms/-/rebass__forms-4.0.4.tgz#d3f65acaa2deaca1dd1d0b88890a333d1ec40850"
-  integrity sha512-G6PeyEne2JNSVQ9nEc8rXdw+FexQYERLT2Ga3UTqW620aPjZQ8njqakXiFMeEHwuklbONq6p1ZOU33/3x5uNUQ==
-  dependencies:
-    "@types/react" "*"
-    "@types/rebass" "*"
-    "@types/styled-system" "*"
 
 "@types/scheduler@*":
   version "0.16.1"

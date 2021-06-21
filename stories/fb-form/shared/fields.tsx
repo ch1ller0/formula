@@ -1,5 +1,3 @@
-import { Label } from '@rebass/forms';
-import { Box, Text as RText } from 'rebass';
 import {
   Button,
   Input,
@@ -7,40 +5,58 @@ import {
   RadioGroup,
   Radio,
   Checkbox,
+  FlexboxGrid,
 } from 'rsuite';
 import { ViewGenerator } from '@formula/core';
 import 'rsuite/dist/styles/rsuite-default.css';
 
-const Text = (props: any) => (
-  <RText
-    fontFamily={'system-ui'}
-    fontSize={props.fontSize || 3}
-    fontWeight="normal"
-    color="black"
-    {...props}
+const Text: React.FC<
+  Partial<{
+    fontSize: number;
+    color: string;
+  }>
+> = (props) => (
+  <p
+    style={{
+      fontFamily: 'system-ui',
+      fontSize: (props.fontSize || 7) * 3,
+      fontWeight: 'normal',
+      color: props.color || 'black',
+      marginBottom: 6,
+    }}
   >
     {props.children}
-  </RText>
+  </p>
 );
 
-const Boxify: React.FC<{ error?: string }> = ({ children, error }) => {
+const Boxify: React.FC<{ error?: string; name?: string; label?: string }> = ({
+  children,
+  error,
+  label,
+  name,
+}) => {
   return (
     <>
-      <Box
-        p={5}
-        fontSize={2}
-        width={[1, 1, 1 / 2]}
-        sx={{
-          margin: [0, 1, 2],
-        }}
-      >
-        {children}
-        {error ? (
-          <Text fontSize={1} color="red">
-            {error}
-          </Text>
-        ) : null}
-      </Box>
+      <FlexboxGrid justify="start">
+        <FlexboxGrid.Item
+          colspan={24}
+          style={{
+            marginTop: 15,
+          }}
+        >
+          {label && name && (
+            <label htmlFor={name}>
+              <Text>{label}</Text>
+            </label>
+          )}
+          {children}
+          {error ? (
+            <Text fontSize={5} color="red">
+              {error}
+            </Text>
+          ) : null}
+        </FlexboxGrid.Item>
+      </FlexboxGrid>
     </>
   );
 };
@@ -57,12 +73,7 @@ export const InputFieldView = ViewGenerator.field<{
     };
 
     return (
-      <Boxify error={error}>
-        {label && (
-          <Label htmlFor={name}>
-            <Text>{label}</Text>
-          </Label>
-        )}
+      <Boxify error={error} name={name} label={label}>
         <Input
           id={name}
           name={name}
@@ -89,12 +100,7 @@ export const SelectFieldView = ViewGenerator.field<{
     };
 
     return (
-      <Boxify error={error}>
-        {label && (
-          <Label htmlFor={name}>
-            <Text>{label}</Text>
-          </Label>
-        )}
+      <Boxify error={error} label={label} name={name}>
         <SelectPicker
           data={options}
           block
@@ -124,12 +130,7 @@ export const RadioFieldView = ViewGenerator.field<{
     };
 
     return (
-      <Boxify error={error}>
-        {label && (
-          <Label htmlFor={name}>
-            <Text>{label}</Text>
-          </Label>
-        )}
+      <Boxify error={error} label={label} name={name}>
         <RadioGroup
           appearance="default"
           name="radioList"
@@ -139,7 +140,7 @@ export const RadioFieldView = ViewGenerator.field<{
         >
           {options.map((a) => (
             <Radio key={a.value} value={a.value}>
-              {a.label}
+              <Text fontSize={5}>{a.label}</Text>
             </Radio>
           ))}
         </RadioGroup>
@@ -171,7 +172,7 @@ export const CheckboxFieldView = ViewGenerator.field<{
           checked={value}
           inline
         >
-          {label}
+          <Text fontSize={5}>{label}</Text>
         </Checkbox>
       </Boxify>
     );
@@ -211,17 +212,13 @@ export const ThankYouView = ViewGenerator.field<{
   initialValue: () => null,
   render: ({ title, link: { href, label } }) => (
     <Boxify>
-      <Label width={[1]} p={2}>
-        <Text>{title}</Text>
-      </Label>
-      <Label width={[1]} p={2}>
-        <Text>
-          {label}
-          <a href={href} target="_blank">
-            {href}
-          </a>
-        </Text>
-      </Label>
+      <Text>{title}</Text>
+      <Text>
+        {label}
+        <a href={href} target="_blank">
+          {href}
+        </a>
+      </Text>
     </Boxify>
   ),
 });
