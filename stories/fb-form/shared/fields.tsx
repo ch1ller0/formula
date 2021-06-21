@@ -1,7 +1,9 @@
 import { Label, Input, Select, Radio, Checkbox } from '@rebass/forms';
-import { Button, Box, Flex, Text as RText } from 'rebass';
+import { Box, Flex, Text as RText } from 'rebass';
+import { Button } from 'rsuite';
 import { BaseSyntheticEvent } from 'react';
 import { ViewGenerator } from '@formula/core';
+import 'rsuite/dist/styles/rsuite-default.css';
 
 const Text = (props: any) => (
   <RText
@@ -172,14 +174,11 @@ export const SubmitButtonView = ViewGenerator.field<{
     return (
       <Boxify>
         <Button
+          appearance={disabled ? 'subtle' : 'primary'}
           onClick={onClick}
-          // disabled={disabled}
-          bg={disabled ? 'disconnect' : 'primary'}
-          style={{
-            cursor: 'pointer',
-          }}
+          size="lg"
         >
-          <Text color={disabled ? 'white' : 'black'}>{label}</Text>
+          {label}
         </Button>
       </Boxify>
     );
