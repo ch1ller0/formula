@@ -58,6 +58,8 @@ export const FBForm = new FormBuilder()
         options: [
           { value: 'male', label: 'Male' },
           { value: 'female', label: 'Female' },
+          { value: 'attack_helicopter', label: 'Attack Helicopter' },
+          { value: 'other', label: 'Other' },
         ],
       },
     },

@@ -1,6 +1,6 @@
-import { Label, Radio, Checkbox } from '@rebass/forms';
-import { Box, Flex, Text as RText } from 'rebass';
-import { Button, Input, SelectPicker } from 'rsuite';
+import { Label, Checkbox } from '@rebass/forms';
+import { Box, Text as RText } from 'rebass';
+import { Button, Input, SelectPicker, RadioGroup, Radio } from 'rsuite';
 import { BaseSyntheticEvent } from 'react';
 import { ViewGenerator } from '@formula/core';
 import 'rsuite/dist/styles/rsuite-default.css';
@@ -113,24 +113,9 @@ export const RadioFieldView = ViewGenerator.field<{
   name: 'radio',
   initialValue: ({ options }) => options[0].value,
   render: ({ value: selectedValue, setValue, label, options, name, error }) => {
-    // @TODO The field is broken and only emits value once due to
-    // lack of rebass support of react controlled components
-    const onChange = (e: BaseSyntheticEvent<{ value: string }>) => {
-      setValue(e.target.value);
+    const onChange = (value: string) => {
+      setValue(value);
     };
-
-    const renderedOptions = options.map(({ value, label }, index) => (
-      <Label width={[1 / 2, 1 / 4]} p={2} key={value}>
-        <Radio
-          id={value}
-          name={name}
-          value={value}
-          onChange={onChange}
-          checked={value === selectedValue || index === 0}
-        />
-        <Text fontSize={2}>{label}</Text>
-      </Label>
-    ));
 
     return (
       <Boxify error={error}>
@@ -139,7 +124,19 @@ export const RadioFieldView = ViewGenerator.field<{
             <Text>{label}</Text>
           </Label>
         )}
-        <Flex>{renderedOptions}</Flex>
+        <RadioGroup
+          appearance="default"
+          name="radioList"
+          inline
+          onChange={onChange}
+          value={selectedValue}
+        >
+          {options.map((a) => (
+            <Radio key={a.value} value={a.value}>
+              {a.label}
+            </Radio>
+          ))}
+        </RadioGroup>
       </Boxify>
     );
   },
