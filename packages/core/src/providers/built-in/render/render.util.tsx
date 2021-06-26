@@ -5,7 +5,7 @@ import prop from '@tinkoff/utils/object/prop';
 // import { FieldProvider, StepProvider } from '../index';
 
 import type { TProviderConsturctorArgs } from '../../../types/provider.types';
-import type { TFieldStructure } from '../../../types/base.types';
+import type { TFieldStructure, TPrimitive } from '../../../types/base.types';
 import type {
   Group,
   Array,
@@ -21,12 +21,20 @@ const RenderField: React.FC<{
   field: TFieldStructure['field'];
   args: unknown;
 }> = ({ field, args }) => {
-  const { propsDeps, key } = args;
-  const currentProps = useAtom(propsDeps, prop(key), []);
-
   const Cmp = field.render;
 
-  return <Cmp key={key} data-key={key} {...currentProps} />;
+  const { propsDeps, fieldDeps, key } = args;
+  const currentProps = useAtom(propsDeps.atom, prop(key), []);
+  const currentVal = useAtom(fieldDeps.atom, prop(key), []);
+
+  const innerProps = {
+    setValue: (value: TPrimitive) => {
+      fieldDeps.setValue({ name: key, value });
+    },
+    value: currentVal,
+  };
+
+  return <Cmp key={key} data-key={key} {...currentProps} {...innerProps} />;
 };
 
 // const renderArray = ({ array }: Array, args: unknown) => {
@@ -64,8 +72,8 @@ const RenderTree: React.FC<any> = ({
   fieldDeps,
   propsDeps,
 }) => {
-  const currentStructure = useAtom(structureDeps._atom) as FormStructure;
-  const currentStep = useAtom(stepDeps, prop('currentStep'), []);
+  const currentStructure = useAtom(structureDeps.atom) as FormStructure;
+  const currentStep = useAtom(stepDeps.atom, prop('currentStep'), []);
 
   const res = toPairs(currentStructure);
   // @ts-ignore
@@ -81,7 +89,7 @@ const RenderTree: React.FC<any> = ({
 };
 
 export const renderRoot = (
-  { globalStore, deps }: TProviderConsturctorArgs,
+  { globalStore, deps }: TProviderConsturctorArgs<any[]>, // @TODO bad type
   Wrapper = defaultWrapper,
 ) => {
   const [structureService, propsService, fieldService, stepService] = deps;

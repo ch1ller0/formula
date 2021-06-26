@@ -1,22 +1,26 @@
 import { Subject } from 'rxjs';
-import { FieldsFactory } from './field.gen';
-import { PropsProvider } from '../';
-import { useState, State } from './field.state';
+import { useState } from './field.state';
 
 import type {
   TProviderConfig,
-  TProviderService,
   TProviderConsturctorArgs,
-  TToProviderInstance,
 } from '../../../types/provider.types';
 import { StructureProvider } from '../structure/structure.provider';
+import type { TStructureService } from '../structure/structure.types';
+import type {
+  TFieldService,
+  FieldState,
+  ChangeKeyValArgs,
+} from './field.types';
 
-class FieldService implements TProviderService {
+class FieldService implements TFieldService {
   private readonly _selfState: ReturnType<typeof useState>;
-  private readonly _diffStream: Subject<Partial<State>>;
+  private readonly _diffStream: Subject<Partial<FieldState>>;
 
-  constructor(args: TProviderConsturctorArgs) {
-    this._selfState = useState(args);
+  constructor(args: TProviderConsturctorArgs<[TStructureService]>) {
+    const [structureService] = args.deps;
+    const structure = structureService._getInitialState();
+    this._selfState = useState({ ...args, structure });
     this._diffStream = new Subject();
   }
 
@@ -32,7 +36,13 @@ class FieldService implements TProviderService {
   }
 
   _getRenderDeps() {
-    return this._selfState;
+    return {
+      atom: this._selfState._atom,
+      setValue: (args: ChangeKeyValArgs) => {
+        this._diffStream.next(args); // Also send observable for click
+        this._selfState.actions.changeKeyVal(args);
+      },
+    };
   }
 }
 

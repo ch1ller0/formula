@@ -6,7 +6,6 @@ import {
   map,
 } from 'rxjs/operators';
 import { FieldProvider } from '../';
-import { StepWrapperFabric } from './step.gen';
 import { useState, SetBlockArgs } from './step.state';
 
 import type {
@@ -63,7 +62,7 @@ class StepService implements TProviderService {
   }
 
   _getRenderDeps() {
-    return this._selfState._atom;
+    return { atom: this._selfState._atom };
   }
 }
 

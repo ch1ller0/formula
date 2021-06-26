@@ -4,30 +4,29 @@ import mapObj from '@tinkoff/utils/object/map';
 import { toRxStore } from '../../../base/store';
 
 import type { TProviderConsturctorArgs } from '../../../types/provider.types';
-import type { TPrimitive } from '../../../types/base.types';
-
-export type State = Record<string, TPrimitive | null>;
-export type ChangeKeyValArgs = {
-  name: string;
-  value: TPrimitive;
-};
+import type { EndStructure } from '../structure/structure.types';
+import type { ChangeKeyValArgs, FieldState } from './field.types';
 
 const changeKeyVal = declareAction<ChangeKeyValArgs>('field.changeKeyVal');
 
 export const useState = ({
   globalStore,
   structure,
-}: TProviderConsturctorArgs) => {
+}: TProviderConsturctorArgs & {
+  structure: EndStructure;
+}) => {
   const initialState = mapObj(
     ({ field: { initialValue }, props }) => initialValue(props),
-    structure.reduce((acc, cur) => ({ ...acc, ...cur }), {}),
+    structure,
   );
 
-  const atom = declareAtom<State>(['field'], initialState, (on) => [
-    on(changeKeyVal, (state, payload) => ({
-      ...state,
-      [payload.name]: payload.value,
-    })),
+  const atom = declareAtom<FieldState>(['field'], initialState, (on) => [
+    on(changeKeyVal, (state, payload) => {
+      return {
+        ...state,
+        [payload.name]: payload.value,
+      };
+    }),
   ]);
 
   globalStore.subscribe(atom, noop);
@@ -35,13 +34,9 @@ export const useState = ({
   return {
     _atom: atom,
     rx: toRxStore(globalStore, atom),
-    _actions: {
-      changeKeyVal,
-    },
     actions: {
-      changeKeyVal: (a: ChangeKeyValArgs) => {
-        globalStore.dispatch(changeKeyVal(a));
-      },
+      changeKeyVal: (a: ChangeKeyValArgs) =>
+        globalStore.dispatch(changeKeyVal(a)),
     },
   };
 };

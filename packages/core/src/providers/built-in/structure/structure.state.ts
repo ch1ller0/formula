@@ -35,7 +35,7 @@ const flat = (state: FormStructure) => {
         ...acc,
         ...cur,
       };
-    }, {});
+    }, Object.create(null));
 };
 
 export const useState = ({
@@ -50,7 +50,6 @@ export const useState = ({
   return {
     _atom: atom,
     rx: toRxStore(globalStore, atom).pipe(map(flat), shareReplay()),
-    actions: {},
     initial: flat(initialState),
   };
 };

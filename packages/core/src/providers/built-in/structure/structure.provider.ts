@@ -2,16 +2,15 @@ import { useState } from './structure.state';
 
 import type {
   TProviderConfig,
-  TProviderService,
   TProviderConsturctorArgs,
 } from '../../../types/provider.types';
-import type { StructureFactory } from './structure.types';
+import type { StructureFactory, TStructureService } from './structure.types';
 
 type SelfDeps = {
   factory: StructureFactory;
 };
 
-class StructureService implements TProviderService {
+class StructureService implements TStructureService {
   private readonly _selfState: ReturnType<typeof useState>;
 
   constructor(args: TProviderConsturctorArgs, deps: SelfDeps) {
@@ -27,7 +26,7 @@ class StructureService implements TProviderService {
   }
 
   _getRenderDeps() {
-    return this._selfState;
+    return { atom: this._selfState._atom };
   }
 
   _getInitialState() {

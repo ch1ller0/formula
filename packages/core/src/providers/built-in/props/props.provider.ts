@@ -6,11 +6,14 @@ import type {
   TProviderService,
   TProviderConsturctorArgs,
 } from '../../../types/provider.types';
-
+import type { TStructureService } from '../structure/structure.types';
 class PropsService implements TProviderService {
   private readonly _selfState: ReturnType<typeof useState>;
 
-  constructor({ deps, globalStore }: TProviderConsturctorArgs) {
+  constructor({
+    deps,
+    globalStore,
+  }: TProviderConsturctorArgs<[TStructureService]>) {
     const [structureService] = deps;
     const structure = structureService._getInitialState();
 
@@ -26,7 +29,7 @@ class PropsService implements TProviderService {
   }
 
   _getRenderDeps() {
-    return this._selfState._atom;
+    return { atom: this._selfState._atom };
   }
 }
 

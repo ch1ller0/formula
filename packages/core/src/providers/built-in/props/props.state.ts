@@ -1,10 +1,10 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import mapObj from '@tinkoff/utils/object/map';
-import toPairs from '@tinkoff/utils/object/toPairs';
 import { toRxStore } from '../../../base/store';
 
 import type { TProviderConsturctorArgs } from '../../../types/provider.types';
+import type { Flattened } from '../structure/structure.types';
 
 export type Props = Record<string, unknown>;
 type State = Record<string, Props>;
@@ -21,15 +21,10 @@ const changeFieldProps = declareAction<ChangeFieldPropsArgs>(
 export const useState = ({
   globalStore,
   structure,
-}: TProviderConsturctorArgs) => {
+}: TProviderConsturctorArgs & {
+  structure: Flattened;
+}) => {
   const initialState = mapObj(({ props }) => props, structure);
-
-  // structure.forEach((step) => {
-  //   toPairs(step).forEach(([fieldName, { props }]) => {
-  //     initialState[fieldName] = props;
-  //   });
-  // });
-
   const atom = declareAtom<State>(['props'], initialState, (on) => [
     on(changeFieldProps, (state, payload) => {
       const prevProps = state[payload.name];

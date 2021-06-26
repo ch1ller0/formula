@@ -19,6 +19,7 @@ const { StepProvider, FieldProvider, PropsProvider } = BuiltInProviders;
 const ExtendedStory = () => {
   const Cmp = new FormBuilder()
     .addProviders([ValidationProvider])
+    // .buildStructure(({ group }) => ({}))
     .addStep({
       first_name: {
         field: InputFieldView,

@@ -1,22 +1,15 @@
 import type { Store } from '@reatom/core';
-import React from 'react';
 import type { Observable } from 'rxjs';
-import { RenderProps } from '../base/render';
-import type { TStepStructure } from './base.types';
 
-export type TProviderConsturctorArgs = {
+export type TProviderConsturctorArgs<T = unknown[]> = {
   /**
    * Services from other providers current provider depends on
    */
-  deps: unknown[];
+  deps: T;
   /**
    * Global form-store
    */
   globalStore: Store;
-  /**
-   * Structure configration
-   */
-  structure: TStepStructure[];
 };
 
 export type BinderFactory = (config?: any) => (fieldName: string) => void;
