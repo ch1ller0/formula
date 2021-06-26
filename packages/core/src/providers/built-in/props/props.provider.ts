@@ -1,3 +1,4 @@
+import { StructureProvider } from '../index';
 import { useState, Props } from './props.state';
 
 import type {
@@ -9,24 +10,28 @@ import type {
 class PropsService implements TProviderService {
   private readonly _selfState: ReturnType<typeof useState>;
 
-  constructor(args: TProviderConsturctorArgs) {
-    this._selfState = useState(args);
+  constructor({ deps, globalStore }: TProviderConsturctorArgs) {
+    const [structureService] = deps;
+    const structure = structureService._getInitialState();
+
+    this._selfState = useState({ globalStore, structure, deps });
   }
 
   setFieldProp(name: string, value: Props) {
     this._selfState.actions.changeFieldProps({ name, value });
   }
 
-  getAtom() {
-    return this._selfState._atom;
-  }
-
   getRxStore() {
     return this._selfState.rx;
+  }
+
+  _getRenderDeps() {
+    return this._selfState._atom;
   }
 }
 
 export const PropsProvider: TProviderConfig<PropsService> = {
   name: 'props',
   useService: PropsService,
+  deps: [StructureProvider],
 };

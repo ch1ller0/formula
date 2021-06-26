@@ -27,10 +27,6 @@ export interface TProviderService {
    */
   getRxStore?(): Observable<any>;
   /**
-   * Wrapper for binding render to self provider
-   */
-  renderWrapper?(): React.FC<RenderProps>;
-  /**
    * Method that creates binders for fields
    */
   useBinders?(): Record<string, BinderFactory>;
@@ -45,7 +41,7 @@ export type TProviderConfig<Srv = TProviderService> = {
    * Service the provider should expose to other parts of the program
    */
   useService: {
-    new (args: TProviderConsturctorArgs): Srv;
+    new (args: TProviderConsturctorArgs, addit: unknown): Srv;
   };
   /**
    * Providers the current provider depends on

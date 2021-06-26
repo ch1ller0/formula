@@ -58,12 +58,12 @@ class StepService implements TProviderService {
     return this._selfState.rx;
   }
 
-  renderWrapper() {
-    return StepWrapperFabric(this._selfState._atom);
-  }
-
   setBlocked(args: SetBlockArgs) {
     this._selfState.actions.stepBlock(args);
+  }
+
+  _getRenderDeps() {
+    return this._selfState._atom;
   }
 }
 

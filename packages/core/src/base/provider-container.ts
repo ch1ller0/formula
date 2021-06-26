@@ -50,29 +50,36 @@ export class ProviderContainer {
     return this._providers[getName(name)].useBinders?.();
   }
 
-  fill() {
-    const { structure, providers } = this._cfg;
-    const constructService = (cfg: TProviderConfig): TProviderService => {
-      const alreadyRegisteredDep = this.getService(cfg);
+  public registerSingleProvider = (
+    cfg: TProviderConfig,
+    additionalDeps?: unknown,
+  ): TProviderService => {
+    const alreadyRegisteredDep = this.getService(cfg);
 
-      if (alreadyRegisteredDep !== undefined) {
-        return alreadyRegisteredDep;
-      }
+    if (alreadyRegisteredDep !== undefined) {
+      return alreadyRegisteredDep;
+    }
 
-      const resolvedDeps = cfg.deps?.map(constructService) || [];
+    const resolvedDeps = cfg.deps?.map(this.registerSingleProvider) || [];
 
-      const service = new cfg.useService({
-        structure,
+    const service = new cfg.useService(
+      {
+        structure: [],
         deps: resolvedDeps,
         globalStore: this.getStore(),
-      });
+      },
+      additionalDeps,
+    );
 
-      this._providers[getName(cfg.name)] = service;
+    this._providers[getName(cfg.name)] = service;
 
-      return service;
-    };
+    return service;
+  };
 
-    providers.forEach(constructService);
+  registerProviders() {
+    const { structure, providers } = this._cfg;
+
+    providers.forEach(this.registerSingleProvider);
 
     structure.forEach((step) => {
       toPairs(step).forEach(([fieldName, { controls }]) => {

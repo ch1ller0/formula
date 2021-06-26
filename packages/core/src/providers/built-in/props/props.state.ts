@@ -22,16 +22,13 @@ export const useState = ({
   globalStore,
   structure,
 }: TProviderConsturctorArgs) => {
-  const initialState = mapObj(
-    ({ props }) => props,
-    structure.reduce((acc, cur) => ({ ...acc, ...cur }), {}),
-  );
+  const initialState = mapObj(({ props }) => props, structure);
 
-  structure.forEach((step) => {
-    toPairs(step).forEach(([fieldName, { props }]) => {
-      initialState[fieldName] = props;
-    });
-  });
+  // structure.forEach((step) => {
+  //   toPairs(step).forEach(([fieldName, { props }]) => {
+  //     initialState[fieldName] = props;
+  //   });
+  // });
 
   const atom = declareAtom<State>(['props'], initialState, (on) => [
     on(changeFieldProps, (state, payload) => {

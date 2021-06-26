@@ -1,28 +1,36 @@
 import React from 'react';
 import { ProviderContainer } from './provider-container';
-import { renderComponent } from './render';
 import {
+  StructureProvider,
+  RenderProvider,
   PropsProvider,
   StepProvider,
   FieldProvider,
 } from '../providers/built-in';
 
+import type { StructureFactory } from '../providers/built-in/structure/structure.types';
 import type { TProviderConfig } from '../types/provider.types';
 import type { TBuilderConfig, TFieldStructure } from '../types/base.types';
 
 // pack of providers required for form to work
-const DEFAULT_PROVIDERS = [PropsProvider, StepProvider, FieldProvider];
+const DEFAULT_PROVIDERS = [
+  StructureProvider,
+  RenderProvider,
+  PropsProvider,
+  StepProvider,
+  FieldProvider,
+];
 
 export class FormBuilder {
   private _config: TBuilderConfig;
-  private _providerContainer: ProviderContainer | undefined;
+  private _providerContainer: ProviderContainer;
   private _initInternalDeps() {
-    this._providerContainer = new ProviderContainer({ cfg: this._config });
-    this._providerContainer.fill();
+    this._providerContainer.registerProviders();
   }
 
   constructor() {
     this._config = { structure: [], providers: DEFAULT_PROVIDERS };
+    this._providerContainer = new ProviderContainer({ cfg: this._config });
   }
 
   addStep(stepStructure: Record<string, TFieldStructure>) {
@@ -37,18 +45,24 @@ export class FormBuilder {
     return this;
   }
 
+  buildStructure(factory: StructureFactory) {
+    this._providerContainer.registerSingleProvider(StructureProvider, {
+      factory,
+    });
+
+    return this;
+  }
+
   toComponent(CoreWrapper?: React.FC): React.ReactNode {
     this._initInternalDeps();
-
-    if (!this._providerContainer) {
-      throw new Error('No provider container registered');
-    }
 
     console.log(
       'before-render-state:',
       this._providerContainer.getStore().getState(),
     );
 
-    return renderComponent(this._providerContainer, CoreWrapper);
+    return this._providerContainer
+      .getService(RenderProvider)
+      .renderRoot(CoreWrapper);
   }
 }
