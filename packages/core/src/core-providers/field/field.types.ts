@@ -1,6 +1,6 @@
 import type { Observable } from 'rxjs';
-import type { TProviderService } from '../../../types/provider.types';
-import type { TPrimitive } from '../../../types/base.types';
+import type { TProviderService } from '../../types/provider.types';
+import type { TPrimitive } from '../../types/base.types';
 
 export type FieldState = Record<string, TPrimitive>;
 export type ChangeKeyValArgs = {

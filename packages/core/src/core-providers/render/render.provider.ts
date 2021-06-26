@@ -5,8 +5,7 @@ import type {
   TProviderConfig,
   TProviderService,
   TProviderConsturctorArgs,
-  TToProviderInstance,
-} from '../../../types/provider.types';
+} from '../../types/provider.types';
 import { PropsProvider } from '../props/props.provider';
 import { FieldProvider } from '../field/field.provider';
 import { StepProvider } from '../step/step.provider';

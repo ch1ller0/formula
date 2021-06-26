@@ -5,7 +5,7 @@ import {
   sample,
   map,
 } from 'rxjs/operators';
-import { FieldProvider } from '../';
+import { FieldProvider } from '..';
 import { useState, SetBlockArgs } from './step.state';
 
 import type {
@@ -13,7 +13,7 @@ import type {
   TProviderService,
   TProviderConsturctorArgs,
   TToProviderInstance,
-} from '../../../types/provider.types';
+} from '../../types/provider.types';
 
 class StepService implements TProviderService {
   private readonly _selfState: ReturnType<typeof useState>;

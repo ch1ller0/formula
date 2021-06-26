@@ -6,11 +6,11 @@ import {
   PropsProvider,
   StepProvider,
   FieldProvider,
-} from '../providers/built-in';
+} from '../core-providers/index';
 
-import type { StructureFactory } from '../providers/built-in/structure/structure.types';
+import type { StructureFactory } from '../core-providers/structure/structure.types';
 import type { TProviderConfig } from '../types/provider.types';
-import type { TBuilderConfig, TFieldStructure } from '../types/base.types';
+import type { TBuilderConfig } from '../types/base.types';
 
 // pack of providers required for form to work
 const DEFAULT_PROVIDERS = [
@@ -29,15 +29,8 @@ export class FormBuilder {
   }
 
   constructor() {
-    this._config = { structure: [], providers: DEFAULT_PROVIDERS };
+    this._config = { providers: DEFAULT_PROVIDERS };
     this._providerContainer = new ProviderContainer({ cfg: this._config });
-  }
-
-  addStep(stepStructure: Record<string, TFieldStructure>) {
-    const nextStepIndex = this._config.structure.length;
-    this._config.structure[nextStepIndex] = stepStructure;
-
-    return this;
   }
 
   addProviders(ar: TProviderConfig[]) {

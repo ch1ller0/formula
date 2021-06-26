@@ -1,9 +1,9 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import mapObj from '@tinkoff/utils/object/map';
-import { toRxStore } from '../../../base/store';
+import { toRxStore } from '../../base/store';
 
-import type { TProviderConsturctorArgs } from '../../../types/provider.types';
+import type { TProviderConsturctorArgs } from '../../types/provider.types';
 import type { EndStructure } from '../structure/structure.types';
 import type { ChangeKeyValArgs, FieldState } from './field.types';
 

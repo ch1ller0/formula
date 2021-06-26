@@ -4,8 +4,8 @@ import toPairs from '@tinkoff/utils/object/toPairs';
 import prop from '@tinkoff/utils/object/prop';
 // import { FieldProvider, StepProvider } from '../index';
 
-import type { TProviderConsturctorArgs } from '../../../types/provider.types';
-import type { TFieldStructure, TPrimitive } from '../../../types/base.types';
+import type { TProviderConsturctorArgs } from '../../types/provider.types';
+import type { TFieldStructure, TPrimitive } from '../../types/base.types';
 import type {
   Group,
   Array,

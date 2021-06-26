@@ -1,4 +1,4 @@
-import toPairs from '@tinkoff/utils/object/toPairs';
+// import toPairs from '@tinkoff/utils/object/toPairs';
 import { createGlobalStore } from './store';
 
 import type { TBuilderConfig } from '../types/base.types';
@@ -64,7 +64,6 @@ export class ProviderContainer {
 
     const service = new cfg.useService(
       {
-        structure: [],
         deps: resolvedDeps,
         globalStore: this.getStore(),
       },
@@ -77,22 +76,22 @@ export class ProviderContainer {
   };
 
   registerProviders() {
-    const { structure, providers } = this._cfg;
+    const { providers } = this._cfg;
 
     providers.forEach(this.registerSingleProvider);
 
-    structure.forEach((step) => {
-      toPairs(step).forEach(([fieldName, { controls }]) => {
-        if (controls) {
-          const fieldControls = controls({
-            getBinders: this.getBinders.bind(this),
-            getService: this.getService.bind(this),
-          });
-          fieldControls.forEach((element) => {
-            element(fieldName);
-          });
-        }
-      });
-    });
+    // structure.forEach((step) => {
+    //   toPairs(step).forEach(([fieldName, { controls }]) => {
+    //     if (controls) {
+    //       const fieldControls = controls({
+    //         getBinders: this.getBinders.bind(this),
+    //         getService: this.getService.bind(this),
+    //       });
+    //       fieldControls.forEach((element) => {
+    //         element(fieldName);
+    //       });
+    //     }
+    //   });
+    // });
   }
 }

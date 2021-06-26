@@ -4,7 +4,7 @@ import { useState } from './field.state';
 import type {
   TProviderConfig,
   TProviderConsturctorArgs,
-} from '../../../types/provider.types';
+} from '../../types/provider.types';
 import { StructureProvider } from '../structure/structure.provider';
 import type { TStructureService } from '../structure/structure.types';
 import type {

@@ -1,9 +1,9 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import propSet from '@tinkoff/utils/object/propSet';
-import { toRxStore } from '../../../base/store';
+import { toRxStore } from '../../base/store';
 
-import type { TProviderConsturctorArgs } from '../../../types/provider.types';
+import type { TProviderConsturctorArgs } from '../../types/provider.types';
 
 export type State = {
   currentStep: number;

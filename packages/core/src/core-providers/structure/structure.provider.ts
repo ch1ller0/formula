@@ -3,7 +3,7 @@ import { useState } from './structure.state';
 import type {
   TProviderConfig,
   TProviderConsturctorArgs,
-} from '../../../types/provider.types';
+} from '../../types/provider.types';
 import type { StructureFactory, TStructureService } from './structure.types';
 
 type SelfDeps = {

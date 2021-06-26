@@ -1,10 +1,10 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import mapObj from '@tinkoff/utils/object/map';
-import { toRxStore } from '../../../base/store';
+import { toRxStore } from '../../base/store';
 
-import type { TProviderConsturctorArgs } from '../../../types/provider.types';
-import type { Flattened } from '../structure/structure.types';
+import type { TProviderConsturctorArgs } from '../../types/provider.types';
+import type { EndStructure } from '../structure/structure.types';
 
 export type Props = Record<string, unknown>;
 type State = Record<string, Props>;
@@ -22,7 +22,7 @@ export const useState = ({
   globalStore,
   structure,
 }: TProviderConsturctorArgs & {
-  structure: Flattened;
+  structure: EndStructure;
 }) => {
   const initialState = mapObj(({ props }) => props, structure);
   const atom = declareAtom<State>(['props'], initialState, (on) => [

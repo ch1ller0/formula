@@ -1,16 +1,11 @@
-import { declareAction, declareAtom } from '@reatom/core';
+import { declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import values from '@tinkoff/utils/object/values';
 import { map, shareReplay } from 'rxjs/operators';
-// import propSet from '@tinkoff/utils/object/propSet';
-import { toRxStore } from '../../../base/store';
+import { toRxStore } from '../../base/store';
 
-import type { TProviderConsturctorArgs } from '../../../types/provider.types';
-import type {
-  FormStructure,
-  StructureFactory,
-  StructureInput,
-} from './structure.types';
+import type { TProviderConsturctorArgs } from '../../types/provider.types';
+import type { FormStructure, StructureFactory } from './structure.types';
 
 export type State = FormStructure;
 

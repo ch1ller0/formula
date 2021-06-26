@@ -5,7 +5,7 @@ import type {
   TProviderConfig,
   TProviderService,
   TProviderConsturctorArgs,
-} from '../../../types/provider.types';
+} from '../../types/provider.types';
 import type { TStructureService } from '../structure/structure.types';
 class PropsService implements TProviderService {
   private readonly _selfState: ReturnType<typeof useState>;
