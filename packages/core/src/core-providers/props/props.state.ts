@@ -5,14 +5,7 @@ import { toRxStore } from '../../base/store';
 
 import type { TProviderConsturctorArgs } from '../../types/provider.types';
 import type { EndStructure } from '../structure/structure.types';
-
-export type Props = Record<string, unknown>;
-type State = Record<string, Props>;
-
-type ChangeFieldPropsArgs = {
-  name: string;
-  value: Props;
-};
+import type { ChangeFieldPropsArgs, PropsState } from './props.types';
 
 const changeFieldProps = declareAction<ChangeFieldPropsArgs>(
   'props.changeFieldProps',
@@ -25,7 +18,7 @@ export const useState = ({
   structure: EndStructure;
 }) => {
   const initialState = mapObj(({ props }) => props, structure);
-  const atom = declareAtom<State>(['props'], initialState, (on) => [
+  const atom = declareAtom<PropsState>(['props'], initialState, (on) => [
     on(changeFieldProps, (state, payload) => {
       const prevProps = state[payload.name];
 

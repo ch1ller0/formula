@@ -1,7 +1,7 @@
 import type { Store } from '@reatom/core';
 import type { Observable } from 'rxjs';
 
-export type TProviderConsturctorArgs<T = unknown[]> = {
+export type TProviderConsturctorArgs<T extends unknown[] = unknown[]> = {
   /**
    * Services from other providers current provider depends on
    */
@@ -39,7 +39,7 @@ export type TProviderConfig<Srv = TProviderService> = {
   /**
    * Providers the current provider depends on
    */
-  deps?: TProviderConfig[];
+  deps: TProviderConfig[];
 };
 
 export type TToProviderInstance<Config extends TProviderConfig> = InstanceType<

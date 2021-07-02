@@ -3,16 +3,17 @@ import noop from '@tinkoff/utils/function/noop';
 import mapObj from '@tinkoff/utils/object/map';
 import { toRxStore } from '../../base/store';
 
-import type { TProviderConsturctorArgs } from '../../types/provider.types';
 import type { EndStructure } from '../structure/structure.types';
 import type { ChangeKeyValArgs, FieldState } from './field.types';
+import type { Store } from '@reatom/core';
 
 const changeKeyVal = declareAction<ChangeKeyValArgs>('field.changeKeyVal');
 
 export const useState = ({
   globalStore,
   structure,
-}: TProviderConsturctorArgs & {
+}: {
+  globalStore: Store;
   structure: EndStructure;
 }) => {
   const initialState = mapObj(

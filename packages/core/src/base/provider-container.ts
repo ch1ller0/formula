@@ -1,4 +1,4 @@
-// import toPairs from '@tinkoff/utils/object/toPairs';
+import toPairs from '@tinkoff/utils/object/toPairs';
 import { createGlobalStore } from './store';
 
 import type { TBuilderConfig } from '../types/base.types';
@@ -7,6 +7,7 @@ import type {
   TProviderService,
   TToProviderInstance,
 } from '../types/provider.types';
+import { StructureProvider } from '../core-providers';
 
 const getName = (name: string) => `provider:${name}`;
 
@@ -41,12 +42,15 @@ export class ProviderContainer {
   getService<Pr extends TProviderConfig>({
     name,
   }: Pr): TToProviderInstance<Pr> {
+    // @ts-ignore
     return this._providers[getName(name)];
   }
 
   getBinders<Pr extends TProviderConfig>({
     name,
-  }: Pr): ReturnType<TToProviderInstance<Pr>['useBinders']> {
+  }: // @ts-ignore
+  Pr): ReturnType<TToProviderInstance<Pr>['useBinders']> {
+    // @ts-ignore
     return this._providers[getName(name)].useBinders?.();
   }
 
@@ -79,19 +83,18 @@ export class ProviderContainer {
     const { providers } = this._cfg;
 
     providers.forEach(this.registerSingleProvider);
+  }
 
-    // structure.forEach((step) => {
-    //   toPairs(step).forEach(([fieldName, { controls }]) => {
-    //     if (controls) {
-    //       const fieldControls = controls({
-    //         getBinders: this.getBinders.bind(this),
-    //         getService: this.getService.bind(this),
-    //       });
-    //       fieldControls.forEach((element) => {
-    //         element(fieldName);
-    //       });
-    //     }
-    //   });
-    // });
+  bindControls() {
+    const structure = this.getService(StructureProvider)._getInitialState();
+
+    toPairs(structure).map(([fieldName, { controls }]) => {
+      if (controls) {
+        controls({
+          getBinders: this.getBinders.bind(this),
+          getService: this.getService.bind(this),
+        }).forEach((element) => element(fieldName));
+      }
+    });
   }
 }

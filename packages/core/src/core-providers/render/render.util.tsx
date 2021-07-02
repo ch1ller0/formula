@@ -1,17 +1,22 @@
 import React from 'react';
 import { context, useAtom } from '@reatom/react';
 import toPairs from '@tinkoff/utils/object/toPairs';
-import prop from '@tinkoff/utils/object/prop';
-// import { FieldProvider, StepProvider } from '../index';
 
 import type { TProviderConsturctorArgs } from '../../types/provider.types';
 import type { TFieldStructure, TPrimitive } from '../../types/base.types';
 import type {
   Group,
-  Array,
   StructureInput,
   FormStructure,
+  TStructureService,
 } from '../structure/structure.types';
+import type { TPropsService } from '../props/props.types';
+import type { TFieldService } from '../field/field.types';
+import type { TStepService } from '../step/step.types';
+
+type RenderDepReturn<T extends { _getRenderDeps: any }> = ReturnType<
+  T['_getRenderDeps']
+>;
 
 const _exhaustiveCheck = (a: never) => a;
 // @ts-ignore
@@ -19,27 +24,28 @@ const defaultWrapper: React.FC = ({ children }) => children;
 
 const RenderField: React.FC<{
   field: TFieldStructure['field'];
-  args: unknown;
+  args: {
+    propsDeps: RenderDepReturn<TPropsService>;
+    fieldDeps: RenderDepReturn<TFieldService>;
+    key: string;
+  };
 }> = ({ field, args }) => {
   const Cmp = field.render;
 
   const { propsDeps, fieldDeps, key } = args;
-  const currentProps = useAtom(propsDeps.atom, prop(key), []);
-  const currentVal = useAtom(fieldDeps.atom, prop(key), []);
+  const currentProps = useAtom(propsDeps.atom, (a) => a[key], []);
+  const currentVal = useAtom(fieldDeps.atom, (a) => a[key], []);
 
   const innerProps = {
     setValue: (value: TPrimitive) => {
       fieldDeps.setValue({ name: key, value });
     },
     value: currentVal,
+    name: args.key,
   };
 
   return <Cmp key={key} data-key={key} {...currentProps} {...innerProps} />;
 };
-
-// const renderArray = ({ array }: Array, args: unknown) => {
-//   return <div>renderArray</div>;
-// };
 
 const renderGroup = ({ group }: Group, args: any) => {
   const paired = toPairs(group);
@@ -53,9 +59,7 @@ const renderEntity = (entity: StructureInput, args: any): React.ReactNode => {
   if ('group' in entity) {
     return renderGroup(entity, args);
   }
-  // if ('array' in entity) {
-  //   return renderArray(entity, args);
-  // }
+
   if ('field' in entity) {
     return <RenderField {...entity} args={args} key={args.key} />;
   }
@@ -66,20 +70,19 @@ const renderEntity = (entity: StructureInput, args: any): React.ReactNode => {
   throw new Error('unknown render entity');
 };
 
-const RenderTree: React.FC<any> = ({
-  structureDeps,
-  stepDeps,
-  fieldDeps,
-  propsDeps,
-}) => {
+const RenderTree: React.FC<{
+  structureDeps: RenderDepReturn<TStructureService>;
+  stepDeps: RenderDepReturn<TStepService>;
+  fieldDeps: RenderDepReturn<TFieldService>;
+  propsDeps: RenderDepReturn<TPropsService>;
+}> = ({ structureDeps, stepDeps, fieldDeps, propsDeps }) => {
   const currentStructure = useAtom(structureDeps.atom) as FormStructure;
-  const currentStep = useAtom(stepDeps.atom, prop('currentStep'), []);
+  const currentStep = useAtom(stepDeps.atom, (a) => a.currentStep, []);
 
   const res = toPairs(currentStructure);
   // @ts-ignore
   const currentEntity = res[currentStep] as Record<string, StructureInput>;
   const screenKey = `screen-${currentStep}`;
-  // console.log('currentEntity', currentEntity);
 
   return (
     <div key={screenKey} data-key={screenKey}>
@@ -89,7 +92,12 @@ const RenderTree: React.FC<any> = ({
 };
 
 export const renderRoot = (
-  { globalStore, deps }: TProviderConsturctorArgs<any[]>, // @TODO bad type
+  {
+    globalStore,
+    deps,
+  }: TProviderConsturctorArgs<
+    [TStructureService, TPropsService, TFieldService, TStepService]
+  >,
   Wrapper = defaultWrapper,
 ) => {
   const [structureService, propsService, fieldService, stepService] = deps;
@@ -99,7 +107,6 @@ export const renderRoot = (
     fieldDeps: fieldService._getRenderDeps(),
     stepDeps: stepService._getRenderDeps(),
   };
-  // console.log('renderDependencies', renderDependencies);
 
   return () => (
     <context.Provider value={globalStore}>

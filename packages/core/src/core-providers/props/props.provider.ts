@@ -1,13 +1,12 @@
-import { StructureProvider } from '../index';
-import { useState, Props } from './props.state';
+import { StructureProvider, TStructureService } from '../index';
+import { useState } from './props.state';
+import { TPropsService, Props } from './props.types';
 
 import type {
   TProviderConfig,
-  TProviderService,
   TProviderConsturctorArgs,
 } from '../../types/provider.types';
-import type { TStructureService } from '../structure/structure.types';
-class PropsService implements TProviderService {
+class PropsService implements TPropsService {
   private readonly _selfState: ReturnType<typeof useState>;
 
   constructor({
@@ -20,12 +19,12 @@ class PropsService implements TProviderService {
     this._selfState = useState({ globalStore, structure, deps });
   }
 
-  setFieldProp(name: string, value: Props) {
-    this._selfState.actions.changeFieldProps({ name, value });
+  useBinders() {
+    return {};
   }
 
-  getRxStore() {
-    return this._selfState.rx;
+  setFieldProp(name: string, value: Props) {
+    this._selfState.actions.changeFieldProps({ name, value });
   }
 
   _getRenderDeps() {

@@ -1,19 +1,31 @@
-import { StructureProvider } from '../index';
 import { renderRoot } from './render.util';
+import {
+  StructureProvider,
+  PropsProvider,
+  FieldProvider,
+  StepProvider,
+  TStructureService,
+  TPropsService,
+  TFieldService,
+  TStepService,
+} from '../index';
 
 import type {
   TProviderConfig,
   TProviderService,
   TProviderConsturctorArgs,
 } from '../../types/provider.types';
-import { PropsProvider } from '../props/props.provider';
-import { FieldProvider } from '../field/field.provider';
-import { StepProvider } from '../step/step.provider';
 
 class StructureService implements TProviderService {
-  private _args: TProviderConsturctorArgs;
+  private _args: TProviderConsturctorArgs<
+    [TStructureService, TPropsService, TFieldService, TStepService]
+  >;
 
-  constructor(args: TProviderConsturctorArgs) {
+  constructor(
+    args: TProviderConsturctorArgs<
+      [TStructureService, TPropsService, TFieldService, TStepService]
+    >,
+  ) {
     this._args = args;
   }
 

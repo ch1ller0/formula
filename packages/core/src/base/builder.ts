@@ -26,6 +26,7 @@ export class FormBuilder {
   private _providerContainer: ProviderContainer;
   private _initInternalDeps() {
     this._providerContainer.registerProviders();
+    this._providerContainer.bindControls();
   }
 
   constructor() {

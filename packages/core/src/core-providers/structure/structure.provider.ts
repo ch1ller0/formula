@@ -13,7 +13,8 @@ type SelfDeps = {
 class StructureService implements TStructureService {
   private readonly _selfState: ReturnType<typeof useState>;
 
-  constructor(args: TProviderConsturctorArgs, deps: SelfDeps) {
+  constructor(args: TProviderConsturctorArgs<[]>, deps: SelfDeps) {
+    // @TODO move to initial config provider
     this._selfState = useState({ ...args, factory: deps.factory });
   }
 
@@ -32,9 +33,14 @@ class StructureService implements TStructureService {
   _getInitialState() {
     return this._selfState.initial;
   }
+
+  _getInitialConfig() {
+    return this._selfState.initialConfig;
+  }
 }
 
 export const StructureProvider: TProviderConfig<StructureService> = {
   name: 'structure',
   useService: StructureService,
+  deps: [],
 };

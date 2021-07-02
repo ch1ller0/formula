@@ -17,22 +17,29 @@ import { BuiltInProviders } from '@formula/core';
 import { useState } from './validation.state';
 
 import type { TProvider, TBase } from '@formula/core';
-import type { TToProviderInstance } from 'packages/core/src/types/provider.types';
+import type { TValidationService } from './validation.types';
+import type {
+  TFieldService,
+  TPropsService,
+  TStepService,
+} from 'packages/core/src/core-providers/';
 
 const { FieldProvider, PropsProvider, StepProvider } = BuiltInProviders;
 
 type ValidateFn = (v: TBase.TPrimitive) => string | Promise<string>;
 
-class ValidationService implements TProvider.TProviderService {
-  private readonly _structure: TProvider.TProviderConsturctorArgs['structure'];
-  private readonly _fieldService: TToProviderInstance<typeof FieldProvider>;
-  private readonly _propsService: TToProviderInstance<typeof PropsProvider>;
-  private readonly _stepService: TToProviderInstance<typeof StepProvider>;
+class ValidationService implements TValidationService {
+  private readonly _fieldService: TFieldService;
+  private readonly _propsService: TPropsService;
+  private readonly _stepService: TStepService;
   private readonly _selfState: ReturnType<typeof useState>;
 
-  constructor(args: TProvider.TProviderConsturctorArgs) {
+  constructor(
+    args: TProvider.TProviderConsturctorArgs<
+      [TFieldService, TPropsService, TStepService]
+    >,
+  ) {
     const [fieldService, propsService, stepService] = args.deps;
-    this._structure = args.structure;
     this._selfState = useState(args);
 
     this._fieldService = fieldService;
@@ -62,10 +69,11 @@ class ValidationService implements TProvider.TProviderService {
           });
       },
       stepDisabled: () => (buttonName: string) => {
+        const stepValidationRequirements = this._stepService.findFields(
+          buttonName,
+        );
+
         this._propsService.setFieldProp(buttonName, { disabled: true });
-        // @TODO Potentially bad code as structure might change in the future
-        const stepValidationRequirements =
-          this._structure.map(keys).find((v) => v.includes(buttonName)) || [];
 
         const buttonClick$ = this._fieldService
           .getDiffRx()
@@ -75,13 +83,12 @@ class ValidationService implements TProvider.TProviderService {
         const currentStepValidation$ = this._selfState.rx.pipe(
           map((validationState) =>
             filterObj(
-              (_, key) => stepValidationRequirements.includes(key),
+              (_, key) => (stepValidationRequirements?.[1] || []).includes(key),
               validationState,
             ),
           ),
           distinctUntilChanged(),
         );
-
         // setting errors for current step fields
         // combine button clicks with step`s validation state
         // starts emitting after button was clicked once
@@ -94,7 +101,6 @@ class ValidationService implements TProvider.TProviderService {
               });
             }, stepValidation),
           );
-
         // setting button validation view
         currentStepValidation$
           .pipe(
@@ -107,11 +113,13 @@ class ValidationService implements TProvider.TProviderService {
             startWith(true),
           )
           .subscribe((disabled) => {
-            const stepNum = this._structure
-              .map(keys)
-              .findIndex((a) => a.includes(buttonName));
+            const stepNum = stepValidationRequirements?.[0];
+            stepNum &&
+              this._stepService.setBlocked({
+                stepNum,
+                value: disabled,
+              });
 
-            this._stepService.setBlocked({ stepNum, value: disabled });
             this._propsService.setFieldProp(buttonName, { disabled });
           });
       },

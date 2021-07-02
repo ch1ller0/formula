@@ -1,12 +1,11 @@
 import { Subject } from 'rxjs';
 import { useState } from './field.state';
+import { TStructureService, StructureProvider } from '../index';
 
 import type {
   TProviderConfig,
   TProviderConsturctorArgs,
 } from '../../types/provider.types';
-import { StructureProvider } from '../structure/structure.provider';
-import type { TStructureService } from '../structure/structure.types';
 import type {
   TFieldService,
   FieldState,

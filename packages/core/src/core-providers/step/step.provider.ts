@@ -5,23 +5,34 @@ import {
   sample,
   map,
 } from 'rxjs/operators';
-import { FieldProvider } from '..';
-import { useState, SetBlockArgs } from './step.state';
+import mapObj from '@tinkoff/utils/object/map';
+import keys from '@tinkoff/utils/object/keys';
+import toPairs from '@tinkoff/utils/object/toPairs';
+import { useState } from './step.state';
+import {
+  StructureProvider,
+  TStructureService,
+  FieldProvider,
+  TFieldService,
+} from '../index';
 
 import type {
   TProviderConfig,
-  TProviderService,
   TProviderConsturctorArgs,
-  TToProviderInstance,
 } from '../../types/provider.types';
+import type { TStepService, SetBlockArgs } from './step.types';
 
-class StepService implements TProviderService {
+class StepService implements TStepService {
   private readonly _selfState: ReturnType<typeof useState>;
-  private readonly _fieldService: TToProviderInstance<typeof FieldProvider>;
+  private readonly _fieldService: TFieldService;
+  private readonly _structureService: TStructureService;
 
-  constructor(args: TProviderConsturctorArgs) {
-    const [fieldService] = args.deps;
+  constructor(
+    args: TProviderConsturctorArgs<[TFieldService, TStructureService]>,
+  ) {
+    const [fieldService, structureService] = args.deps;
     this._fieldService = fieldService;
+    this._structureService = structureService;
     this._selfState = useState(args);
   }
 
@@ -61,6 +72,14 @@ class StepService implements TProviderService {
     this._selfState.actions.stepBlock(args);
   }
 
+  findFields(name: string) {
+    const conf = mapObj((a) => {
+      if ('group' in a) return keys(a.group);
+    }, this._structureService._getInitialConfig());
+
+    return toPairs(conf).find(([, value]) => value?.includes(name));
+  }
+
   _getRenderDeps() {
     return { atom: this._selfState._atom };
   }
@@ -69,5 +88,5 @@ class StepService implements TProviderService {
 export const StepProvider: TProviderConfig<StepService> = {
   name: 'step',
   useService: StepService,
-  deps: [FieldProvider],
+  deps: [FieldProvider, StructureProvider],
 };

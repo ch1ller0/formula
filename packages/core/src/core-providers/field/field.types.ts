@@ -1,4 +1,5 @@
 import type { Observable } from 'rxjs';
+import type { Atom } from '@reatom/core';
 import type { TProviderService } from '../../types/provider.types';
 import type { TPrimitive } from '../../types/base.types';
 
@@ -9,5 +10,10 @@ export type ChangeKeyValArgs = {
 };
 
 export interface TFieldService extends TProviderService {
+  getRxStore(): Observable<FieldState>;
   getDiffRx: () => Observable<Partial<FieldState>>;
+  _getRenderDeps(): {
+    atom: Atom<FieldState>;
+    setValue(args: ChangeKeyValArgs): void;
+  };
 }
