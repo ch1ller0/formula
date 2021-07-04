@@ -1,18 +1,11 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import mapObj from '@tinkoff/utils/object/map';
-import toPairs from '@tinkoff/utils/object/toPairs';
-import { toRxStore } from '../../../base/store';
+import { toRxStore } from '../../base/store';
 
-import type { TProviderConsturctorArgs } from '../../../types/provider.types';
-
-export type Props = Record<string, unknown>;
-type State = Record<string, Props>;
-
-type ChangeFieldPropsArgs = {
-  name: string;
-  value: Props;
-};
+import type { TProviderConsturctorArgs } from '../../types/provider.types';
+import type { EndStructure } from '../structure/structure.types';
+import type { ChangeFieldPropsArgs, PropsState } from './props.types';
 
 const changeFieldProps = declareAction<ChangeFieldPropsArgs>(
   'props.changeFieldProps',
@@ -21,19 +14,11 @@ const changeFieldProps = declareAction<ChangeFieldPropsArgs>(
 export const useState = ({
   globalStore,
   structure,
-}: TProviderConsturctorArgs) => {
-  const initialState = mapObj(
-    ({ props }) => props,
-    structure.reduce((acc, cur) => ({ ...acc, ...cur }), {}),
-  );
-
-  structure.forEach((step) => {
-    toPairs(step).forEach(([fieldName, { props }]) => {
-      initialState[fieldName] = props;
-    });
-  });
-
-  const atom = declareAtom<State>(['props'], initialState, (on) => [
+}: TProviderConsturctorArgs & {
+  structure: EndStructure;
+}) => {
+  const initialState = mapObj(({ props }) => props, structure);
+  const atom = declareAtom<PropsState>(['props'], initialState, (on) => [
     on(changeFieldProps, (state, payload) => {
       const prevProps = state[payload.name];
 

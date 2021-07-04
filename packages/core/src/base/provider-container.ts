@@ -7,6 +7,7 @@ import type {
   TProviderService,
   TToProviderInstance,
 } from '../types/provider.types';
+import { StructureProvider } from '../core-providers';
 
 const getName = (name: string) => `provider:${name}`;
 
@@ -41,51 +42,59 @@ export class ProviderContainer {
   getService<Pr extends TProviderConfig>({
     name,
   }: Pr): TToProviderInstance<Pr> {
+    // @ts-ignore
     return this._providers[getName(name)];
   }
 
   getBinders<Pr extends TProviderConfig>({
     name,
-  }: Pr): ReturnType<TToProviderInstance<Pr>['useBinders']> {
+  }: // @ts-ignore
+  Pr): ReturnType<TToProviderInstance<Pr>['useBinders']> {
+    // @ts-ignore
     return this._providers[getName(name)].useBinders?.();
   }
 
-  fill() {
-    const { structure, providers } = this._cfg;
-    const constructService = (cfg: TProviderConfig): TProviderService => {
-      const alreadyRegisteredDep = this.getService(cfg);
+  public registerSingleProvider = (
+    cfg: TProviderConfig,
+    additionalDeps?: unknown,
+  ): TProviderService => {
+    const alreadyRegisteredDep = this.getService(cfg);
 
-      if (alreadyRegisteredDep !== undefined) {
-        return alreadyRegisteredDep;
-      }
+    if (alreadyRegisteredDep !== undefined) {
+      return alreadyRegisteredDep;
+    }
 
-      const resolvedDeps = cfg.deps?.map(constructService) || [];
+    const resolvedDeps = cfg.deps?.map(this.registerSingleProvider) || [];
 
-      const service = new cfg.useService({
-        structure,
+    const service = new cfg.useService(
+      {
         deps: resolvedDeps,
         globalStore: this.getStore(),
-      });
+      },
+      additionalDeps,
+    );
 
-      this._providers[getName(cfg.name)] = service;
+    this._providers[getName(cfg.name)] = service;
 
-      return service;
-    };
+    return service;
+  };
 
-    providers.forEach(constructService);
+  registerProviders() {
+    const { providers } = this._cfg;
 
-    structure.forEach((step) => {
-      toPairs(step).forEach(([fieldName, { controls }]) => {
-        if (controls) {
-          const fieldControls = controls({
-            getBinders: this.getBinders.bind(this),
-            getService: this.getService.bind(this),
-          });
-          fieldControls.forEach((element) => {
-            element(fieldName);
-          });
-        }
-      });
+    providers.forEach(this.registerSingleProvider);
+  }
+
+  bindControls() {
+    const structure = this.getService(StructureProvider)._getInitialState();
+
+    toPairs(structure).map(([fieldName, { controls }]) => {
+      if (controls) {
+        controls({
+          getBinders: this.getBinders.bind(this),
+          getService: this.getService.bind(this),
+        }).forEach((element) => element(fieldName));
+      }
     });
   }
 }

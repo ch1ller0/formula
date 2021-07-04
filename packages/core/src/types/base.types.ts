@@ -81,10 +81,6 @@ export type TBuilderFieldProps<T extends TPrimitive = TPrimitive> = {
  */
 export type TBuilderConfig = {
   /**
-   * Initial form structure (it might change in run-time)
-   */
-  structure: TStepStructure[];
-  /**
    * Registered providers
    */
   providers: TProviderConfig[];

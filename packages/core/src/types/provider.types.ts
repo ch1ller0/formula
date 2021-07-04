@@ -1,22 +1,15 @@
 import type { Store } from '@reatom/core';
-import React from 'react';
 import type { Observable } from 'rxjs';
-import { RenderProps } from '../base/render';
-import type { TStepStructure } from './base.types';
 
-export type TProviderConsturctorArgs = {
+export type TProviderConsturctorArgs<T extends unknown[] = unknown[]> = {
   /**
    * Services from other providers current provider depends on
    */
-  deps: unknown[];
+  deps: T;
   /**
    * Global form-store
    */
   globalStore: Store;
-  /**
-   * Structure configration
-   */
-  structure: TStepStructure[];
 };
 
 export type BinderFactory = (config?: any) => (fieldName: string) => void;
@@ -26,10 +19,6 @@ export interface TProviderService {
    * Method for getting an Observable from Provider`s store
    */
   getRxStore?(): Observable<any>;
-  /**
-   * Wrapper for binding render to self provider
-   */
-  renderWrapper?(): React.FC<RenderProps>;
   /**
    * Method that creates binders for fields
    */
@@ -45,12 +34,12 @@ export type TProviderConfig<Srv = TProviderService> = {
    * Service the provider should expose to other parts of the program
    */
   useService: {
-    new (args: TProviderConsturctorArgs): Srv;
+    new (args: TProviderConsturctorArgs, addit: unknown): Srv;
   };
   /**
    * Providers the current provider depends on
    */
-  deps?: TProviderConfig[];
+  deps: TProviderConfig[];
 };
 
 export type TToProviderInstance<Config extends TProviderConfig> = InstanceType<

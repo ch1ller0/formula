@@ -23,12 +23,4 @@ yarn storybook
 ```
 
 ## Architecture
-### Layers TODO
-```
-View:  Field   <   FieldStructure   <   StepStructure
-```
-
-## Next iterations
-- Split to different packages
-- Add showcase for `application-sending` provider
-- Fix bad and too wide typings (add generics)
+- TODO

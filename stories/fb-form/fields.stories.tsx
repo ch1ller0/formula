@@ -16,7 +16,7 @@ export default {
 
 const SingleField = (step: TBase.TStepStructure) => {
   const CMP = new FormBuilder()
-    .addStep(step)
+    .buildStructure(({ group }) => ({ 0: group(step) }))
     .toComponent(({ children }) => <form>{children}</form>);
   return <CMP />;
 };

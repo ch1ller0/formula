@@ -1,22 +1,16 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import propSet from '@tinkoff/utils/object/propSet';
-import { toRxStore } from '../../../base/store';
+import { toRxStore } from '../../base/store';
 
-import type { TProviderConsturctorArgs } from '../../../types/provider.types';
-
-export type State = {
-  currentStep: number;
-  blocked: Record<number, boolean>;
-};
-
-export type SetBlockArgs = { stepNum: number; value: boolean };
+import type { TProviderConsturctorArgs } from '../../types/provider.types';
+import type { SetBlockArgs, StepState } from './step.types';
 
 const stepIncrement = declareAction('step.stepIncrement');
 const stepBlock = declareAction<SetBlockArgs>('step.stepBlock');
 
 export const useState = ({ globalStore }: TProviderConsturctorArgs) => {
-  const atom = declareAtom<State>(
+  const atom = declareAtom<StepState>(
     ['step'],
     {
       currentStep: 0,

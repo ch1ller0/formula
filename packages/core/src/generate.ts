@@ -1,4 +1,4 @@
-import type { TFieldConfig, TStepStructure } from './types/base.types';
+import type { TFieldConfig } from './types/base.types';
 
 type Brand<T> = { _: T };
 
@@ -11,9 +11,5 @@ export class ViewGenerator {
       render: fieldCfg.render,
       initialValue: fieldCfg.initialValue,
     } as TFieldConfig<Props> & Brand<'field'>;
-  }
-
-  static step(stepCfg: TStepStructure): TStepStructure & Brand<'step'> {
-    return stepCfg as TStepStructure & Brand<'step'>;
   }
 }
