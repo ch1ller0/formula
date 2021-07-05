@@ -27,7 +27,7 @@ export const toRxStore = <Stt>(
 
 export const createGlobalStore = () => {
   const store = createStore();
-  if (process.env.MODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
     connectReduxDevtools(store);
   }
 

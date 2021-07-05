@@ -35,10 +35,6 @@ export class ProviderContainer {
     return this._globalStore;
   }
 
-  getConfig() {
-    return this._cfg;
-  }
-
   getService<Pr extends TProviderConfig>({
     name,
   }: Pr): TToProviderInstance<Pr> {
