@@ -23,6 +23,9 @@ jobs:
       - name: Checking style
         run: yarn test:lint
         if: always()
+      - name: Running unit tests
+        run: yarn test:unit
+        if: always()
       - name: Checking types (allow to fail)
         run: yarn test:types
         if: always()
