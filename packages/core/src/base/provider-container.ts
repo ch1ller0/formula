@@ -31,7 +31,7 @@ export class ProviderContainer {
     }
   }
 
-  getStore() {
+  _getStore() {
     return this._globalStore;
   }
 
@@ -65,7 +65,7 @@ export class ProviderContainer {
     const service = new cfg.useService(
       {
         deps: resolvedDeps,
-        globalStore: this.getStore(),
+        globalStore: this._getStore(),
       },
       additionalDeps,
     );

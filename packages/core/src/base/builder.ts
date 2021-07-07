@@ -24,10 +24,6 @@ const DEFAULT_PROVIDERS = [
 export class FormBuilder {
   private _config: TBuilderConfig;
   private _providerContainer: ProviderContainer;
-  private _initInternalDeps() {
-    this._providerContainer.registerProviders();
-    this._providerContainer.bindControls();
-  }
 
   constructor() {
     this._config = { providers: DEFAULT_PROVIDERS };
@@ -52,11 +48,16 @@ export class FormBuilder {
 
     console.log(
       'before-render-state:',
-      this._providerContainer.getStore().getState(),
+      this._providerContainer._getStore().getState(),
     );
 
     return this._providerContainer
       .getService(RenderProvider)
       .renderRoot(CoreWrapper);
+  }
+
+  private _initInternalDeps() {
+    this._providerContainer.registerProviders();
+    this._providerContainer.bindControls();
   }
 }

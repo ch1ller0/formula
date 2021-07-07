@@ -11,7 +11,7 @@ export type ChangeKeyValArgs = {
 
 export interface TFieldService extends TProviderService {
   getRxStore(): Observable<FieldState>;
-  getDiffRx: () => Observable<Partial<FieldState>>;
+  getDiffRx(): Observable<Partial<FieldState>>;
   _getRenderDeps(): {
     atom: Atom<FieldState>;
     setValue(args: ChangeKeyValArgs): void;
