@@ -31,7 +31,7 @@ class StructureService implements TStructureService {
   }
 
   _getInitialState() {
-    return this._selfState.initial;
+    return this._selfState.initialState;
   }
 
   _getInitialConfig() {

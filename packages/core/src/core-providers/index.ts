@@ -1,4 +1,3 @@
-export { ConfigurationProvider } from './configuration/configuration.provider';
 export { RenderProvider } from './render/render.provider';
 
 export { PropsProvider } from './props/props.provider';
