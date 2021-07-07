@@ -5,7 +5,7 @@ import toPairs from '@tinkoff/utils/object/toPairs';
 import type { TProviderConsturctorArgs } from '../../types/provider.types';
 import type { TFieldStructure, TPrimitive } from '../../types/base.types';
 import type {
-  Group,
+  GroupOut,
   StructureInput,
   FormStructure,
   TStructureService,
@@ -47,12 +47,28 @@ const RenderField: React.FC<{
   return <Cmp key={key} data-key={key} {...currentProps} {...innerProps} />;
 };
 
-const renderGroup = ({ group }: Group, args: any) => {
+const renderGroup = ({ group, opts }: GroupOut, args: any) => {
   const paired = toPairs(group);
+  const children = paired.map((s) =>
+    renderEntity(s[1], { ...args, key: s[0] }),
+  );
 
-  return paired.map((s) => {
-    return renderEntity(s[1], { ...args, key: s[0] });
-  });
+  if (opts.horizontal) {
+    return (
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${children.length}, 1fr)`,
+          gridGap: '20px',
+        }}
+        key={args.key}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  return children;
 };
 
 const renderEntity = (entity: StructureInput, args: any): React.ReactNode => {
@@ -86,7 +102,11 @@ const RenderTree: React.FC<{
 
   return (
     <div key={screenKey} data-key={screenKey}>
-      {renderEntity(currentEntity[1], { fieldDeps, propsDeps })}
+      {renderEntity(currentEntity[1], {
+        fieldDeps,
+        propsDeps,
+        key: currentEntity[0],
+      })}
     </div>
   );
 };

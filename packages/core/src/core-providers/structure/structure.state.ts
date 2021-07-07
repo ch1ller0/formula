@@ -1,39 +1,37 @@
 import { declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
-import values from '@tinkoff/utils/object/values';
+import toPairs from '@tinkoff/utils/object/toPairs';
 import { map, shareReplay } from 'rxjs/operators';
 import { toRxStore } from '../../base/store';
 
+export const toFieldsObj = (obj: FormStructure) => {
+  const flattened = {};
+
+  const extractFields = (str: FormStructure) =>
+    toPairs(str).forEach(([key, value]) => {
+      if ('group' in value) {
+        return extractFields(value.group);
+      }
+      flattened[key] = value;
+    });
+
+  extractFields(obj);
+  return flattened;
+};
+
 import type { Store } from '@reatom/core';
-import type {
-  EndStructure,
-  FormStructure,
-  StructureFactory,
-} from './structure.types';
+import type { FormStructure, StructureFactory } from './structure.types';
 
 export type State = FormStructure;
 
 const getInitialState = (factory: StructureFactory) => {
   return factory({
-    group: (a) => ({ type: 'group', group: a }),
+    group: (a, opts) => ({
+      type: 'group',
+      group: a,
+      opts: opts || {},
+    }),
   });
-};
-
-const flat = (state: FormStructure): EndStructure => {
-  return values(state)
-    .map((a) => {
-      if ('group' in a) {
-        return a.group;
-        // @TODO very bad implementation
-      }
-      return a;
-    })
-    .reduce((acc, cur) => {
-      return {
-        ...acc,
-        ...cur,
-      };
-    }, Object.create(null));
 };
 
 export const useState = ({
@@ -50,8 +48,8 @@ export const useState = ({
 
   return {
     _atom: atom,
-    rx: toRxStore(globalStore, atom).pipe(map(flat), shareReplay()),
-    initial: flat(initialState),
+    rx: toRxStore(globalStore, atom).pipe(map(toFieldsObj), shareReplay()),
+    initial: toFieldsObj(initialState),
     initialConfig: initialState,
   };
 };

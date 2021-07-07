@@ -6,6 +6,7 @@ import {
   map,
 } from 'rxjs/operators';
 import mapObj from '@tinkoff/utils/object/map';
+import eachObj from '@tinkoff/utils/object/each';
 import keys from '@tinkoff/utils/object/keys';
 import toPairs from '@tinkoff/utils/object/toPairs';
 import { useState } from './step.state';
@@ -72,9 +73,24 @@ class StepService implements TStepService {
     this._selfState.actions.stepBlock(args);
   }
 
+  // @TODO make implemetation easier
   findFields(name: string) {
     const conf = mapObj((a) => {
-      if ('group' in a) return keys(a.group);
+      const result = {} as Record<string, unknown>;
+
+      const iterate = eachObj((value, key) => {
+        // @ts-ignore
+        if ('group' in value) {
+          // @ts-ignore
+          iterate(value.group);
+          return;
+        }
+        result[key] = value;
+      });
+      // @ts-ignore
+      iterate(a.group);
+
+      return keys(result);
     }, this._structureService._getInitialConfig());
 
     return toPairs(conf).find(([, value]) => value?.includes(name));
