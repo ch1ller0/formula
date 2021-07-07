@@ -1,6 +1,7 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import mapObj from '@tinkoff/utils/object/map';
+import filterObj from '@tinkoff/utils/object/filter';
 import { toRxStore } from '../../base/store';
 
 import type { EndStructure } from '../structure/structure.types';
@@ -21,14 +22,18 @@ export const useState = ({
     structure,
   );
 
-  const atom = declareAtom<FieldState>(['field'], initialState, (on) => [
-    on(changeKeyVal, (state, payload) => {
-      return {
-        ...state,
-        [payload.name]: payload.value,
-      };
-    }),
-  ]);
+  const atom = declareAtom<FieldState>(
+    ['field'],
+    filterObj((value) => value !== null, initialState) as FieldState,
+    (on) => [
+      on(changeKeyVal, (state, payload) => {
+        return {
+          ...state,
+          [payload.name]: payload.value,
+        };
+      }),
+    ],
+  );
 
   globalStore.subscribe(atom, noop);
 

@@ -39,7 +39,9 @@ class FieldService implements TFieldService {
       atom: this._selfState._atom,
       setValue: (args: ChangeKeyValArgs) => {
         this._diffStream.next(args); // Also send observable for click
-        this._selfState.actions.changeKeyVal(args);
+        if (args.value !== null) {
+          this._selfState.actions.changeKeyVal(args);
+        }
       },
     };
   }
