@@ -4,11 +4,18 @@ import type { Atom } from '@reatom/core';
 type ScreenName = string;
 
 export type EndStructure = Record<string, TFieldStructure>;
-export type StructureInput = Group | TFieldStructure;
-export type Group = { group: Record<string, StructureInput> };
+export type StructureInput = GroupOut | TFieldStructure;
 export type FormStructure = Record<ScreenName, StructureInput>;
+
+type GroupOpts = {
+  horizontal?: true;
+};
+export type GroupOut = {
+  group: Record<string, StructureInput>;
+  opts: GroupOpts;
+};
 type Args = {
-  group(cfg: Record<string, StructureInput>): Group;
+  group(cfg: Record<string, StructureInput>, opts?: GroupOpts): GroupOut;
 };
 export type StructureFactory = (args: Args) => FormStructure;
 

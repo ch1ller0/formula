@@ -14,6 +14,7 @@ const Text: React.FC<
   Partial<{
     fontSize: number;
     color: string;
+    marginTop?: number;
   }>
 > = (props) => (
   <p
@@ -23,6 +24,7 @@ const Text: React.FC<
       fontWeight: 'normal',
       color: props.color || 'black',
       marginBottom: 6,
+      marginTop: props.marginTop || 0,
     }}
   >
     {props.children}
@@ -61,6 +63,20 @@ const Boxify: React.FC<{ error?: string; name?: string; label?: string }> = ({
   );
 };
 
+export const TextFieldView = ViewGenerator.field<{
+  text: string;
+  fontSize: number;
+  color: string;
+}>({
+  name: 'text',
+  initialValue: () => null,
+  render: ({ text, ...rest }) => (
+    <Text {...rest} marginTop={12}>
+      {text}
+    </Text>
+  ),
+});
+
 export const InputFieldView = ViewGenerator.field<{
   label: string;
   error: string;
@@ -73,10 +89,11 @@ export const InputFieldView = ViewGenerator.field<{
     };
 
     return (
-      <Boxify error={error} name={name} label={label}>
+      <Boxify error={error} name={name}>
         <Input
           id={name}
           name={name}
+          placeholder={label}
           // @TODO infer type instead of TPrimitive
           value={value}
           onChange={onChange}

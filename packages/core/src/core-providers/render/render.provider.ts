@@ -17,20 +17,20 @@ import type {
 } from '../../types/provider.types';
 
 class StructureService implements TProviderService {
-  private _args: TProviderConsturctorArgs<
+  private _deps: TProviderConsturctorArgs<
     [TStructureService, TPropsService, TFieldService, TStepService]
   >;
 
   constructor(
-    args: TProviderConsturctorArgs<
+    deps: TProviderConsturctorArgs<
       [TStructureService, TPropsService, TFieldService, TStepService]
     >,
   ) {
-    this._args = args;
+    this._deps = deps;
   }
 
   renderRoot(CoreWrapper?: React.FC) {
-    return renderRoot(this._args, CoreWrapper);
+    return renderRoot(this._deps, CoreWrapper);
   }
 
   useBinders() {
