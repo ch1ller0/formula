@@ -22,10 +22,6 @@ class StructureService implements TStructureService {
     return this._selfState.rx;
   }
 
-  useBinders() {
-    return {};
-  }
-
   _getRenderDeps() {
     return { atom: this._selfState._atom };
   }
@@ -36,6 +32,12 @@ class StructureService implements TStructureService {
 
   _getInitialConfig() {
     return this._selfState.initialConfig;
+  }
+
+  toggleGroupsVisibility(groupNames: string[]) {
+    groupNames.forEach((groupName) => {
+      this._selfState.actions.toggleGroupVisibilityAction({ groupName });
+    });
   }
 }
 

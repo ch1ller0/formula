@@ -68,6 +68,10 @@ const renderGroup = ({ group, opts }: GroupOut, args: any) => {
     );
   }
 
+  if (opts.visible === false) {
+    return null;
+  }
+
   return children;
 };
 

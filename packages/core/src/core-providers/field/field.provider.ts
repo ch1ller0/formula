@@ -14,7 +14,7 @@ import type {
 
 class FieldService implements TFieldService {
   private readonly _selfState: ReturnType<typeof useState>;
-  private readonly _diffStream: Subject<Partial<FieldState>>;
+  private readonly _diffStream: Subject<ChangeKeyValArgs>;
 
   constructor(args: TProviderConsturctorArgs<[TStructureService]>) {
     const [structureService] = args.deps;
