@@ -80,10 +80,22 @@ const ConditionalGroupStory = () => {
             first_name: {
               field: InputFieldView,
               props: { label: 'First name' },
+              controls: ({ getBinders }) => [
+                getBinders(ValidationProvider).validateField([
+                  requiredValidator,
+                  lengthValidator({ min: 6 }),
+                ]),
+              ],
             },
             second_name: {
               field: InputFieldView,
               props: { label: 'Second name' },
+              controls: ({ getBinders }) => [
+                getBinders(ValidationProvider).validateField([
+                  requiredValidator,
+                  lengthValidator({ min: 6 }),
+                ]),
+              ],
             },
           },
           { invisible: true },

@@ -22,6 +22,7 @@ import type {
   TProviderConsturctorArgs,
 } from '../../types/provider.types';
 import type { TStepService, SetBlockArgs } from './step.types';
+import { Observable } from 'rxjs';
 
 class StepService implements TStepService {
   private readonly _selfState: ReturnType<typeof useState>;
@@ -35,6 +36,9 @@ class StepService implements TStepService {
     this._fieldService = fieldService;
     this._structureService = structureService;
     this._selfState = useState(args);
+  }
+  getCurrentScreenFields(fieldName: string): Observable<string[]> {
+    throw new Error('Method not implemented.');
   }
 
   useBinders() {
@@ -72,12 +76,6 @@ class StepService implements TStepService {
   setBlocked(args: SetBlockArgs) {
     this._selfState.actions.stepBlock(args);
   }
-
-  getCurrentScreenFields(name: string) {
-    return this._structureService.getRxStore?.().pipe();
-  }
-
-  findFields(name: string) {}
 
   _getRenderDeps() {
     return { atom: this._selfState._atom };

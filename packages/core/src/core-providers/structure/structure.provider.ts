@@ -8,9 +8,7 @@ import type {
 import {
   StructureFactory,
   TStructureService,
-  FieldStructKey,
   GroupStructKey,
-  ScreenStructKey,
 } from './structure.types';
 
 type SelfDeps = {
