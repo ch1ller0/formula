@@ -10,7 +10,6 @@ export type SetBlockArgs = { stepNum: string; value: boolean };
 
 export interface TStepService extends TProviderService {
   setBlocked(args: SetBlockArgs): void;
-  findFields(name: string): [string, string[] | undefined] | undefined;
   _getRenderDeps(): {
     atom: Atom<StepState>;
   };

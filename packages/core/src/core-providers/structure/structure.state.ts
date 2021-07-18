@@ -1,38 +1,23 @@
-import { declareAtom } from '@reatom/core';
+import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
-import toPairs from '@tinkoff/utils/object/toPairs';
-import { map, shareReplay } from 'rxjs/operators';
 import { toRxStore } from '../../base/store';
-
-export const toFieldsObj = (obj: FormStructure) => {
-  const flattened = {};
-
-  const extractFields = (str: FormStructure) =>
-    toPairs(str).forEach(([key, value]) => {
-      if ('group' in value) {
-        return extractFields(value.group);
-      }
-      flattened[key] = value;
-    });
-
-  extractFields(obj);
-  return flattened;
-};
+import { getInitialStructure, normalizate } from './structure.util';
 
 import type { Store } from '@reatom/core';
-import type { FormStructure, StructureFactory } from './structure.types';
+import type {
+  StructureFactory,
+  StructureState,
+  GroupStructKey,
+  GroupStructVal,
+} from './structure.types';
 
-export type State = FormStructure;
-
-const getInitialState = (factory: StructureFactory) => {
-  return factory({
-    group: (a, opts) => ({
-      type: 'group',
-      group: a,
-      opts: opts || {},
-    }),
-  });
+type ToggleGroupVisibilityArgs = {
+  groupKeys: GroupStructKey[];
 };
+
+const toggleGroupVisibilityAction = declareAction<ToggleGroupVisibilityArgs>(
+  'structure.toggle-group-visiblity',
+);
 
 export const useState = ({
   globalStore,
@@ -41,15 +26,39 @@ export const useState = ({
   globalStore: Store;
   factory: StructureFactory;
 }) => {
-  const initialState = getInitialState(factory);
-  const atom = declareAtom<State>(['structure'], initialState, () => []);
+  const initialConfig = getInitialStructure(factory);
+  const normalizedState = normalizate(initialConfig);
+  const atom = declareAtom<StructureState>(
+    ['structure'],
+    normalizedState,
+    (on) => [
+      on(toggleGroupVisibilityAction, (state, { groupKeys }) => {
+        const part = groupKeys.reduce((acc, groupKey) => {
+          // @ts-ignore
+          const prevGroupState = state.groups[groupKey] as GroupStructVal;
+          const opts = {
+            ...prevGroupState.opts,
+            invisible: !prevGroupState.opts.invisible,
+          };
+
+          return { ...acc, [groupKey]: { ...prevGroupState, opts } };
+        }, {});
+
+        return { ...state, groups: { ...state.groups, ...part } };
+      }),
+    ],
+  );
 
   globalStore.subscribe(atom, noop);
 
   return {
     _atom: atom,
-    rx: toRxStore(globalStore, atom).pipe(map(toFieldsObj), shareReplay()),
-    initial: toFieldsObj(initialState),
-    initialConfig: initialState,
+    _getState: () => globalStore.getState(atom),
+    actions: {
+      toggleGroupVisibilityAction: (a: ToggleGroupVisibilityArgs) =>
+        globalStore.dispatch(toggleGroupVisibilityAction(a)),
+    },
+    rx: toRxStore(globalStore, atom),
+    initialState: normalizedState,
   };
 };

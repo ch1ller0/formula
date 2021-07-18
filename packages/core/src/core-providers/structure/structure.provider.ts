@@ -4,7 +4,11 @@ import type {
   TProviderConfig,
   TProviderConsturctorArgs,
 } from '../../types/provider.types';
-import type { StructureFactory, TStructureService } from './structure.types';
+import {
+  StructureFactory,
+  TStructureService,
+  GroupStructKey,
+} from './structure.types';
 
 type SelfDeps = {
   factory: StructureFactory;
@@ -22,20 +26,18 @@ class StructureService implements TStructureService {
     return this._selfState.rx;
   }
 
-  useBinders() {
-    return {};
-  }
-
   _getRenderDeps() {
     return { atom: this._selfState._atom };
   }
 
   _getInitialState() {
-    return this._selfState.initial;
+    return this._selfState.initialState;
   }
 
-  _getInitialConfig() {
-    return this._selfState.initialConfig;
+  toggleGroupsVisibility(groupNames: GroupStructKey[]) {
+    this._selfState.actions.toggleGroupVisibilityAction({
+      groupKeys: groupNames,
+    });
   }
 }
 

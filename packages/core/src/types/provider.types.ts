@@ -18,7 +18,7 @@ export interface TProviderService {
   /**
    * Method for getting an Observable from Provider`s store
    */
-  getRxStore?(): Observable<any>;
+  getRxStore?(): Observable<unknown>;
   /**
    * Method that creates binders for fields
    */

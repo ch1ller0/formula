@@ -5,10 +5,6 @@ import {
   sample,
   map,
 } from 'rxjs/operators';
-import mapObj from '@tinkoff/utils/object/map';
-import eachObj from '@tinkoff/utils/object/each';
-import keys from '@tinkoff/utils/object/keys';
-import toPairs from '@tinkoff/utils/object/toPairs';
 import { useState } from './step.state';
 import {
   StructureProvider,
@@ -22,18 +18,15 @@ import type {
   TProviderConsturctorArgs,
 } from '../../types/provider.types';
 import type { TStepService, SetBlockArgs } from './step.types';
-
 class StepService implements TStepService {
   private readonly _selfState: ReturnType<typeof useState>;
   private readonly _fieldService: TFieldService;
-  private readonly _structureService: TStructureService;
 
   constructor(
     args: TProviderConsturctorArgs<[TFieldService, TStructureService]>,
   ) {
-    const [fieldService, structureService] = args.deps;
+    const [fieldService] = args.deps;
     this._fieldService = fieldService;
-    this._structureService = structureService;
     this._selfState = useState(args);
   }
 
@@ -71,29 +64,6 @@ class StepService implements TStepService {
 
   setBlocked(args: SetBlockArgs) {
     this._selfState.actions.stepBlock(args);
-  }
-
-  // @TODO make implemetation easier
-  findFields(name: string) {
-    const conf = mapObj((a) => {
-      const result = {} as Record<string, unknown>;
-
-      const iterate = eachObj((value, key) => {
-        // @ts-ignore
-        if ('group' in value) {
-          // @ts-ignore
-          iterate(value.group);
-          return;
-        }
-        result[key] = value;
-      });
-      // @ts-ignore
-      iterate(a.group);
-
-      return keys(result);
-    }, this._structureService._getInitialConfig());
-
-    return toPairs(conf).find(([, value]) => value?.includes(name));
   }
 
   _getRenderDeps() {

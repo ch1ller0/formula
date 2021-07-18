@@ -6,15 +6,11 @@ import type {
   TProviderConfig,
   TProviderConsturctorArgs,
 } from '../../types/provider.types';
-import type {
-  TFieldService,
-  FieldState,
-  ChangeKeyValArgs,
-} from './field.types';
+import type { TFieldService, ChangeKeyValArgs } from './field.types';
 
 class FieldService implements TFieldService {
   private readonly _selfState: ReturnType<typeof useState>;
-  private readonly _diffStream: Subject<Partial<FieldState>>;
+  private readonly _diffStream: Subject<ChangeKeyValArgs>;
 
   constructor(args: TProviderConsturctorArgs<[TStructureService]>) {
     const [structureService] = args.deps;

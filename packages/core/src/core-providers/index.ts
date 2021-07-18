@@ -1,3 +1,5 @@
+export { RenderProvider } from './render/render.provider';
+
 export { PropsProvider } from './props/props.provider';
 export type { TPropsService } from './props/props.types';
 
@@ -9,5 +11,3 @@ export type { TStepService } from './step/step.types';
 
 export { StructureProvider } from './structure/structure.provider';
 export type { TStructureService } from './structure/structure.types';
-
-export { RenderProvider } from './render/render.provider';

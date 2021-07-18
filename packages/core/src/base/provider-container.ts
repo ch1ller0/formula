@@ -31,7 +31,7 @@ export class ProviderContainer {
     }
   }
 
-  getStore() {
+  _getStore() {
     return this._globalStore;
   }
 
@@ -65,7 +65,7 @@ export class ProviderContainer {
     const service = new cfg.useService(
       {
         deps: resolvedDeps,
-        globalStore: this.getStore(),
+        globalStore: this._getStore(),
       },
       additionalDeps,
     );
@@ -81,10 +81,10 @@ export class ProviderContainer {
     providers.forEach(this.registerSingleProvider);
   }
 
-  bindControls() {
-    const structure = this.getService(StructureProvider)._getInitialState();
+  bindFieldControls() {
+    const { fields } = this.getService(StructureProvider)._getInitialState();
 
-    toPairs(structure).map(([fieldName, { controls }]) => {
+    toPairs(fields).map(([fieldName, { controls }]) => {
       if (controls) {
         controls({
           getBinders: this.getBinders.bind(this),
