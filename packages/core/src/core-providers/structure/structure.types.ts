@@ -4,7 +4,6 @@ import type { Atom } from '@reatom/core';
 import type { Observable } from 'rxjs';
 type ScreenName = string;
 
-export type EndStructure = Record<string, TFieldStructure>;
 export type StructureInput = GroupOut | TFieldStructure;
 export type FormStructure = Record<ScreenName, GroupOut>;
 
@@ -33,15 +32,18 @@ export type GroupStructVal = {
   opts: GroupOpts;
 };
 
-export type NormalizedStructure = {
+/**
+ * Basically a normalized structure
+ */
+export type StructureState = {
   fields: Record<FieldStructKey, FieldStructVal>;
   groups: Record<ScreenStructKey | GroupStructKey, GroupStructVal>;
 };
 
 export interface TStructureService extends TProviderService {
-  _getInitialState: () => NormalizedStructure;
-  getRxStore: () => Observable<NormalizedStructure>;
+  _getInitialState: () => StructureState;
+  getRxStore: () => Observable<StructureState>;
   _getRenderDeps(): {
-    atom: Atom<NormalizedStructure>;
+    atom: Atom<StructureState>;
   };
 }

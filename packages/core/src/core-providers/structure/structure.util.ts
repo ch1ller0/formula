@@ -5,7 +5,7 @@ import type {
   GroupOut,
   StructureFactory,
   StructureInput,
-  NormalizedStructure,
+  StructureState,
   GroupStructKey,
   ScreenStructKey,
 } from './structure.types';
@@ -24,7 +24,7 @@ export const normalizate = (state: FormStructure) => {
   const temp = {
     groups: {},
     fields: {},
-  } as NormalizedStructure;
+  } as StructureState;
 
   const traverseGroup = (
     { group, opts }: GroupOut,

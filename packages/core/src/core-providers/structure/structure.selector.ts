@@ -2,7 +2,7 @@ import toPairs from '@tinkoff/utils/object/toPairs';
 import flatten from '@tinkoff/utils/array/flatten';
 import {
   FieldStructKey,
-  NormalizedStructure,
+  StructureState,
   ScreenStructKey,
 } from './structure.types';
 
@@ -11,7 +11,7 @@ type Args = {
 };
 
 export const allScreenFields = (
-  str: NormalizedStructure,
+  str: StructureState,
   { invisSensitive }: Args = { invisSensitive: true },
 ): [ScreenStructKey, FieldStructKey[]] => {
   const flatChildren = (a) => {

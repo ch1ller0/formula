@@ -4,7 +4,7 @@ import mapObj from '@tinkoff/utils/object/map';
 import filterObj from '@tinkoff/utils/object/filter';
 import { toRxStore } from '../../base/store';
 
-import type { NormalizedStructure } from '../structure/structure.types';
+import type { StructureState } from '../structure/structure.types';
 import type { ChangeKeyValArgs, FieldState } from './field.types';
 import type { Store } from '@reatom/core';
 
@@ -15,7 +15,7 @@ export const useState = ({
   structure,
 }: {
   globalStore: Store;
-  structure: NormalizedStructure;
+  structure: StructureState;
 }) => {
   const initialState = mapObj(
     ({ field: { initialValue }, props }) => initialValue(props),

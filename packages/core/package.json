@@ -8,8 +8,5 @@
   "typings": "src",
   "files": [
     "lib"
-  ],
-  "dependencies": {
-    "normalizr": "^3.6.1"
-  }
+  ]
 }

@@ -5,10 +5,6 @@ import {
   sample,
   map,
 } from 'rxjs/operators';
-import mapObj from '@tinkoff/utils/object/map';
-import eachObj from '@tinkoff/utils/object/each';
-import keys from '@tinkoff/utils/object/keys';
-import toPairs from '@tinkoff/utils/object/toPairs';
 import { useState } from './step.state';
 import {
   StructureProvider,
@@ -22,23 +18,16 @@ import type {
   TProviderConsturctorArgs,
 } from '../../types/provider.types';
 import type { TStepService, SetBlockArgs } from './step.types';
-import { Observable } from 'rxjs';
-
 class StepService implements TStepService {
   private readonly _selfState: ReturnType<typeof useState>;
   private readonly _fieldService: TFieldService;
-  private readonly _structureService: TStructureService;
 
   constructor(
     args: TProviderConsturctorArgs<[TFieldService, TStructureService]>,
   ) {
-    const [fieldService, structureService] = args.deps;
+    const [fieldService] = args.deps;
     this._fieldService = fieldService;
-    this._structureService = structureService;
     this._selfState = useState(args);
-  }
-  getCurrentScreenFields(fieldName: string): Observable<string[]> {
-    throw new Error('Method not implemented.');
   }
 
   useBinders() {

@@ -1,5 +1,4 @@
 import { useState } from './structure.state';
-import toPairs from '@tinkoff/utils/object/toPairs';
 
 import type {
   TProviderConfig,
@@ -40,16 +39,6 @@ class StructureService implements TStructureService {
       groupKeys: groupNames,
     });
   }
-
-  // findEntity(key: string) {
-  //   const state = this._selfState._getState();
-  //   const flate = { ...state.fields, ...state.groups } as Record<
-  //     string,
-  //     unknown
-  //   >;
-
-  //   return toPairs(flate).find(([innerKey]) => innerKey.includes(key));
-  // }
 }
 
 export const StructureProvider: TProviderConfig<StructureService> = {

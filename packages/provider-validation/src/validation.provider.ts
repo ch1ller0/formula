@@ -126,6 +126,7 @@ class ValidationService implements TValidationService {
               });
             }, screenValidation),
           );
+
         // setting button validation view
         currentScreenValidation$
           .pipe(
@@ -140,10 +141,13 @@ class ValidationService implements TValidationService {
             })),
           )
           .subscribe(({ screenName, isDisabled }) => {
-            this._stepService.setBlocked({
-              stepNum: screenName?.replace('scr.', ''), // @TODO replace step provider with screen provider
-              value: isDisabled,
-            });
+            const stepNum = screenName?.replace('scr.', '');
+
+            stepNum !== undefined &&
+              this._stepService.setBlocked({
+                stepNum, // @TODO replace step provider with screen provider
+                value: isDisabled,
+              });
 
             this._propsService.setFieldProp(buttonName, {
               disabled: isDisabled,

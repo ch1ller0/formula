@@ -6,7 +6,7 @@ import { getInitialStructure, normalizate } from './structure.util';
 import type { Store } from '@reatom/core';
 import type {
   StructureFactory,
-  NormalizedStructure,
+  StructureState,
   GroupStructKey,
   GroupStructVal,
 } from './structure.types';
@@ -28,7 +28,7 @@ export const useState = ({
 }) => {
   const initialConfig = getInitialStructure(factory);
   const normalizedState = normalizate(initialConfig);
-  const atom = declareAtom<NormalizedStructure>(
+  const atom = declareAtom<StructureState>(
     ['structure'],
     normalizedState,
     (on) => [

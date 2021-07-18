@@ -4,7 +4,7 @@ import mapObj from '@tinkoff/utils/object/map';
 import { toRxStore } from '../../base/store';
 
 import type { TProviderConsturctorArgs } from '../../types/provider.types';
-import type { NormalizedStructure } from '../structure/structure.types';
+import type { StructureState } from '../structure/structure.types';
 import type { ChangeFieldPropsArgs, PropsState } from './props.types';
 
 const changeFieldProps = declareAction<ChangeFieldPropsArgs>(
@@ -15,7 +15,7 @@ export const useState = ({
   globalStore,
   structure,
 }: TProviderConsturctorArgs & {
-  structure: NormalizedStructure;
+  structure: StructureState;
 }) => {
   // @ts-ignore
   const initialState = mapObj(({ props }) => props, structure.fields);
