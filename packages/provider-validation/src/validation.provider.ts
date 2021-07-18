@@ -22,6 +22,7 @@ import type {
   TFieldService,
   TPropsService,
   TStepService,
+  TStructureService,
 } from 'packages/core/src/core-providers/';
 
 const { FieldProvider, PropsProvider, StepProvider } = BuiltInProviders;
@@ -32,19 +33,26 @@ class ValidationService implements TValidationService {
   private readonly _fieldService: TFieldService;
   private readonly _propsService: TPropsService;
   private readonly _stepService: TStepService;
+  // private readonly _structureService: TStructureService;
   private readonly _selfState: ReturnType<typeof useState>;
 
   constructor(
     args: TProvider.TProviderConsturctorArgs<
-      [TFieldService, TPropsService, TStepService]
+      [TFieldService, TPropsService, TStepService, TStructureService]
     >,
   ) {
-    const [fieldService, propsService, stepService] = args.deps;
+    const [
+      fieldService,
+      propsService,
+      stepService,
+      // structureService,
+    ] = args.deps;
     this._selfState = useState(args);
 
     this._fieldService = fieldService;
     this._propsService = propsService;
     this._stepService = stepService;
+    // this._structureService = structureService;
   }
 
   useBinders() {
@@ -69,6 +77,11 @@ class ValidationService implements TValidationService {
           });
       },
       stepDisabled: () => (buttonName: string) => {
+        // this._stepService.getScreenFields();
+        // this._structureService.getRxStore?.().subscribe((e) => {
+        //   console.log('e', e);
+        // });
+
         const stepValidationRequirements = this._stepService.findFields(
           buttonName,
         );

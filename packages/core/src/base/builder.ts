@@ -58,6 +58,6 @@ export class FormBuilder {
 
   private _initInternalDeps() {
     this._providerContainer.registerProviders();
-    this._providerContainer.bindControls();
+    this._providerContainer.bindFieldControls();
   }
 }

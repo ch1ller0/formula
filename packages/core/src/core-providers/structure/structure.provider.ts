@@ -37,9 +37,9 @@ class StructureService implements TStructureService {
     return this._selfState.initialState;
   }
 
-  toggleGroupsVisibility(groupNames: string[]) {
-    groupNames.forEach((groupName) => {
-      this._selfState.actions.toggleGroupVisibilityAction({ groupName });
+  toggleGroupsVisibility(groupNames: GroupStructKey[]) {
+    this._selfState.actions.toggleGroupVisibilityAction({
+      groupKeys: groupNames,
     });
   }
 

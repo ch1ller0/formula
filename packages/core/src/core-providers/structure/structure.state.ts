@@ -1,12 +1,18 @@
 import { declareAction, declareAtom } from '@reatom/core';
+import noop from '@tinkoff/utils/function/noop';
 import { toRxStore } from '../../base/store';
 import { getInitialStructure, normalizate } from './structure.util';
 
 import type { Store } from '@reatom/core';
-import type { StructureFactory, NormalizedStructure } from './structure.types';
+import type {
+  StructureFactory,
+  NormalizedStructure,
+  GroupStructKey,
+  GroupStructVal,
+} from './structure.types';
 
 type ToggleGroupVisibilityArgs = {
-  groupName: string;
+  groupKeys: GroupStructKey[];
 };
 
 const toggleGroupVisibilityAction = declareAction<ToggleGroupVisibilityArgs>(
@@ -25,8 +31,25 @@ export const useState = ({
   const atom = declareAtom<NormalizedStructure>(
     ['structure'],
     normalizedState,
-    (on) => [],
+    (on) => [
+      on(toggleGroupVisibilityAction, (state, { groupKeys }) => {
+        const part = groupKeys.reduce((acc, groupKey) => {
+          // @ts-ignore
+          const prevGroupState = state.groups[groupKey] as GroupStructVal;
+          const opts = {
+            ...prevGroupState.opts,
+            invisible: !prevGroupState.opts.invisible,
+          };
+
+          return { ...acc, [groupKey]: { ...prevGroupState, opts } };
+        }, {});
+
+        return { ...state, groups: { ...state.groups, ...part } };
+      }),
+    ],
   );
+
+  globalStore.subscribe(atom, noop);
 
   return {
     _atom: atom,

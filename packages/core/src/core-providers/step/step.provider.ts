@@ -73,28 +73,11 @@ class StepService implements TStepService {
     this._selfState.actions.stepBlock(args);
   }
 
-  // @TODO make implemetation easier
-  findFields(name: string) {
-    const conf = mapObj((a) => {
-      const result = {} as Record<string, unknown>;
-
-      const iterate = eachObj((value, key) => {
-        // @ts-ignore
-        if ('group' in value) {
-          // @ts-ignore
-          iterate(value.group);
-          return;
-        }
-        result[key] = value;
-      });
-      // @ts-ignore
-      iterate(a.group);
-
-      return keys(result);
-    }, this._structureService._getInitialConfig());
-
-    return toPairs(conf).find(([, value]) => value?.includes(name));
+  getCurrentScreenFields(name: string) {
+    return this._structureService.getRxStore?.().pipe();
   }
+
+  findFields(name: string) {}
 
   _getRenderDeps() {
     return { atom: this._selfState._atom };

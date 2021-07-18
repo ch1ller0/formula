@@ -46,6 +46,10 @@ const createRenderers = (
   const renderGroup = ({ children, opts, id }: GroupStructVal) => {
     const childrenRender = children.map((a) => renderAny(a));
 
+    if (opts.invisible === true) {
+      return null;
+    }
+
     if (opts.horizontal) {
       return (
         <div
@@ -59,10 +63,6 @@ const createRenderers = (
           {childrenRender}
         </div>
       );
-    }
-
-    if (opts.visible === false) {
-      return null;
     }
 
     return childrenRender;

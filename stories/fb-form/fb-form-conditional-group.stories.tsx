@@ -6,6 +6,7 @@ import {
   InputFieldView,
   SubmitButtonView,
   TextFieldView,
+  ThankYouView,
 } from './shared/fields';
 import { pluck, filter } from 'rxjs/operators';
 import { requiredValidator, lengthValidator } from './shared/validators';
@@ -40,8 +41,8 @@ const ConditionalGroupStory = () => {
                 )
                 .subscribe((e) => {
                   getService(StructureProvider).toggleGroupsVisibility([
-                    'personal_info_with_email',
-                    'personal_info_without_email',
+                    'grp.personal_info_with_email',
+                    'grp.personal_info_without_email',
                   ]);
                 });
             },
@@ -78,10 +79,14 @@ const ConditionalGroupStory = () => {
           {
             first_name: {
               field: InputFieldView,
-              props: { label: 'Full name' },
+              props: { label: 'First name' },
+            },
+            second_name: {
+              field: InputFieldView,
+              props: { label: 'Second name' },
             },
           },
-          { visible: false },
+          { invisible: true },
         ),
         next_button1: {
           field: SubmitButtonView,
@@ -94,6 +99,18 @@ const ConditionalGroupStory = () => {
           ],
         },
       }),
+      1: group({
+        thank_you: {
+          field: ThankYouView,
+          props: {
+            title: 'No title',
+            link: {
+              href: 'https://fridgefm.com',
+              label: 'Please visit ',
+            },
+          },
+        },
+      }),
     }))
     .toComponent(boxWrapper);
 
@@ -101,8 +118,8 @@ const ConditionalGroupStory = () => {
 };
 
 export default {
-  title: 'Example/FBForm/Group',
-  component: <div>placeholder</div>,
+  title: 'Example/FBForm',
+  component: ConditionalGroupStory,
 };
 
 export const ConditionalGroup = ConditionalGroupStory.bind({});

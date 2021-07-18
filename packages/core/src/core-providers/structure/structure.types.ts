@@ -9,7 +9,7 @@ export type FormStructure = Record<ScreenName, GroupOut>;
 
 export type GroupOpts = {
   horizontal?: true;
-  visible?: boolean;
+  invisible?: boolean;
 };
 export type GroupOut = {
   type: 'group';
