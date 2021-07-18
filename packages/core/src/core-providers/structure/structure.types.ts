@@ -21,10 +21,25 @@ type Args = {
 };
 export type StructureFactory = (args: Args) => FormStructure;
 
+export type FieldStructKey = `fld.${string}`;
+export type ScreenStructKey = `scr.${string}`;
+export type GroupStructKey = `grp.${string}`;
+
+export type FieldStructVal = { id: FieldStructKey } & TFieldStructure;
+export type GroupStructVal = {
+  id: ScreenStructKey | GroupStructKey;
+  children: (FieldStructKey | GroupStructKey)[];
+  opts: GroupOpts;
+};
+
+export type NormalizedStructure = {
+  fields: Record<FieldStructKey, FieldStructVal>;
+  groups: Record<ScreenStructKey | GroupStructKey, GroupStructVal>;
+};
+
 export interface TStructureService extends TProviderService {
-  _getInitialConfig: () => FormStructure;
-  _getInitialState: () => EndStructure;
+  _getInitialState: () => NormalizedStructure;
   _getRenderDeps(): {
-    atom: Atom<EndStructure>;
+    atom: Atom<NormalizedStructure>;
   };
 }

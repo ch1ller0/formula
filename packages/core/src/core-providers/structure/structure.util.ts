@@ -5,24 +5,10 @@ import type {
   GroupOut,
   StructureFactory,
   StructureInput,
+  NormalizedStructure,
+  GroupStructKey,
+  ScreenStructKey,
 } from './structure.types';
-
-export const toFieldsObj = (
-  obj: FormStructure,
-): Record<string, TFieldStructure> => {
-  const flattened = {};
-
-  const extractFields = (str: FormStructure) =>
-    toPairs(str).forEach(([key, value]) => {
-      if ('group' in value) {
-        return extractFields(value.group);
-      }
-      flattened[key] = value;
-    });
-
-  extractFields(obj);
-  return flattened;
-};
 
 export const getInitialStructure = (factory: StructureFactory) => {
   return factory({
@@ -38,9 +24,12 @@ export const normalizate = (state: FormStructure) => {
   const temp = {
     groups: {},
     fields: {},
-  };
+  } as NormalizedStructure;
 
-  const traverseGroup = ({ group, opts }: GroupOut, groupKey: string) => {
+  const traverseGroup = (
+    { group, opts }: GroupOut,
+    groupKey: GroupStructKey | ScreenStructKey,
+  ) => {
     if (groupKey in temp.groups) {
       throw new Error(`duplicate key found in groups: ${groupKey}`);
     }
@@ -56,8 +45,11 @@ export const normalizate = (state: FormStructure) => {
     return groupKey;
   };
 
-  const traverseField = (a, fieldKey: string) => {
-    temp.fields[fieldKey] = a;
+  const traverseField = (a: TFieldStructure, fieldKey: string) => {
+    if (fieldKey in temp.fields) {
+      throw new Error(`duplicate key found in fields: ${fieldKey}`);
+    }
+    temp.fields[fieldKey] = { ...a, id: fieldKey };
     return fieldKey;
   };
 

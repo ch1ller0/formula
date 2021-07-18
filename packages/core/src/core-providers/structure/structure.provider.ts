@@ -1,10 +1,17 @@
 import { useState } from './structure.state';
+import toPairs from '@tinkoff/utils/object/toPairs';
 
 import type {
   TProviderConfig,
   TProviderConsturctorArgs,
 } from '../../types/provider.types';
-import type { StructureFactory, TStructureService } from './structure.types';
+import {
+  StructureFactory,
+  TStructureService,
+  FieldStructKey,
+  GroupStructKey,
+  ScreenStructKey,
+} from './structure.types';
 
 type SelfDeps = {
   factory: StructureFactory;
@@ -30,15 +37,21 @@ class StructureService implements TStructureService {
     return this._selfState.initialState;
   }
 
-  _getInitialConfig() {
-    return this._selfState.initialConfig;
-  }
-
   toggleGroupsVisibility(groupNames: string[]) {
     groupNames.forEach((groupName) => {
       this._selfState.actions.toggleGroupVisibilityAction({ groupName });
     });
   }
+
+  // findEntity(key: string) {
+  //   const state = this._selfState._getState();
+  //   const flate = { ...state.fields, ...state.groups } as Record<
+  //     string,
+  //     unknown
+  //   >;
+
+  //   return toPairs(flate).find(([innerKey]) => innerKey.includes(key));
+  // }
 }
 
 export const StructureProvider: TProviderConfig<StructureService> = {

@@ -46,12 +46,57 @@ describe('structure.util', () => {
           },
         },
         fields: {
-          'fld.field1': { field: 1 },
-          'fld.field2': { field: 2 },
-          'fld.field3': { field: 3 },
-          'fld.field4': { field: 4 },
+          'fld.field1': { field: 1, id: 'fld.field1' },
+          'fld.field2': { field: 2, id: 'fld.field2' },
+          'fld.field3': { field: 3, id: 'fld.field3' },
+          'fld.field4': { field: 4, id: 'fld.field4' },
         },
       });
+    });
+    it('should fail if duplicate keys found', () => {
+      expect(() =>
+        normalizate({
+          screen1: {
+            type: 'group',
+            group: {
+              dupl: {
+                type: 'group',
+                group: {
+                  field1: { field: 1 },
+                },
+              },
+            },
+          },
+          screen2: {
+            type: 'group',
+            group: {
+              dupl: {
+                type: 'group',
+                group: {
+                  field1: { field: 1 },
+                },
+              },
+            },
+          },
+        }),
+      ).toThrowError('duplicate key found in groups: grp.dupl');
+
+      expect(() =>
+        normalizate({
+          screen1: {
+            type: 'group',
+            group: {
+              field1: { field: 1 },
+            },
+          },
+          screen2: {
+            type: 'group',
+            group: {
+              field1: { field: 1 },
+            },
+          },
+        }),
+      ).toThrowError('duplicate key found in fields: fld.field1');
     });
   });
 });

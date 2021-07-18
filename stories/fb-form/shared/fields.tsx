@@ -155,7 +155,7 @@ export const RadioFieldView = ViewGenerator.field<{
           onChange={onChange}
           value={selectedValue}
         >
-          {options.map((a) => (
+          {options?.map((a) => (
             <Radio key={a.value} value={a.value}>
               <Text fontSize={5}>{a.label}</Text>
             </Radio>
