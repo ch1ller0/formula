@@ -9,10 +9,7 @@ export default {
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   roots: ['<rootDir>/packages'],
-  testMatch: [
-    '**/__tests__/**/*.+(ts|tsx|js)',
-    '**/?(*.)+(spec|test).+(ts|tsx|js)',
-  ],
+  testMatch: ['**/?(*.)+(spec|test).+(ts|tsx|js)'],
   transform: {
     '^.+\\.(ts|tsx|js)$': 'ts-jest',
   },
