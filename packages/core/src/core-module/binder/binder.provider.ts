@@ -30,7 +30,11 @@ class BinderSerivce {
   }
 
   getBinders(tok: Token) {
-    return this._container.getByToken(tok).useBinders?.();
+    const binderClass = this._container.getByToken(tok);
+    if (typeof binderClass.useBinders !== 'function') {
+      throw new Error(`token: ${tok.toString()} has no useBinders method`);
+    }
+    return this._container.getByToken(tok).useBinders();
   }
 }
 
