@@ -60,7 +60,7 @@ export class DependencyContainer {
           marker: 0 as const,
         };
         this._providerStorage[currentRecord.provider.provide] = res;
-        return res;
+        return res.resolved;
       }
 
       const resolvedDeps = (currentRecord.provider.deps || []).map(
@@ -79,7 +79,7 @@ export class DependencyContainer {
               getRequireStack(currentRecord, this._providerStorage),
             );
           }
-          return resolveSingle(depRecord)?.resolved;
+          return resolveSingle(depRecord);
         },
       );
 
@@ -90,7 +90,7 @@ export class DependencyContainer {
           marker: 0 as const,
         };
         this._providerStorage[currentRecord.provider.provide] = res;
-        return res;
+        return res.resolved;
       }
 
       if (currentRecord.provider.useClass) {
@@ -100,7 +100,7 @@ export class DependencyContainer {
           marker: 0 as const,
         };
         this._providerStorage[currentRecord.provider.provide] = res;
-        return res;
+        return res.resolved;
       }
     };
 

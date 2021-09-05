@@ -7,33 +7,31 @@ import {
   map,
   skip,
   distinctUntilChanged,
-  startWith,
 } from 'rxjs/operators';
 import keys from '@tinkoff/utils/object/keys';
 import filterObj from '@tinkoff/utils/object/filter';
 import eachObj from '@tinkoff/utils/object/each';
 import { combineLatest } from 'rxjs';
-import { BuiltInProviders } from '@formula/core';
+import { CoreTokens } from '@formula/core';
 import { useState } from './validation.state';
-import { allScreenFields } from '../../core/src/core-providers/structure/structure.selector';
+// @ts-ignore
+import { allScreenFields } from '../../core/src/core-module/structure/structure.selector';
 
-import type { TProvider, TBase } from '@formula/core';
-import type { TValidationService } from './validation.types';
-import {
-  TFieldService,
-  TPropsService,
-  TStepService,
-  TStructureService,
-} from 'packages/core/src/core-providers/';
+import type { TFieldService } from '@formula/core/src/core-module/field/field.types';
+import type { TPropsService } from '@formula/core/src/core-module/props/props.types';
+import type { TStepService } from '@formula/core/src/core-module/step/step.types';
+import type { TStructureService } from '@formula/core/src/core-module/structure/structure.types';
+import type { Provider } from '@formula/ioc';
+import type { TValidationService, ValidateFn } from './validation.types';
+import type { GlobalStore } from 'packages/core/src/core-module/global-store/global-store.types';
 
 const {
-  FieldProvider,
-  PropsProvider,
-  StepProvider,
-  StructureProvider,
-} = BuiltInProviders;
-
-type ValidateFn = (v: TBase.TPrimitive) => string | Promise<string>;
+  FIELD_SERVICE_TOKEN,
+  PROPS_SERVICE_TOKEN,
+  STEP_SERVICE_TOKEN,
+  STRUCTURE_SERVICE_TOKEN,
+  GLOBAL_STORE_TOKEN,
+} = CoreTokens;
 
 class ValidationService implements TValidationService {
   private readonly _fieldService: TFieldService;
@@ -43,17 +41,22 @@ class ValidationService implements TValidationService {
   private readonly _selfState: ReturnType<typeof useState>;
 
   constructor(
-    args: TProvider.TProviderConsturctorArgs<
-      [TFieldService, TPropsService, TStepService, TStructureService]
-    >,
+    deps: [
+      TFieldService,
+      TPropsService,
+      TStepService,
+      TStructureService,
+      GlobalStore,
+    ],
   ) {
     const [
       fieldService,
       propsService,
       stepService,
       structureService,
-    ] = args.deps;
-    this._selfState = useState(args);
+      globalStore,
+    ] = deps;
+    this._selfState = useState(globalStore);
 
     this._fieldService = fieldService;
     this._propsService = propsService;
@@ -158,8 +161,16 @@ class ValidationService implements TValidationService {
   }
 }
 
-export const ValidationProvider: TProvider.TProviderConfig<ValidationService> = {
-  name: 'validation',
-  useService: ValidationService,
-  deps: [FieldProvider, PropsProvider, StepProvider, StructureProvider],
+export const VALIDATION_SERVICE_TOKEN = 'validationToken';
+
+export const ValidationProvider: Provider = {
+  provide: VALIDATION_SERVICE_TOKEN,
+  useClass: ValidationService,
+  deps: [
+    FIELD_SERVICE_TOKEN,
+    PROPS_SERVICE_TOKEN,
+    STEP_SERVICE_TOKEN,
+    STRUCTURE_SERVICE_TOKEN,
+    GLOBAL_STORE_TOKEN,
+  ],
 };

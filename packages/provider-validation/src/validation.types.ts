@@ -7,3 +7,4 @@ export type ChangeKeyValArgs = {
 };
 
 export type TValidationService = TProvider.TProviderService;
+export type ValidateFn = (v: TBase.TPrimitive) => string | Promise<string>;

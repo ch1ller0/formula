@@ -1,21 +1,24 @@
 import { Subject } from 'rxjs';
 import { useState } from './field.state';
-import { TStructureService, StructureProvider } from '../index';
+import {
+  FIELD_SERVICE_TOKEN,
+  STRUCTURE_SERVICE_TOKEN,
+  GLOBAL_STORE_TOKEN,
+} from '../tokens';
 
-import type {
-  TProviderConfig,
-  TProviderConsturctorArgs,
-} from '../../types/provider.types';
+import type { Provider } from '@formula/ioc';
+import type { TStructureService } from '../structure/structure.types';
 import type { TFieldService, ChangeKeyValArgs } from './field.types';
+import type { GlobalStore } from '../global-store/global-store.types';
 
 class FieldService implements TFieldService {
   private readonly _selfState: ReturnType<typeof useState>;
   private readonly _diffStream: Subject<ChangeKeyValArgs>;
 
-  constructor(args: TProviderConsturctorArgs<[TStructureService]>) {
-    const [structureService] = args.deps;
+  constructor(deps: [TStructureService, GlobalStore]) {
+    const [structureService, globalStore] = deps;
     const structure = structureService._getInitialState();
-    this._selfState = useState({ ...args, structure });
+    this._selfState = useState({ globalStore, structure });
     this._diffStream = new Subject();
   }
 
@@ -43,8 +46,8 @@ class FieldService implements TFieldService {
   }
 }
 
-export const FieldProvider: TProviderConfig<FieldService> = {
-  name: 'field',
-  useService: FieldService,
-  deps: [StructureProvider],
+export const fieldProvider: Provider = {
+  provide: FIELD_SERVICE_TOKEN,
+  useClass: FieldService,
+  deps: [STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN],
 };

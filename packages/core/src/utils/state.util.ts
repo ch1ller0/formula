@@ -1,8 +1,6 @@
-import { createStore } from '@reatom/core';
 import { observe } from '@reatom/observable';
 import { from } from 'rxjs';
 import { shareReplay, startWith } from 'rxjs/operators';
-import { connectReduxDevtools } from '@reatom/debug';
 
 import type { Observable } from 'rxjs';
 import type { Atom, Store } from '@reatom/core';
@@ -23,13 +21,4 @@ export const toRxStore = <Stt>(
 
   // @ts-ignore
   return from(observe(globalStore));
-};
-
-export const createGlobalStore = () => {
-  const store = createStore();
-  if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
-    connectReduxDevtools(store);
-  }
-
-  return store;
 };

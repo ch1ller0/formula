@@ -1,6 +1,6 @@
 import { declareAction, declareAtom, Store } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
-import { toRxStore } from '@formula/core';
+import { StateUtil } from '@formula/core';
 
 type State = Record<string, string[]>;
 type ValidateActionArgs = {
@@ -12,7 +12,7 @@ const validateAction = declareAction<ValidateActionArgs>(
   'validation.validateAction',
 );
 
-export const useState = ({ globalStore }: { globalStore: Store }) => {
+export const useState = (globalStore: Store) => {
   const atom = declareAtom<State>(['validation'], {}, (on) => [
     on(validateAction, (state, payload) => ({
       ...state,
@@ -24,7 +24,7 @@ export const useState = ({ globalStore }: { globalStore: Store }) => {
 
   return {
     _atom: atom,
-    rx: toRxStore(globalStore, atom),
+    rx: StateUtil.toRxStore(globalStore, atom),
     actions: {
       validateAction: (a: ValidateActionArgs) =>
         globalStore.dispatch(validateAction(a)),

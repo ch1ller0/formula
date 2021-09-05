@@ -1,6 +1,6 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
-import { toRxStore } from '../../base/store';
+import { toRxStore } from '../../utils/state.util';
 import { getInitialStructure, normalizate } from './structure.util';
 
 import type { Store } from '@reatom/core';

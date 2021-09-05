@@ -1,25 +1,25 @@
 import { useState } from './structure.state';
-
-import type {
-  TProviderConfig,
-  TProviderConsturctorArgs,
-} from '../../types/provider.types';
 import {
+  STRUCTURE_CONFIG_TOKEN,
+  STRUCTURE_SERVICE_TOKEN,
+  GLOBAL_STORE_TOKEN,
+} from '../tokens';
+
+import type { Provider } from '@formula/ioc';
+import type {
   StructureFactory,
   TStructureService,
   GroupStructKey,
 } from './structure.types';
-
-type SelfDeps = {
-  factory: StructureFactory;
-};
+import type { GlobalStore } from '../global-store/global-store.types';
 
 class StructureService implements TStructureService {
   private readonly _selfState: ReturnType<typeof useState>;
 
-  constructor(args: TProviderConsturctorArgs<[]>, deps: SelfDeps) {
+  constructor(deps: [StructureFactory, GlobalStore]) {
+    const [factory, globalStore] = deps;
     // @TODO move to initial config provider
-    this._selfState = useState({ ...args, factory: deps.factory });
+    this._selfState = useState({ globalStore, factory });
   }
 
   getRxStore() {
@@ -41,8 +41,8 @@ class StructureService implements TStructureService {
   }
 }
 
-export const StructureProvider: TProviderConfig<StructureService> = {
-  name: 'structure',
-  useService: StructureService,
-  deps: [],
+export const structureProvider: Provider = {
+  provide: STRUCTURE_SERVICE_TOKEN,
+  useClass: StructureService,
+  deps: [STRUCTURE_CONFIG_TOKEN, GLOBAL_STORE_TOKEN],
 };

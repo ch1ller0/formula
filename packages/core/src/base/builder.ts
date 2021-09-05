@@ -1,63 +1,48 @@
 import React from 'react';
-import { ProviderContainer } from './provider-container';
+import { coreProviders } from '../core-module';
+import { DependencyContainer } from '@formula/ioc';
 import {
-  StructureProvider,
-  RenderProvider,
-  PropsProvider,
-  StepProvider,
-  FieldProvider,
-} from '../core-providers/index';
+  STRUCTURE_CONFIG_TOKEN,
+  RENDER_SERVICE_TOKEN,
+  GLOBAL_STORE_TOKEN,
+} from '../core-module/tokens';
 
-import type { StructureFactory } from '../core-providers/structure/structure.types';
-import type { TProviderConfig } from '../types/provider.types';
-import type { TBuilderConfig } from '../types/base.types';
+import type { StructureFactory } from '../core-module/structure/structure.types';
 
-// pack of providers required for form to work
-const DEFAULT_PROVIDERS = [
-  StructureProvider,
-  RenderProvider,
-  PropsProvider,
-  StepProvider,
-  FieldProvider,
-];
+import type { Provider } from '@formula/ioc';
 
 export class FormBuilder {
-  private _config: TBuilderConfig;
-  private _providerContainer: ProviderContainer;
+  private _config: { providers: Provider[] };
 
   constructor() {
-    this._config = { providers: DEFAULT_PROVIDERS };
-    this._providerContainer = new ProviderContainer({ cfg: this._config });
+    this._config = { providers: coreProviders };
   }
 
-  addProviders(ar: TProviderConfig[]) {
+  addProviders(ar: Provider[]) {
     this._config.providers = this._config.providers.concat(ar);
     return this;
   }
 
   buildStructure(factory: StructureFactory) {
-    this._providerContainer.registerSingleProvider(StructureProvider, {
-      factory,
-    });
+    this.addProviders([
+      {
+        provide: STRUCTURE_CONFIG_TOKEN,
+        useValue: factory,
+      },
+    ]);
 
     return this;
   }
 
   toComponent(CoreWrapper?: React.FC): React.ReactNode {
-    this._initInternalDeps();
-
+    const depContainer = new DependencyContainer(this._config.providers);
+    // const globalStoreState =
     console.log(
       'before-render-state:',
-      this._providerContainer._getStore().getState(),
+      depContainer.getByToken(GLOBAL_STORE_TOKEN).getState(),
     );
+    const renderer = depContainer.getByToken(RENDER_SERVICE_TOKEN);
 
-    return this._providerContainer
-      .getService(RenderProvider)
-      .renderRoot(CoreWrapper);
-  }
-
-  private _initInternalDeps() {
-    this._providerContainer.registerProviders();
-    this._providerContainer.bindFieldControls();
+    return renderer(CoreWrapper);
   }
 }

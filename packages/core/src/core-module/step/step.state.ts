@@ -1,15 +1,15 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import propSet from '@tinkoff/utils/object/propSet';
-import { toRxStore } from '../../base/store';
+import { toRxStore } from '../../utils/state.util';
 
-import type { TProviderConsturctorArgs } from '../../types/provider.types';
 import type { SetBlockArgs, StepState } from './step.types';
+import type { GlobalStore } from '../global-store/global-store.types';
 
 const stepIncrement = declareAction('step.stepIncrement');
 const stepBlock = declareAction<SetBlockArgs>('step.stepBlock');
 
-export const useState = ({ globalStore }: TProviderConsturctorArgs) => {
+export const useState = (globalStore: GlobalStore) => {
   const atom = declareAtom<StepState>(
     ['step'],
     {

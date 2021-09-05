@@ -1,7 +1,7 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import mapObj from '@tinkoff/utils/object/map';
-import { toRxStore } from '../../base/store';
+import { toRxStore } from '../../utils/state.util';
 
 import type { TProviderConsturctorArgs } from '../../types/provider.types';
 import type { StructureState } from '../structure/structure.types';

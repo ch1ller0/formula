@@ -1,7 +1,6 @@
 import React from 'react';
 import { context, useAtom } from '@reatom/react';
 
-import type { TProviderConsturctorArgs } from '../../types/provider.types';
 import type { TPrimitive } from '../../types/base.types';
 import type {
   TStructureService,
@@ -10,6 +9,7 @@ import type {
 import type { TPropsService } from '../props/props.types';
 import type { TFieldService } from '../field/field.types';
 import type { TStepService } from '../step/step.types';
+import { GlobalStore } from '../global-store/global-store.types';
 
 type RenderDepReturn<T extends { _getRenderDeps: any }> = ReturnType<
   T['_getRenderDeps']
@@ -125,15 +125,21 @@ const RenderTree: React.FC<{
 };
 
 export const renderRoot = (
-  {
+  deps: [
+    TStructureService,
+    TPropsService,
+    TFieldService,
+    TStepService,
+    GlobalStore,
+  ],
+) => (Wrapper = defaultWrapper) => {
+  const [
+    structureService,
+    propsService,
+    fieldService,
+    stepService,
     globalStore,
-    deps,
-  }: TProviderConsturctorArgs<
-    [TStructureService, TPropsService, TFieldService, TStepService]
-  >,
-  Wrapper = defaultWrapper,
-) => {
-  const [structureService, propsService, fieldService, stepService] = deps;
+  ] = deps;
   const renderDependencies = {
     structureDeps: structureService._getRenderDeps(),
     propsDeps: propsService._getRenderDeps(),

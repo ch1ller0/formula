@@ -2,7 +2,7 @@ import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import mapObj from '@tinkoff/utils/object/map';
 import filterObj from '@tinkoff/utils/object/filter';
-import { toRxStore } from '../../base/store';
+import { toRxStore } from '../../utils/state.util';
 
 import type { StructureState } from '../structure/structure.types';
 import type { ChangeKeyValArgs, FieldState } from './field.types';

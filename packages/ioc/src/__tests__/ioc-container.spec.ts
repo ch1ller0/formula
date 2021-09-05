@@ -63,6 +63,35 @@ describe('ProviderContainer', () => {
     expect(thirdDep.getDep(1)).toEqual(secondDep); // should be same pointer
   });
 
+  it('complex dep graph', () => {
+    const providers = createProviders([
+      {
+        provide: 'first',
+        type: 'class',
+        deps: ['second', 'third'],
+      },
+      {
+        provide: 'second',
+        type: 'class',
+        deps: ['third'],
+      },
+      {
+        provide: 'third',
+        type: 'factory',
+      },
+    ]);
+
+    const container = new DependencyContainer(providers);
+    const firstDep = container.getByToken('first');
+    const secondDep = container.getByToken('second');
+    const thirdDep = container.getByToken('third');
+    expect(firstDep.isClass).toEqual(true);
+    expect(firstDep.getDep(0)).toEqual(secondDep);
+    expect(firstDep.getDep(1)).toEqual(thirdDep);
+    expect(thirdDep('as')).toEqual(':as');
+    expect(secondDep.isClass).toEqual(true);
+  });
+
   describe('not existent token', () => {
     it('token not found during init', () => {
       expect.assertions(2);

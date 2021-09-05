@@ -7,27 +7,24 @@ import {
 } from 'rxjs/operators';
 import { useState } from './step.state';
 import {
-  StructureProvider,
-  TStructureService,
-  FieldProvider,
-  TFieldService,
-} from '../index';
+  FIELD_SERVICE_TOKEN,
+  GLOBAL_STORE_TOKEN,
+  STEP_SERVICE_TOKEN,
+} from '../tokens';
 
-import type {
-  TProviderConfig,
-  TProviderConsturctorArgs,
-} from '../../types/provider.types';
 import type { TStepService, SetBlockArgs } from './step.types';
+import type { TFieldService } from '../field/field.types';
+import type { Provider } from '@formula/ioc';
+import type { GlobalStore } from '../global-store/global-store.types';
+
 class StepService implements TStepService {
   private readonly _selfState: ReturnType<typeof useState>;
   private readonly _fieldService: TFieldService;
 
-  constructor(
-    args: TProviderConsturctorArgs<[TFieldService, TStructureService]>,
-  ) {
-    const [fieldService] = args.deps;
+  constructor(deps: [TFieldService, GlobalStore]) {
+    const [fieldService, globalStore] = deps;
     this._fieldService = fieldService;
-    this._selfState = useState(args);
+    this._selfState = useState(globalStore);
   }
 
   useBinders() {
@@ -71,8 +68,8 @@ class StepService implements TStepService {
   }
 }
 
-export const StepProvider: TProviderConfig<StepService> = {
-  name: 'step',
-  useService: StepService,
-  deps: [FieldProvider, StructureProvider],
+export const stepProvider: Provider = {
+  provide: STEP_SERVICE_TOKEN,
+  useClass: StepService,
+  deps: [FIELD_SERVICE_TOKEN, GLOBAL_STORE_TOKEN],
 };

@@ -4,7 +4,7 @@ type ProviderBase = {
 };
 
 export type Provider = ProviderBase & {
-  useValue?: string;
+  useValue?: any;
   useFactory?: (deps: any) => unknown;
   useClass?: any;
 };
