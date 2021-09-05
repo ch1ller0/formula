@@ -1,9 +1,12 @@
-export const GLOBAL_STORE_TOKEN = 'globalStoreToken';
-export const STRUCTURE_CONFIG_TOKEN = 'structureConfigToken';
+import { createToken } from '@formula/ioc';
+
+export const GLOBAL_STORE_TOKEN = createToken('global-store');
+export const STRUCTURE_CONFIG_TOKEN = createToken('structure-config');
+export const BINDER_SERVICE_TOKEN = createToken('binder-service');
 
 // core services
-export const FIELD_SERVICE_TOKEN = 'fieldServiceToken';
-export const PROPS_SERVICE_TOKEN = 'propsServiceToken';
-export const RENDER_SERVICE_TOKEN = 'renderServiceToken';
-export const STEP_SERVICE_TOKEN = 'stepServiceToken';
-export const STRUCTURE_SERVICE_TOKEN = 'structureProviderToken';
+export const FIELD_SERVICE_TOKEN = createToken('field-service');
+export const PROPS_SERVICE_TOKEN = createToken('props-service');
+export const RENDER_SERVICE_TOKEN = createToken('render-service');
+export const STEP_SERVICE_TOKEN = createToken('step-service');
+export const STRUCTURE_SERVICE_TOKEN = createToken('structure-service');

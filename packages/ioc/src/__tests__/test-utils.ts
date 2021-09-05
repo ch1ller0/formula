@@ -1,8 +1,8 @@
-import type { Provider } from '../types';
+import type { Provider, Token } from '../types';
 
 type Conf = {
-  provide: string;
-  deps?: string[];
+  provide: Token;
+  deps?: Token[];
   type: 'value' | 'factory' | 'class';
   implementation?: any;
 };
@@ -16,7 +16,7 @@ const createDep = (a: Conf) => {
     case 'value': {
       return {
         ...shared,
-        useValue: a.implementation || `value:${a.provide}`,
+        useValue: a.implementation || `value:${a.provide.toString()}`,
       } as Provider;
     }
     case 'factory': {

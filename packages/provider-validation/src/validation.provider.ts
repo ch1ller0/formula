@@ -13,6 +13,7 @@ import filterObj from '@tinkoff/utils/object/filter';
 import eachObj from '@tinkoff/utils/object/each';
 import { combineLatest } from 'rxjs';
 import { CoreTokens } from '@formula/core';
+import { createToken } from '@formula/ioc';
 import { useState } from './validation.state';
 // @ts-ignore
 import { allScreenFields } from '../../core/src/core-module/structure/structure.selector';
@@ -161,7 +162,7 @@ class ValidationService implements TValidationService {
   }
 }
 
-export const VALIDATION_SERVICE_TOKEN = 'validationToken';
+export const VALIDATION_SERVICE_TOKEN = createToken('validation-service');
 
 export const ValidationProvider: Provider = {
   provide: VALIDATION_SERVICE_TOKEN,

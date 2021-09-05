@@ -1,8 +1,8 @@
-import { DependencyContainer } from '../ioc-container';
+import { DependencyContainer, DI_TOKEN } from '../ioc-container';
 import range from '@tinkoff/utils/array/range';
 import { createProviders } from './test-utils';
 
-describe('ProviderContainer', () => {
+describe('DependencyContainer', () => {
   describe('basics', () => {
     it('single value', () => {
       const providers = createProviders([
@@ -85,6 +85,38 @@ describe('ProviderContainer', () => {
     const firstDep = container.getByToken('first');
     const secondDep = container.getByToken('second');
     const thirdDep = container.getByToken('third');
+    expect(firstDep.isClass).toEqual(true);
+    expect(firstDep.getDep(0)).toEqual(secondDep);
+    expect(firstDep.getDep(1)).toEqual(thirdDep);
+    expect(thirdDep('as')).toEqual(':as');
+    expect(secondDep.isClass).toEqual(true);
+  });
+
+  it('complex dep graph using symbols', () => {
+    const token1 = Symbol('a');
+    const token2 = Symbol('a');
+    const token3 = Symbol('a');
+    const providers = createProviders([
+      {
+        provide: token1,
+        type: 'class',
+        deps: [token2, token3],
+      },
+      {
+        provide: token2,
+        type: 'class',
+        deps: [token3],
+      },
+      {
+        provide: token3,
+        type: 'factory',
+      },
+    ]);
+
+    const container = new DependencyContainer(providers);
+    const firstDep = container.getByToken(token1);
+    const secondDep = container.getByToken(token2);
+    const thirdDep = container.getByToken(token3);
     expect(firstDep.isClass).toEqual(true);
     expect(firstDep.getDep(0)).toEqual(secondDep);
     expect(firstDep.getDep(1)).toEqual(thirdDep);
@@ -206,6 +238,15 @@ describe('ProviderContainer', () => {
         ];
         expect(e.requireStack).toEqual(expectedStack);
       }
+    });
+  });
+
+  describe('features', () => {
+    it('di container exposes itself', () => {
+      const providers = createProviders([{ provide: 'first', type: 'value' }]);
+      const container1 = new DependencyContainer(providers);
+      const container2 = container1.getByToken(DI_TOKEN);
+      expect(container1).toEqual(container2);
     });
   });
 });

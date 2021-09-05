@@ -8,8 +8,8 @@ import {
 } from './core-module/tokens';
 
 import type { StructureFactory } from './core-module/structure/structure.types';
-
 import type { Provider } from '@formula/ioc';
+import type { RendererFn } from './core-module/render/render.types';
 
 export class FormBuilder {
   private _config: { providers: Provider[] };
@@ -41,7 +41,7 @@ export class FormBuilder {
       'before-render-state:',
       depContainer.getByToken(GLOBAL_STORE_TOKEN).getState(),
     );
-    const renderer = depContainer.getByToken(RENDER_SERVICE_TOKEN);
+    const renderer: RendererFn = depContainer.getByToken(RENDER_SERVICE_TOKEN);
 
     return renderer(CoreWrapper);
   }

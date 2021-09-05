@@ -9,7 +9,8 @@ import type {
 import type { TPropsService } from '../props/props.types';
 import type { TFieldService } from '../field/field.types';
 import type { TStepService } from '../step/step.types';
-import { GlobalStore } from '../global-store/global-store.types';
+import type { GlobalStore } from '../global-store/global-store.types';
+import type { RendererFn } from './render.types';
 
 type RenderDepReturn<T extends { _getRenderDeps: any }> = ReturnType<
   T['_getRenderDeps']
@@ -132,7 +133,7 @@ export const renderRoot = (
     TStepService,
     GlobalStore,
   ],
-) => (Wrapper = defaultWrapper) => {
+): RendererFn => (Wrapper = defaultWrapper) => {
   const [
     structureService,
     propsService,

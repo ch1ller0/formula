@@ -1,27 +1,19 @@
 import each from '@tinkoff/utils/object/each';
-import { CircularDepError, TokenNotFoundError } from './errors';
-import type { Provider } from './types';
+import {
+  CircularDepError,
+  TokenNotFoundError,
+  ProviderNotReady,
+} from './errors';
+import type { Provider, Token, IocRecord } from './types';
 
-type Resolved = unknown;
-type IocRecord = {
-  provider: Provider;
-  marker: keyof typeof MARKER;
-  resolved?: Resolved;
-};
-type Storage = Record<string, IocRecord>;
-
-const MARKER = {
-  0: '__resolved',
-  1: '__processing',
-  2: '__unresolved',
-};
+type Storage = Record<Token, IocRecord>;
 
 const getRequireStack = (current: IocRecord, storage: Storage) => {
-  const requireStack: string[] = [current.provider.provide];
-  const follow = (currentRec: IocRecord): string[] => {
+  const requireStack: Token[] = [current.provider.provide];
+  const follow = (currentRec: IocRecord): Token[] => {
     const prevUnresolved = currentRec.provider.deps?.find(
       (x) => storage[x].marker === 1,
-    ) as string;
+    ) as Token;
 
     if (prevUnresolved === current.provider.provide) {
       return requireStack;
@@ -33,14 +25,25 @@ const getRequireStack = (current: IocRecord, storage: Storage) => {
   return follow(current);
 };
 
+export const DI_TOKEN = Symbol('di-container');
+
 export class DependencyContainer {
   private _providerStorage: Storage = {};
 
-  constructor(prs: Provider[]) {
+  constructor(externalPrs: Provider[]) {
+    const prs: Provider[] = [
+      ...externalPrs,
+      {
+        // add di token provider to have access for container
+        provide: DI_TOKEN,
+        useFactory: () => this,
+      },
+    ];
+
     this._providerStorage = prs.reduce((acc, cur) => {
       return {
         ...acc,
-        [cur.provide]: { provider: cur, marker: 2 as keyof typeof MARKER },
+        [cur.provide]: { provider: cur, marker: 2 as const },
       };
     }, {} as Record<string, IocRecord>);
 
@@ -68,8 +71,8 @@ export class DependencyContainer {
           const depRecord = this._providerStorage[deptoken];
           if (!depRecord) {
             throw new TokenNotFoundError([
-              currentRecord.provider.provide,
-              deptoken,
+              currentRecord.provider.provide.toString(),
+              deptoken.toString(),
             ]);
           }
 
@@ -104,16 +107,26 @@ export class DependencyContainer {
       }
     };
 
+    // for string keys
     each((val) => {
       resolveSingle(val);
     }, this._providerStorage);
+
+    // for symbol keys
+    Object.getOwnPropertySymbols(this._providerStorage).forEach((e) => {
+      resolveSingle(this._providerStorage[e]);
+    });
   }
 
   getByToken(token: Provider['provide']): any {
     const provider = this._providerStorage[token];
     if (!provider) {
-      throw new TokenNotFoundError([token]);
+      throw new TokenNotFoundError([token.toString()]);
     }
-    return this._providerStorage[token].resolved;
+    if (provider.marker !== 0) {
+      throw new ProviderNotReady(provider.provider);
+    }
+
+    return provider.resolved;
   }
 }
