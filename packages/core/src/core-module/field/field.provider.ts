@@ -1,18 +1,15 @@
 import { Subject } from 'rxjs';
+import { FIELD_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN } from '../tokens';
 import { useState } from './field.state';
-import {
-  FIELD_SERVICE_TOKEN,
-  STRUCTURE_SERVICE_TOKEN,
-  GLOBAL_STORE_TOKEN,
-} from '../tokens';
-
 import type { Provider } from '@formula/ioc';
+
 import type { TStructureService } from '../structure/structure.types';
-import type { TFieldService, ChangeKeyValArgs } from './field.types';
 import type { GlobalStore } from '../global-store/global-store.types';
+import type { TFieldService, ChangeKeyValArgs } from './field.types';
 
 class FieldService implements TFieldService {
   private readonly _selfState: ReturnType<typeof useState>;
+
   private readonly _diffStream: Subject<ChangeKeyValArgs>;
 
   constructor(deps: [TStructureService, GlobalStore]) {

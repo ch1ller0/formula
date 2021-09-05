@@ -7,17 +7,9 @@ import { GlobalStore } from '../global-store/global-store.types';
 import type { StructureState } from '../structure/structure.types';
 import type { ChangeFieldPropsArgs, PropsState } from './props.types';
 
-const changeFieldProps = declareAction<ChangeFieldPropsArgs>(
-  'props.changeFieldProps',
-);
+const changeFieldProps = declareAction<ChangeFieldPropsArgs>('props.changeFieldProps');
 
-export const useState = ({
-  globalStore,
-  structure,
-}: {
-  globalStore: GlobalStore;
-  structure: StructureState;
-}) => {
+export const useState = ({ globalStore, structure }: { globalStore: GlobalStore; structure: StructureState }) => {
   // @ts-ignore
   const initialState = mapObj(({ props }) => props, structure.fields);
   const atom = declareAtom<PropsState>(['props'], initialState, (on) => [
@@ -40,8 +32,7 @@ export const useState = ({
     _atom: atom,
     rx: toRxStore(globalStore, atom),
     actions: {
-      changeFieldProps: (a: ChangeFieldPropsArgs) =>
-        globalStore.dispatch(changeFieldProps(a)),
+      changeFieldProps: (a: ChangeFieldPropsArgs) => globalStore.dispatch(changeFieldProps(a)),
     },
   };
 };

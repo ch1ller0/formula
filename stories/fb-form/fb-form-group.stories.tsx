@@ -1,15 +1,7 @@
 import { FormBuilder, CoreTokens } from '@formula/core';
-import {
-  ValidationProvider,
-  VALIDATION_SERVICE_TOKEN,
-} from '@formula/provider-validation';
+import { ValidationProvider, VALIDATION_SERVICE_TOKEN } from '@formula/provider-validation';
 
-import {
-  InputFieldView,
-  SubmitButtonView,
-  ThankYouView,
-  TextFieldView,
-} from './shared/fields';
+import { InputFieldView, SubmitButtonView, ThankYouView, TextFieldView } from './shared/fields';
 import { requiredValidator, lengthValidator } from './shared/validators';
 import { boxWrapper } from './shared/wrapper';
 
@@ -33,20 +25,14 @@ const GroupStory = () => {
               field: InputFieldView,
               props: { label: 'Fortnite nickname' },
               controls: ({ getBinders }) => [
-                getBinders(VALIDATION_SERVICE_TOKEN).validateField([
-                  requiredValidator,
-                  lengthValidator({ min: 6 }),
-                ]),
+                getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
               ],
             },
             email1: {
               field: InputFieldView,
               props: { label: 'Email' },
               controls: ({ getBinders }) => [
-                getBinders(VALIDATION_SERVICE_TOKEN).validateField([
-                  requiredValidator,
-                  lengthValidator({ min: 6 }),
-                ]),
+                getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
               ],
             },
             next_button1: {
@@ -76,20 +62,14 @@ const GroupStory = () => {
               field: InputFieldView,
               props: { label: 'Fortnite nickname' },
               controls: ({ getBinders }) => [
-                getBinders(VALIDATION_SERVICE_TOKEN).validateField([
-                  requiredValidator,
-                  lengthValidator({ min: 6 }),
-                ]),
+                getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
               ],
             },
             email2: {
               field: InputFieldView,
               props: { label: 'Email' },
               controls: ({ getBinders }) => [
-                getBinders(VALIDATION_SERVICE_TOKEN).validateField([
-                  requiredValidator,
-                  lengthValidator({ min: 6 }),
-                ]),
+                getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
               ],
             },
           },
@@ -118,20 +98,14 @@ const GroupStory = () => {
             field: InputFieldView,
             props: { label: 'Fortnite nickname' },
             controls: ({ getBinders }) => [
-              getBinders(VALIDATION_SERVICE_TOKEN).validateField([
-                requiredValidator,
-                lengthValidator({ min: 6 }),
-              ]),
+              getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
             ],
           },
           email3: {
             field: InputFieldView,
             props: { label: 'Email' },
             controls: ({ getBinders }) => [
-              getBinders(VALIDATION_SERVICE_TOKEN).validateField([
-                requiredValidator,
-                lengthValidator({ min: 6 }),
-              ]),
+              getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
             ],
           },
           next_button3: {

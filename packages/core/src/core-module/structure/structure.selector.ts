@@ -1,10 +1,6 @@
 import toPairs from '@tinkoff/utils/object/toPairs';
 import flatten from '@tinkoff/utils/array/flatten';
-import {
-  FieldStructKey,
-  StructureState,
-  ScreenStructKey,
-} from './structure.types';
+import { FieldStructKey, StructureState, ScreenStructKey } from './structure.types';
 
 type Args = {
   invisSensitive: boolean;

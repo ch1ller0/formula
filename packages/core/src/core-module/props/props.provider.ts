@@ -1,14 +1,10 @@
+import { STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN, PROPS_SERVICE_TOKEN } from '../tokens';
 import { useState } from './props.state';
-import {
-  STRUCTURE_SERVICE_TOKEN,
-  GLOBAL_STORE_TOKEN,
-  PROPS_SERVICE_TOKEN,
-} from '../tokens';
-
 import type { Provider } from '@formula/ioc';
-import type { TPropsService, Props } from './props.types';
+
 import type { TStructureService } from '../structure/structure.types';
 import type { GlobalStore } from '../global-store/global-store.types';
+import type { TPropsService, Props } from './props.types';
 
 class PropsService implements TPropsService {
   private readonly _selfState: ReturnType<typeof useState>;

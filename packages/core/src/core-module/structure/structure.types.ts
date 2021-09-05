@@ -1,7 +1,8 @@
-import type { TFieldStructure } from '../../types/base.types';
-import type { TProviderService } from '../../types/provider.types';
 import type { Atom } from '@reatom/core';
 import type { Observable } from 'rxjs';
+import type { TFieldStructure } from '../../types/base.types';
+import type { TProviderService } from '../../types/provider.types';
+
 type ScreenName = string;
 
 export type StructureInput = GroupOut | TFieldStructure;

@@ -1,4 +1,5 @@
 import { normalizate } from '../structure.util';
+
 const fakeConf = {
   screen1: {
     type: 'group',

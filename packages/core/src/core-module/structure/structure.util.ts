@@ -26,16 +26,14 @@ export const normalizate = (state: FormStructure) => {
     fields: {},
   } as StructureState;
 
-  const traverseGroup = (
-    { group, opts }: GroupOut,
-    groupKey: GroupStructKey | ScreenStructKey,
-  ) => {
+  const traverseGroup = ({ group, opts }: GroupOut, groupKey: GroupStructKey | ScreenStructKey) => {
     if (groupKey in temp.groups) {
       throw new Error(`duplicate key found in groups: ${groupKey}`);
     }
     const children: (GroupStructKey | ScreenStructKey)[] = [];
 
-    toPairs(group).map(([entName, entVal]) => {
+    toPairs(group).forEach(([entName, entVal]) => {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       const childId = traverseUnknown(entVal, entName);
       children.push(childId);
     });

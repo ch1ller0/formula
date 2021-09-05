@@ -1,12 +1,5 @@
-import {
-  Button,
-  Input,
-  SelectPicker,
-  RadioGroup,
-  Radio,
-  Checkbox,
-  FlexboxGrid,
-} from 'rsuite';
+import React from 'react';
+import { Button, Input, SelectPicker, RadioGroup, Radio, Checkbox, FlexboxGrid } from 'rsuite';
 import { ViewGenerator } from '@formula/core';
 import 'rsuite/dist/styles/rsuite-default.css';
 
@@ -31,12 +24,7 @@ const Text: React.FC<
   </p>
 );
 
-const Boxify: React.FC<{ error?: string; name?: string; label?: string }> = ({
-  children,
-  error,
-  label,
-  name,
-}) => {
+const Boxify: React.FC<{ error?: string; name?: string; label?: string }> = ({ children, error, label, name }) => {
   return (
     <>
       <FlexboxGrid justify="start">
@@ -84,10 +72,6 @@ export const InputFieldView = ViewGenerator.field<{
   name: 'input',
   initialValue: () => '',
   render: ({ value, setValue, name, label, error }) => {
-    const onChange = (value: string) => {
-      setValue(value);
-    };
-
     return (
       <Boxify error={error} name={name}>
         <Input
@@ -96,7 +80,7 @@ export const InputFieldView = ViewGenerator.field<{
           placeholder={label}
           // @TODO infer type instead of TPrimitive
           value={value}
-          onChange={onChange}
+          onChange={setValue}
           size="lg"
         />
       </Boxify>
@@ -112,10 +96,6 @@ export const SelectFieldView = ViewGenerator.field<{
   name: 'select',
   initialValue: ({ options }) => options[0].value,
   render: ({ value, setValue, label, options, error, name }) => {
-    const onChange = (value: string) => {
-      setValue(value);
-    };
-
     return (
       <Boxify error={error} label={label} name={name}>
         <SelectPicker
@@ -127,7 +107,7 @@ export const SelectFieldView = ViewGenerator.field<{
           id={name}
           name={name}
           value={value}
-          onChange={onChange}
+          onChange={setValue}
         />
       </Boxify>
     );
@@ -148,13 +128,7 @@ export const RadioFieldView = ViewGenerator.field<{
 
     return (
       <Boxify error={error} label={label} name={name}>
-        <RadioGroup
-          appearance="default"
-          name="radioList"
-          inline
-          onChange={onChange}
-          value={selectedValue}
-        >
+        <RadioGroup appearance="default" name="radioList" inline onChange={onChange} value={selectedValue}>
           {options?.map((a) => (
             <Radio key={a.value} value={a.value}>
               <Text fontSize={5}>{a.label}</Text>
@@ -173,8 +147,8 @@ export const CheckboxFieldView = ViewGenerator.field<{
   name: 'checkbox',
   initialValue: () => false,
   render: ({ value, setValue, name, label, error }) => {
-    const onChange = (_, value: boolean) => {
-      setValue(value);
+    const onChange = (_, v: boolean) => {
+      setValue(v);
     };
 
     return (
@@ -209,11 +183,7 @@ export const SubmitButtonView = ViewGenerator.field<{
 
     return (
       <Boxify>
-        <Button
-          appearance={disabled ? 'subtle' : 'primary'}
-          onClick={onClick}
-          size="lg"
-        >
+        <Button appearance={disabled ? 'subtle' : 'primary'} onClick={onClick} size="lg">
           {label}
         </Button>
       </Boxify>

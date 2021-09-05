@@ -1,15 +1,14 @@
 import React from 'react';
-import { coreProviders } from './core-module';
 import { DependencyContainer } from '@formula/ioc';
+import { coreProviders } from './core-module';
 import {
   STRUCTURE_CONFIG_TOKEN,
   RENDER_SERVICE_TOKEN,
   GLOBAL_STORE_TOKEN,
   BINDER_SERVICE_TOKEN,
 } from './core-module/tokens';
-
-import type { StructureFactory } from './core-module/structure/structure.types';
 import type { Provider } from '@formula/ioc';
+import type { StructureFactory } from './core-module/structure/structure.types';
 import type { RendererFn } from './core-module/render/render.types';
 
 export class FormBuilder {
@@ -39,10 +38,9 @@ export class FormBuilder {
     const depContainer = new DependencyContainer(this._config.providers);
     // initialize bindings for fields
     depContainer.getByToken(BINDER_SERVICE_TOKEN).initialize();
-    console.log(
-      'before-render-state:',
-      depContainer.getByToken(GLOBAL_STORE_TOKEN).getState(),
-    );
+    // @TODO create logger provider
+    // eslint-disable-next-line no-console
+    console.log('before-render-state:', depContainer.getByToken(GLOBAL_STORE_TOKEN).getState());
     const renderer: RendererFn = depContainer.getByToken(RENDER_SERVICE_TOKEN);
 
     return renderer(CoreWrapper);

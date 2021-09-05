@@ -1,9 +1,5 @@
 import each from '@tinkoff/utils/object/each';
-import {
-  CircularDepError,
-  TokenNotFoundError,
-  ProviderNotReady,
-} from './errors';
+import { CircularDepError, TokenNotFoundError, ProviderNotReady } from './errors';
 import type { Provider, Token, IocRecord } from './types';
 
 type Storage = Record<Token, IocRecord>;
@@ -11,9 +7,7 @@ type Storage = Record<Token, IocRecord>;
 const getRequireStack = (current: IocRecord, storage: Storage) => {
   const requireStack: Token[] = [current.provider.provide];
   const follow = (currentRec: IocRecord): Token[] => {
-    const prevUnresolved = currentRec.provider.deps?.find(
-      (x) => storage[x].marker === 1,
-    ) as Token;
+    const prevUnresolved = currentRec.provider.deps?.find((x) => storage[x].marker === 1) as Token;
 
     if (prevUnresolved === current.provider.provide) {
       return requireStack;
@@ -48,6 +42,7 @@ export class DependencyContainer {
       {} as Storage,
     );
 
+    // eslint-disable-next-line consistent-return
     const resolveSingle = (currentRecord: IocRecord) => {
       // already resolved previously
       if (currentRecord.resolved) {
@@ -67,25 +62,18 @@ export class DependencyContainer {
         return res.resolved;
       }
 
-      const resolvedDeps = (currentRecord.provider.deps || []).map(
-        (deptoken) => {
-          const depRecord = this._providerStorage[deptoken];
-          if (!depRecord) {
-            throw new TokenNotFoundError([
-              currentRecord.provider.provide.toString(),
-              deptoken.toString(),
-            ]);
-          }
+      const resolvedDeps = (currentRecord.provider.deps || []).map((deptoken) => {
+        const depRecord = this._providerStorage[deptoken];
+        if (!depRecord) {
+          throw new TokenNotFoundError([currentRecord.provider.provide.toString(), deptoken.toString()]);
+        }
 
-          // circular dependency detected
-          if (depRecord.marker === 1) {
-            throw new CircularDepError(
-              getRequireStack(currentRecord, this._providerStorage),
-            );
-          }
-          return resolveSingle(depRecord);
-        },
-      );
+        // circular dependency detected
+        if (depRecord.marker === 1) {
+          throw new CircularDepError(getRequireStack(currentRecord, this._providerStorage));
+        }
+        return resolveSingle(depRecord);
+      });
 
       if (currentRecord.provider.useFactory) {
         const res: IocRecord = {
@@ -98,9 +86,10 @@ export class DependencyContainer {
       }
 
       if (currentRecord.provider.useClass) {
+        const Constructor = currentRecord.provider.useClass;
         const res: IocRecord = {
           provider: currentRecord.provider,
-          resolved: new currentRecord.provider.useClass(resolvedDeps),
+          resolved: new Constructor(resolvedDeps),
           marker: 0 as const,
         };
         this._providerStorage[currentRecord.provider.provide] = res;

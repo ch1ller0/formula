@@ -1,7 +1,6 @@
 import { createStore } from '@reatom/core';
 import { connectReduxDevtools } from '@reatom/debug';
 import { GLOBAL_STORE_TOKEN } from '../tokens';
-
 import type { Provider } from '@formula/ioc';
 
 export const globalStoreProvider: Provider = {
@@ -9,10 +8,7 @@ export const globalStoreProvider: Provider = {
   useFactory: () => {
     const store = createStore();
 
-    if (
-      process.env.NODE_ENV !== 'production' &&
-      typeof window !== 'undefined'
-    ) {
+    if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
       connectReduxDevtools(store);
     }
 

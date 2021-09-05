@@ -1,24 +1,15 @@
-import {
-  distinctUntilChanged,
-  filter,
-  mapTo,
-  sample,
-  map,
-} from 'rxjs/operators';
+import { distinctUntilChanged, filter, mapTo, sample, map } from 'rxjs/operators';
+import { FIELD_SERVICE_TOKEN, GLOBAL_STORE_TOKEN, STEP_SERVICE_TOKEN } from '../tokens';
 import { useState } from './step.state';
-import {
-  FIELD_SERVICE_TOKEN,
-  GLOBAL_STORE_TOKEN,
-  STEP_SERVICE_TOKEN,
-} from '../tokens';
-
-import type { TStepService, SetBlockArgs } from './step.types';
-import type { TFieldService } from '../field/field.types';
 import type { Provider } from '@formula/ioc';
+
+import type { TFieldService } from '../field/field.types';
 import type { GlobalStore } from '../global-store/global-store.types';
+import type { TStepService, SetBlockArgs } from './step.types';
 
 class StepService implements TStepService {
   private readonly _selfState: ReturnType<typeof useState>;
+
   private readonly _fieldService: TFieldService;
 
   constructor(deps: [TFieldService, GlobalStore]) {

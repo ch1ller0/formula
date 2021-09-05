@@ -1,25 +1,12 @@
 import { FormBuilder, CoreTokens } from '@formula/core';
-import {
-  ValidationProvider,
-  VALIDATION_SERVICE_TOKEN,
-} from '@formula/provider-validation';
+import { ValidationProvider, VALIDATION_SERVICE_TOKEN } from '@formula/provider-validation';
 
-import {
-  CheckboxFieldView,
-  InputFieldView,
-  SubmitButtonView,
-  TextFieldView,
-  ThankYouView,
-} from './shared/fields';
 import { pluck, filter } from 'rxjs/operators';
+import { CheckboxFieldView, InputFieldView, SubmitButtonView, TextFieldView, ThankYouView } from './shared/fields';
 import { requiredValidator, lengthValidator } from './shared/validators';
 import { boxWrapper } from './shared/wrapper';
 
-const {
-  STEP_SERVICE_TOKEN,
-  STRUCTURE_SERVICE_TOKEN,
-  FIELD_SERVICE_TOKEN,
-} = CoreTokens;
+const { STEP_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN, FIELD_SERVICE_TOKEN } = CoreTokens;
 
 const ConditionalGroupStory = () => {
   const Cmp = new FormBuilder()
@@ -46,7 +33,7 @@ const ConditionalGroupStory = () => {
                   filter((a) => a.name === fieldName),
                   pluck('value'),
                 )
-                .subscribe((e) => {
+                .subscribe(() => {
                   getService(STRUCTURE_SERVICE_TOKEN).toggleGroupsVisibility([
                     'grp.personal_info_with_email',
                     'grp.personal_info_without_email',
@@ -61,20 +48,14 @@ const ConditionalGroupStory = () => {
               field: InputFieldView,
               props: { label: 'Nickname' },
               controls: ({ getBinders }) => [
-                getBinders(VALIDATION_SERVICE_TOKEN).validateField([
-                  requiredValidator,
-                  lengthValidator({ min: 6 }),
-                ]),
+                getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
               ],
             },
             email1: {
               field: InputFieldView,
               props: { label: 'Email' },
               controls: ({ getBinders }) => [
-                getBinders(VALIDATION_SERVICE_TOKEN).validateField([
-                  requiredValidator,
-                  lengthValidator({ min: 6 }),
-                ]),
+                getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
               ],
             },
           },
@@ -88,20 +69,14 @@ const ConditionalGroupStory = () => {
               field: InputFieldView,
               props: { label: 'First name' },
               controls: ({ getBinders }) => [
-                getBinders(VALIDATION_SERVICE_TOKEN).validateField([
-                  requiredValidator,
-                  lengthValidator({ min: 6 }),
-                ]),
+                getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
               ],
             },
             second_name: {
               field: InputFieldView,
               props: { label: 'Second name' },
               controls: ({ getBinders }) => [
-                getBinders(VALIDATION_SERVICE_TOKEN).validateField([
-                  requiredValidator,
-                  lengthValidator({ min: 6 }),
-                ]),
+                getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
               ],
             },
           },

@@ -8,10 +8,7 @@ export type TPrimitive = string | number | boolean | null;
 /**
  * Basic field configuration
  */
-export type TFieldConfig<
-  Prps extends TVagueProps = TVagueProps,
-  FT extends TPrimitive = TPrimitive
-> = {
+export type TFieldConfig<Prps extends TVagueProps = TVagueProps, FT extends TPrimitive = TPrimitive> = {
   /**
    * Field`s name
    */

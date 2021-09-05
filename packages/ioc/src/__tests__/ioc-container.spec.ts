@@ -1,5 +1,5 @@
-import { DependencyContainer, DI_TOKEN } from '../ioc-container';
 import range from '@tinkoff/utils/array/range';
+import { DependencyContainer, DI_TOKEN } from '../ioc-container';
 import { createProviders } from './test-utils';
 
 describe('DependencyContainer', () => {
@@ -141,6 +141,7 @@ describe('DependencyContainer', () => {
 
       try {
         const container = new DependencyContainer(providers);
+        container.getByToken('second');
       } catch (e) {
         expect(e.message).toEqual('token not registered: non_existent');
         expect(e.requireStack).toEqual(['second', 'non_existent']);
@@ -157,7 +158,7 @@ describe('DependencyContainer', () => {
       ]);
       try {
         const container = new DependencyContainer(providers);
-        const provider = container.getByToken('non_existent');
+        container.getByToken('non_existent');
       } catch (e) {
         expect(e.message).toEqual('token not registered: non_existent');
       }
@@ -182,6 +183,7 @@ describe('DependencyContainer', () => {
 
       try {
         const container = new DependencyContainer(providers);
+        container.getByToken('first');
       } catch (e) {
         expect(e.message).toEqual('circular dependency for token: second');
         expect(e.requireStack).toEqual(['second']);
@@ -210,6 +212,7 @@ describe('DependencyContainer', () => {
 
       try {
         const container = new DependencyContainer(providers);
+        container.getByToken('first');
       } catch (e) {
         expect(e.message).toEqual('circular dependency for token: third');
         expect(e.requireStack).toEqual(['third', 'first', 'second']);
@@ -229,13 +232,11 @@ describe('DependencyContainer', () => {
 
       try {
         const container = new DependencyContainer(providers);
+        container.getByToken('first');
       } catch (e) {
         expect(e.message).toEqual('circular dependency for token: token-100');
         expect(e.requireStack.length).toEqual(101);
-        const expectedStack = [
-          'token-100',
-          ...range(0, 100).map((x) => `token-${x}`),
-        ];
+        const expectedStack = ['token-100', ...range(0, 100).map((x) => `token-${x}`)];
         expect(e.requireStack).toEqual(expectedStack);
       }
     });

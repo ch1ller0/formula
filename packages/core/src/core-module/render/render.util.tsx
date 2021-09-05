@@ -2,19 +2,14 @@ import React from 'react';
 import { context, useAtom } from '@reatom/react';
 
 import type { TPrimitive } from '../../types/base.types';
-import type {
-  TStructureService,
-  GroupStructVal,
-} from '../structure/structure.types';
+import type { TStructureService, GroupStructVal } from '../structure/structure.types';
 import type { TPropsService } from '../props/props.types';
 import type { TFieldService } from '../field/field.types';
 import type { TStepService } from '../step/step.types';
 import type { GlobalStore } from '../global-store/global-store.types';
 import type { RendererFn } from './render.types';
 
-type RenderDepReturn<T extends { _getRenderDeps: any }> = ReturnType<
-  T['_getRenderDeps']
->;
+type RenderDepReturn<T extends { _getRenderDeps: any }> = ReturnType<T['_getRenderDeps']>;
 
 const createRenderers = (
   resolveEnt,
@@ -45,6 +40,7 @@ const createRenderers = (
   };
 
   const renderGroup = ({ children, opts, id }: GroupStructVal) => {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const childrenRender = children.map((a) => renderAny(a));
 
     if (opts.invisible === true) {
@@ -81,6 +77,7 @@ const createRenderers = (
     // You are not supposed to be here you know
     // It might indicate that your structure is broken
     // _exhaustiveCheck(entity);
+    // eslint-disable-next-line no-console
     console.error(entity);
     throw new Error('unknown render entity');
   };
@@ -98,6 +95,8 @@ const RenderTree: React.FC<{
   fieldDeps: RenderDepReturn<TFieldService>;
   propsDeps: RenderDepReturn<TPropsService>;
 }> = ({ structureDeps, stepDeps, fieldDeps, propsDeps }) => {
+  const currentEntities = useAtom(structureDeps.atom);
+
   const rootRender = createRenderers(
     (key: string) => {
       const { fields, groups } = currentEntities;
@@ -109,12 +108,7 @@ const RenderTree: React.FC<{
     },
   );
 
-  const currentEntities = useAtom(structureDeps.atom);
-  const currentScreen = useAtom(
-    stepDeps.atom,
-    (a) => `scr.${a.currentStep}`,
-    [],
-  );
+  const currentScreen = useAtom(stepDeps.atom, (a) => `scr.${a.currentStep}`, []);
   // @ts-ignore
   const currentEntity = currentEntities.groups[currentScreen] as GroupStructVal;
 
@@ -126,21 +120,9 @@ const RenderTree: React.FC<{
 };
 
 export const renderRoot = (
-  deps: [
-    TStructureService,
-    TPropsService,
-    TFieldService,
-    TStepService,
-    GlobalStore,
-  ],
+  deps: [TStructureService, TPropsService, TFieldService, TStepService, GlobalStore],
 ): RendererFn => (Wrapper = defaultWrapper) => {
-  const [
-    structureService,
-    propsService,
-    fieldService,
-    stepService,
-    globalStore,
-  ] = deps;
+  const [structureService, propsService, fieldService, stepService, globalStore] = deps;
   const renderDependencies = {
     structureDeps: structureService._getRenderDeps(),
     propsDeps: propsService._getRenderDeps(),

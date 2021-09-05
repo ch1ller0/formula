@@ -5,10 +5,7 @@ import { shareReplay, startWith } from 'rxjs/operators';
 import type { Observable } from 'rxjs';
 import type { Atom, Store } from '@reatom/core';
 
-export const toRxStore = <Stt>(
-  globalStore: Store,
-  atom?: Atom<Stt>,
-): Observable<Stt> => {
+export const toRxStore = <Stt>(globalStore: Store, atom?: Atom<Stt>): Observable<Stt> => {
   if (atom) {
     const initialState = globalStore.getState(atom);
 

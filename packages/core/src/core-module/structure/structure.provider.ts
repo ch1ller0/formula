@@ -1,17 +1,9 @@
+import { STRUCTURE_CONFIG_TOKEN, STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN } from '../tokens';
 import { useState } from './structure.state';
-import {
-  STRUCTURE_CONFIG_TOKEN,
-  STRUCTURE_SERVICE_TOKEN,
-  GLOBAL_STORE_TOKEN,
-} from '../tokens';
-
 import type { Provider } from '@formula/ioc';
-import type {
-  StructureFactory,
-  TStructureService,
-  GroupStructKey,
-} from './structure.types';
 import type { GlobalStore } from '../global-store/global-store.types';
+
+import type { StructureFactory, TStructureService, GroupStructKey } from './structure.types';
 
 class StructureService implements TStructureService {
   private readonly _selfState: ReturnType<typeof useState>;

@@ -11,11 +11,9 @@ class BinderSerivce {
   }
 
   initialize() {
-    const { fields } = this._container
-      .getByToken(STRUCTURE_SERVICE_TOKEN)
-      ._getInitialState();
+    const { fields } = this._container.getByToken(STRUCTURE_SERVICE_TOKEN)._getInitialState();
 
-    toPairs(fields).map(([fieldName, { controls }]) => {
+    toPairs(fields).forEach(([fieldName, { controls }]) => {
       if (controls) {
         controls({
           getBinders: this.getBinders.bind(this),

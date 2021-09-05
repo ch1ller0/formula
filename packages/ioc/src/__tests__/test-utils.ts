@@ -7,6 +7,7 @@ type Conf = {
   implementation?: any;
 };
 
+// eslint-disable-next-line consistent-return
 const createDep = (a: Conf) => {
   const shared = {
     provide: a.provide,
@@ -22,9 +23,7 @@ const createDep = (a: Conf) => {
     case 'factory': {
       return {
         ...shared,
-        useFactory:
-          a.implementation ||
-          ((deps) => (arg: string) => `${deps.join('+')}:${arg}`),
+        useFactory: a.implementation || ((deps) => (arg: string) => `${deps.join('+')}:${arg}`),
       } as Provider;
     }
     case 'class': {
@@ -34,10 +33,13 @@ const createDep = (a: Conf) => {
           a.implementation ||
           class Dep {
             isClass = true;
+
             private deps: any[] = [];
+
             constructor(deps: any[]) {
               this.deps = deps;
             }
+
             getDep(index: number) {
               return this.deps[index];
             }

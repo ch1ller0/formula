@@ -1,10 +1,7 @@
 import { debounceTime, distinctUntilKeyChanged, pluck } from 'rxjs/operators';
 
 import { FormBuilder, CoreTokens } from '@formula/core';
-import {
-  ValidationProvider,
-  VALIDATION_SERVICE_TOKEN,
-} from '@formula/provider-validation';
+import { ValidationProvider, VALIDATION_SERVICE_TOKEN } from '@formula/provider-validation';
 
 import {
   InputFieldView,
@@ -17,11 +14,7 @@ import {
 import { requiredValidator, lengthValidator } from './shared/validators';
 import { boxWrapper } from './shared/wrapper';
 
-const {
-  STEP_SERVICE_TOKEN,
-  FIELD_SERVICE_TOKEN,
-  PROPS_SERVICE_TOKEN,
-} = CoreTokens;
+const { STEP_SERVICE_TOKEN, FIELD_SERVICE_TOKEN, PROPS_SERVICE_TOKEN } = CoreTokens;
 
 const ExtendedStory = () => {
   const Cmp = new FormBuilder()
@@ -34,10 +27,7 @@ const ExtendedStory = () => {
           // @TODO infer type here
           props: { label: 'Your name' },
           controls: ({ getBinders }) => [
-            getBinders(VALIDATION_SERVICE_TOKEN).validateField([
-              requiredValidator,
-              lengthValidator({ min: 6 }),
-            ]),
+            getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
           ],
         },
         location: {
@@ -103,9 +93,7 @@ const ExtendedStory = () => {
             value: true,
           },
           controls: ({ getBinders }) => [
-            getBinders(VALIDATION_SERVICE_TOKEN).validateField([
-              (v) => !v && 'Vegging is required',
-            ]),
+            getBinders(VALIDATION_SERVICE_TOKEN).validateField([(v) => !v && 'Vegging is required']),
           ],
         },
         next_button2: {
@@ -133,14 +121,10 @@ const ExtendedStory = () => {
           // custom feature for this field
           controls: ({ getService }) => [
             (fieldName) => {
-              const watchField = 'first_name';
+              const watchField = 'fld.first_name';
               getService(FIELD_SERVICE_TOKEN)
                 .getRxStore()
-                .pipe(
-                  distinctUntilKeyChanged(watchField),
-                  pluck(watchField),
-                  debounceTime(300),
-                )
+                .pipe(distinctUntilKeyChanged(watchField), pluck(watchField), debounceTime(300))
                 .subscribe((firstName) => {
                   const title = `Thank you for your feedback, ${firstName}`;
                   getService(PROPS_SERVICE_TOKEN).setFieldProp(fieldName, {

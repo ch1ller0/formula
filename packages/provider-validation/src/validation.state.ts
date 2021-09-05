@@ -8,9 +8,7 @@ type ValidateActionArgs = {
   errors: string[];
 };
 
-const validateAction = declareAction<ValidateActionArgs>(
-  'validation.validateAction',
-);
+const validateAction = declareAction<ValidateActionArgs>('validation.validateAction');
 
 export const useState = (globalStore: Store) => {
   const atom = declareAtom<State>(['validation'], {}, (on) => [
@@ -26,8 +24,7 @@ export const useState = (globalStore: Store) => {
     _atom: atom,
     rx: StateUtil.toRxStore(globalStore, atom),
     actions: {
-      validateAction: (a: ValidateActionArgs) =>
-        globalStore.dispatch(validateAction(a)),
+      validateAction: (a: ValidateActionArgs) => globalStore.dispatch(validateAction(a)),
     },
   };
 };
