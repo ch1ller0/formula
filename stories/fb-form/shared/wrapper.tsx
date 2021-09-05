@@ -1,3 +1,4 @@
+import React from 'react';
 import { Panel } from 'rsuite';
 
 export const boxWrapper: React.FC = ({ children }) => {

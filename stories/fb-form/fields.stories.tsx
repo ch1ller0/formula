@@ -1,3 +1,4 @@
+import { FormBuilder } from '@formula/core';
 import {
   InputFieldView,
   SelectFieldView,
@@ -6,7 +7,6 @@ import {
   SubmitButtonView,
   ThankYouView,
 } from './shared/fields';
-import { FormBuilder } from '@formula/core';
 import type { TBase } from '@formula/core';
 
 export default {

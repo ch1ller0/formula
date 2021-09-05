@@ -1,0 +1,12 @@
+{
+  "name": "@formula/ioc",
+  "version": "0.0.0-stub",
+  "description": "Formula inversion of control abstractions",
+  "sideEffects": false,
+  "private": true,
+  "main": "lib",
+  "typings": "src",
+  "files": [
+    "lib"
+  ]
+}

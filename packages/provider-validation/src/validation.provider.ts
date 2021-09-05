@@ -7,53 +7,47 @@ import {
   map,
   skip,
   distinctUntilChanged,
-  startWith,
 } from 'rxjs/operators';
 import keys from '@tinkoff/utils/object/keys';
 import filterObj from '@tinkoff/utils/object/filter';
 import eachObj from '@tinkoff/utils/object/each';
 import { combineLatest } from 'rxjs';
-import { BuiltInProviders } from '@formula/core';
-import { useState } from './validation.state';
-import { allScreenFields } from '../../core/src/core-providers/structure/structure.selector';
+import { CoreTokens } from '@formula/core';
+import { createToken } from '@formula/ioc';
+// @ts-ignore
 
-import type { TProvider, TBase } from '@formula/core';
-import type { TValidationService } from './validation.types';
-import {
-  TFieldService,
-  TPropsService,
-  TStepService,
-  TStructureService,
-} from 'packages/core/src/core-providers/';
+import { allScreenFields } from '../../core/src/core-module/structure/structure.selector';
+import { useState } from './validation.state';
+import type { TFieldService } from '@formula/core/src/core-module/field/field.types';
+import type { TPropsService } from '@formula/core/src/core-module/props/props.types';
+import type { TStepService } from '@formula/core/src/core-module/step/step.types';
+import type { TStructureService } from '@formula/core/src/core-module/structure/structure.types';
+import type { Provider } from '@formula/ioc';
+import type { GlobalStore } from '@formula/core/src/core-module/global-store/global-store.types';
+import type { TValidationService, ValidateFn } from './validation.types';
 
 const {
-  FieldProvider,
-  PropsProvider,
-  StepProvider,
-  StructureProvider,
-} = BuiltInProviders;
-
-type ValidateFn = (v: TBase.TPrimitive) => string | Promise<string>;
+  FIELD_SERVICE_TOKEN,
+  PROPS_SERVICE_TOKEN,
+  STEP_SERVICE_TOKEN,
+  STRUCTURE_SERVICE_TOKEN,
+  GLOBAL_STORE_TOKEN,
+} = CoreTokens;
 
 class ValidationService implements TValidationService {
   private readonly _fieldService: TFieldService;
+
   private readonly _propsService: TPropsService;
+
   private readonly _stepService: TStepService;
+
   private readonly _structureService: TStructureService;
+
   private readonly _selfState: ReturnType<typeof useState>;
 
-  constructor(
-    args: TProvider.TProviderConsturctorArgs<
-      [TFieldService, TPropsService, TStepService, TStructureService]
-    >,
-  ) {
-    const [
-      fieldService,
-      propsService,
-      stepService,
-      structureService,
-    ] = args.deps;
-    this._selfState = useState(args);
+  constructor(deps: [TFieldService, TPropsService, TStepService, TStructureService, GlobalStore]) {
+    const [fieldService, propsService, stepService, structureService, globalStore] = deps;
+    this._selfState = useState(globalStore);
 
     this._fieldService = fieldService;
     this._propsService = propsService;
@@ -73,9 +67,7 @@ class ValidationService implements TValidationService {
             pluck(fieldName),
             mergeMap((nextValue) =>
               // apply validator functions
-              Promise.all(validateFns.map((v) => v(nextValue))).then((a) =>
-                a.filter((x) => !!x),
-              ),
+              Promise.all(validateFns.map((v) => v(nextValue))).then((a) => a.filter((x) => !!x)),
             ),
           )
           .subscribe((errors) => {
@@ -88,22 +80,13 @@ class ValidationService implements TValidationService {
         // stream of requirements for screen to be passed
         const screenValidationRequirements$ = this._structureService
           .getRxStore()
-          .pipe(
-            map((s) =>
-              allScreenFields(s).find((s) => s[1].includes(buttonName)),
-            ),
-          );
+          .pipe(map((s) => allScreenFields(s).find((sa) => sa[1].includes(buttonName))));
 
         // stream of button clicks
-        const buttonClick$ = this._fieldService
-          .getDiffRx()
-          .pipe(filter(({ name }) => name === buttonName));
+        const buttonClick$ = this._fieldService.getDiffRx().pipe(filter(({ name }) => name === buttonName));
 
         // stream of current screen validation map
-        const currentScreenValidation$ = combineLatest([
-          screenValidationRequirements$,
-          this._selfState.rx,
-        ]).pipe(
+        const currentScreenValidation$ = combineLatest([screenValidationRequirements$, this._selfState.rx]).pipe(
           map(([stepValidationRequirements, validationState]) => ({
             screenName: stepValidationRequirements?.[0],
             screenValidation: filterObj(
@@ -135,19 +118,18 @@ class ValidationService implements TValidationService {
             debounceTime(100),
             map(({ screenName, screenValidation }) => ({
               screenName,
-              isDisabled: keys(screenValidation).some(
-                (key) => !!screenValidation[key]?.length,
-              ),
+              isDisabled: keys(screenValidation).some((key) => !!screenValidation[key]?.length),
             })),
           )
           .subscribe(({ screenName, isDisabled }) => {
             const stepNum = screenName?.replace('scr.', '');
 
-            stepNum !== undefined &&
+            if (stepNum !== undefined) {
               this._stepService.setBlocked({
                 stepNum, // @TODO replace step provider with screen provider
                 value: isDisabled,
               });
+            }
 
             this._propsService.setFieldProp(buttonName, {
               disabled: isDisabled,
@@ -158,8 +140,10 @@ class ValidationService implements TValidationService {
   }
 }
 
-export const ValidationProvider: TProvider.TProviderConfig<ValidationService> = {
-  name: 'validation',
-  useService: ValidationService,
-  deps: [FieldProvider, PropsProvider, StepProvider, StructureProvider],
+export const VALIDATION_SERVICE_TOKEN = createToken('validation-service');
+
+export const ValidationProvider: Provider = {
+  provide: VALIDATION_SERVICE_TOKEN,
+  useClass: ValidationService,
+  deps: [FIELD_SERVICE_TOKEN, PROPS_SERVICE_TOKEN, STEP_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN],
 };

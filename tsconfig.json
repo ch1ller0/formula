@@ -37,12 +37,13 @@
         "noImplicitAny": true
     },
     "exclude": [
-        "./node_modules",
-        "dist"
+        "node_modules/**",
+        "**/__tests__/"
     ],
     "include": [
         "packages/**/*.ts",
-        "packages/**/*.tsx"
+        "packages/**/*.tsx",
+        "stories"
     ],
     "paths": {
       "@formula": "packages/*"

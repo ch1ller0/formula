@@ -1,1 +1,1 @@
-export { ValidationProvider } from './validation.provider';
+export { ValidationProvider, VALIDATION_SERVICE_TOKEN } from './validation.provider';

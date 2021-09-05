@@ -1,18 +1,12 @@
-import { FormBuilder, BuiltInProviders } from '@formula/core';
-import { ValidationProvider } from '@formula/provider-validation';
+import { FormBuilder, CoreTokens } from '@formula/core';
+import { ValidationProvider, VALIDATION_SERVICE_TOKEN } from '@formula/provider-validation';
 
-import {
-  CheckboxFieldView,
-  InputFieldView,
-  SubmitButtonView,
-  TextFieldView,
-  ThankYouView,
-} from './shared/fields';
 import { pluck, filter } from 'rxjs/operators';
+import { CheckboxFieldView, InputFieldView, SubmitButtonView, TextFieldView, ThankYouView } from './shared/fields';
 import { requiredValidator, lengthValidator } from './shared/validators';
 import { boxWrapper } from './shared/wrapper';
 
-const { StepProvider, StructureProvider, FieldProvider } = BuiltInProviders;
+const { STEP_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN, FIELD_SERVICE_TOKEN } = CoreTokens;
 
 const ConditionalGroupStory = () => {
   const Cmp = new FormBuilder()
@@ -31,16 +25,16 @@ const ConditionalGroupStory = () => {
           props: {
             label: 'I dont have an email',
           },
-          controls: ({ getBinders, getService }) => [
+          controls: ({ getService }) => [
             (fieldName) => {
-              getService(FieldProvider)
+              getService(FIELD_SERVICE_TOKEN)
                 .getDiffRx()
                 .pipe(
                   filter((a) => a.name === fieldName),
                   pluck('value'),
                 )
-                .subscribe((e) => {
-                  getService(StructureProvider).toggleGroupsVisibility([
+                .subscribe(() => {
+                  getService(STRUCTURE_SERVICE_TOKEN).toggleGroupsVisibility([
                     'grp.personal_info_with_email',
                     'grp.personal_info_without_email',
                   ]);
@@ -54,20 +48,14 @@ const ConditionalGroupStory = () => {
               field: InputFieldView,
               props: { label: 'Nickname' },
               controls: ({ getBinders }) => [
-                getBinders(ValidationProvider).validateField([
-                  requiredValidator,
-                  lengthValidator({ min: 6 }),
-                ]),
+                getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
               ],
             },
             email1: {
               field: InputFieldView,
               props: { label: 'Email' },
               controls: ({ getBinders }) => [
-                getBinders(ValidationProvider).validateField([
-                  requiredValidator,
-                  lengthValidator({ min: 6 }),
-                ]),
+                getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
               ],
             },
           },
@@ -81,20 +69,14 @@ const ConditionalGroupStory = () => {
               field: InputFieldView,
               props: { label: 'First name' },
               controls: ({ getBinders }) => [
-                getBinders(ValidationProvider).validateField([
-                  requiredValidator,
-                  lengthValidator({ min: 6 }),
-                ]),
+                getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
               ],
             },
             second_name: {
               field: InputFieldView,
               props: { label: 'Second name' },
               controls: ({ getBinders }) => [
-                getBinders(ValidationProvider).validateField([
-                  requiredValidator,
-                  lengthValidator({ min: 6 }),
-                ]),
+                getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
               ],
             },
           },
@@ -106,8 +88,8 @@ const ConditionalGroupStory = () => {
             label: 'Finish',
           },
           controls: ({ getBinders }) => [
-            getBinders(StepProvider).nextStep(),
-            getBinders(ValidationProvider).stepDisabled(),
+            getBinders(STEP_SERVICE_TOKEN).nextStep(),
+            getBinders(VALIDATION_SERVICE_TOKEN).stepDisabled(),
           ],
         },
       }),

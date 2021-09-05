@@ -23,7 +23,7 @@ module.exports = {
     const packages = fs.readdirSync(path.resolve(__dirname, '../packages/'))
     const alias = packages.reduce((acc, packageName) => ({
       ...acc,
-      [`@formula/${packageName}`]: path.resolve(__dirname, `../packages/${packageName}/src`)
+      [`@formula/${packageName}`]: path.resolve(__dirname, `../packages/${packageName}/src`),
     }), {})
     console.log('alias', alias)
     

@@ -1,0 +1,20 @@
+{
+  "clearMocks": true,
+  "roots": [
+    "<rootDir>/packages"
+  ],
+  "transform": {
+    "^.+\\.(ts|tsx|js)$": "ts-jest"
+  },
+  "testRegex": "(test|spec)\\.[jt]sx?$",
+  "collectCoverageFrom": [
+    "src/**/*.ts"
+  ],
+  "globals": {
+    "ts-jest": {
+      "tsconfig": "tsconfig.dev.json",
+      "diagnostics": false
+    }
+  },
+  "verbose": true
+}
