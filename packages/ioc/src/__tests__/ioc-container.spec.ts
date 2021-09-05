@@ -249,5 +249,51 @@ describe('DependencyContainer', () => {
       const container2 = container1.getByToken(DI_TOKEN);
       expect(container1).toEqual(container2);
     });
+
+    it('throw if trying to get unresolved dependency', () => {
+      expect.assertions(1);
+      try {
+        const providers = createProviders([
+          {
+            provide: 'first',
+            type: 'factory',
+            deps: [DI_TOKEN],
+            implementation: ([diContainer]) => {
+              diContainer.getByToken('second'); // illegal during dependency creation
+            },
+          },
+          {
+            provide: 'second',
+            type: 'value',
+          },
+        ]);
+        const container = new DependencyContainer(providers);
+        container.getByToken('first');
+      } catch (e) {
+        expect(e.message).toEqual('provider not ready: second');
+      }
+    });
+
+    it('wont throw if dependency is resolved (might be bad)', () => {
+      expect.assertions(1);
+      const providers = createProviders([
+        {
+          provide: 'second',
+          type: 'value',
+        },
+        {
+          provide: 'first',
+          type: 'factory',
+          deps: [DI_TOKEN],
+          implementation: ([diContainer]) => {
+            return diContainer.getByToken('second');
+          },
+        },
+      ]);
+      const container = new DependencyContainer(providers);
+      const value1 = container.getByToken('first');
+      const value2 = container.getByToken('second');
+      expect(value1).toEqual(value2);
+    });
   });
 });
