@@ -5,7 +5,7 @@ import type { TPrimitive } from '../../types/base.types';
 import type { TStructureService, GroupStructVal } from '../structure/structure.types';
 import type { TPropsService } from '../props/props.types';
 import type { TFieldService } from '../field/field.types';
-import type { TStepService } from '../step/step.types';
+import type { StepFactory } from '../step/step.types';
 import type { GlobalStore } from '../global-store/global-store.types';
 import type { RendererFn } from './render.types';
 
@@ -91,7 +91,7 @@ const defaultWrapper: React.FC = ({ children }) => children;
 
 const RenderTree: React.FC<{
   structureDeps: RenderDepReturn<TStructureService>;
-  stepDeps: RenderDepReturn<TStepService>;
+  stepDeps: RenderDepReturn<StepFactory>;
   fieldDeps: RenderDepReturn<TFieldService>;
   propsDeps: RenderDepReturn<TPropsService>;
 }> = ({ structureDeps, stepDeps, fieldDeps, propsDeps }) => {
@@ -120,7 +120,7 @@ const RenderTree: React.FC<{
 };
 
 export const renderRoot = (
-  deps: [TStructureService, TPropsService, TFieldService, TStepService, GlobalStore],
+  deps: [TStructureService, TPropsService, TFieldService, StepFactory, GlobalStore],
 ): RendererFn => (Wrapper = defaultWrapper) => {
   const [structureService, propsService, fieldService, stepService, globalStore] = deps;
   const renderDependencies = {

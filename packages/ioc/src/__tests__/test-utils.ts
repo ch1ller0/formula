@@ -1,8 +1,8 @@
 import type { Provider, Token } from '../types';
 
 type Conf = {
-  provide: Token;
-  deps?: Token[];
+  provide: Omit<Token, '_brand'>;
+  deps?: Omit<Token, '_brand'>[];
   type: 'value' | 'factory' | 'class';
   implementation?: any;
 };

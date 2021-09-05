@@ -1,25 +1,26 @@
 import each from '@tinkoff/utils/object/each';
+import { createToken } from './create-token';
 import { CircularDepError, TokenNotFoundError, ProviderNotReady } from './errors';
-import type { Provider, Token, IocRecord } from './types';
+import type { Provider, Token, IocRecord, ExtractToken } from './types';
 
 type Storage = Record<Token, IocRecord>;
 
-const getRequireStack = (current: IocRecord, storage: Storage) => {
-  const requireStack: Token[] = [current.provider.provide];
-  const follow = (currentRec: IocRecord): Token[] => {
+const getRequireStack = (current: IocRecord, storage: Storage): string[] => {
+  const requireStack: string[] = [current.provider.provide.toString()];
+  const follow = (currentRec: IocRecord): string[] => {
     const prevUnresolved = currentRec.provider.deps?.find((x) => storage[x].marker === 1) as Token;
 
     if (prevUnresolved === current.provider.provide) {
       return requireStack;
     }
-    requireStack.push(prevUnresolved);
+    requireStack.push(prevUnresolved.toString());
     return follow(storage[prevUnresolved]);
   };
 
   return follow(current);
 };
 
-export const DI_TOKEN = Symbol('di-container');
+export const DI_TOKEN = createToken<DependencyContainer>('di-container');
 
 export class DependencyContainer {
   private _providerStorage: Storage = {};
@@ -104,11 +105,12 @@ export class DependencyContainer {
 
     // for symbol keys
     Object.getOwnPropertySymbols(this._providerStorage).forEach((e) => {
+      // @ts-ignore
       resolveSingle(this._providerStorage[e]);
     });
   }
 
-  getByToken(token: Provider['provide']): any {
+  getByToken<T extends Token>(token: T): ExtractToken<T> {
     const provider = this._providerStorage[token];
     if (!provider) {
       throw new TokenNotFoundError([token.toString()]);

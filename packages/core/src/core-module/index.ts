@@ -5,9 +5,8 @@ import { renderProvider } from './render/render.provider';
 import { stepProvider } from './step/step.provider';
 import { structureProvider } from './structure/structure.provider';
 import { binderProvider } from './binder/binder.provider';
-import type { Provider } from '@formula/ioc';
 
-export const coreProviders: Provider[] = [
+export const coreProviders = [
   binderProvider,
   fieldProvider,
   globalStoreProvider,

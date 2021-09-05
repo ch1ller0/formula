@@ -1,36 +1,25 @@
 import { STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN, PROPS_SERVICE_TOKEN } from '../tokens';
 import { useState } from './props.state';
-import type { Provider } from '@formula/ioc';
-
-import type { TStructureService } from '../structure/structure.types';
-import type { GlobalStore } from '../global-store/global-store.types';
+import type { ExtractToken, Provider } from '@formula/ioc';
 import type { TPropsService, Props } from './props.types';
 
-class PropsService implements TPropsService {
-  private readonly _selfState: ReturnType<typeof useState>;
+const propsFactory = (
+  deps: [ExtractToken<typeof STRUCTURE_SERVICE_TOKEN>, ExtractToken<typeof GLOBAL_STORE_TOKEN>],
+) => {
+  const [structureService, globalStore] = deps;
+  const structure = structureService._getInitialState();
+  const selfState = useState({ globalStore, structure });
 
-  constructor(deps: [TStructureService, GlobalStore]) {
-    const [structureService, globalStore] = deps;
-    const structure = structureService._getInitialState();
+  return {
+    setFieldProp: (name: string, value: Props) => {
+      selfState.actions.changeFieldProps({ name, value });
+    },
+    _getRenderDeps: () => ({ atom: selfState._atom }),
+  };
+};
 
-    this._selfState = useState({ globalStore, structure });
-  }
-
-  useBinders() {
-    return {};
-  }
-
-  setFieldProp(name: string, value: Props) {
-    this._selfState.actions.changeFieldProps({ name, value });
-  }
-
-  _getRenderDeps() {
-    return { atom: this._selfState._atom };
-  }
-}
-
-export const propsProvider: Provider = {
+export const propsProvider: Provider<TPropsService> = {
   provide: PROPS_SERVICE_TOKEN,
-  useClass: PropsService,
+  useFactory: propsFactory,
   deps: [STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN],
 };

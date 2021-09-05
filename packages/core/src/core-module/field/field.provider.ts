@@ -1,50 +1,34 @@
 import { Subject } from 'rxjs';
 import { FIELD_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN } from '../tokens';
 import { useState } from './field.state';
-import type { Provider } from '@formula/ioc';
-
-import type { TStructureService } from '../structure/structure.types';
-import type { GlobalStore } from '../global-store/global-store.types';
+import type { ExtractToken, Provider } from '@formula/ioc';
 import type { TFieldService, ChangeKeyValArgs } from './field.types';
 
-class FieldService implements TFieldService {
-  private readonly _selfState: ReturnType<typeof useState>;
+const fieldFactory = (
+  deps: [ExtractToken<typeof STRUCTURE_SERVICE_TOKEN>, ExtractToken<typeof GLOBAL_STORE_TOKEN>],
+) => {
+  const [structureService, globalStore] = deps;
+  const structure = structureService._getInitialState();
+  const selfState = useState({ globalStore, structure });
+  const diffStream = new Subject<ChangeKeyValArgs>();
 
-  private readonly _diffStream: Subject<ChangeKeyValArgs>;
-
-  constructor(deps: [TStructureService, GlobalStore]) {
-    const [structureService, globalStore] = deps;
-    const structure = structureService._getInitialState();
-    this._selfState = useState({ globalStore, structure });
-    this._diffStream = new Subject();
-  }
-
-  getRxStore() {
-    return this._selfState.rx;
-  }
-
-  /**
-   * Return observable of changeKeyVal events
-   */
-  getDiffRx() {
-    return this._diffStream.asObservable();
-  }
-
-  _getRenderDeps() {
-    return {
-      atom: this._selfState._atom,
+  return {
+    getRxStore: () => selfState.rx,
+    getDiffRx: () => diffStream.asObservable(),
+    _getRenderDeps: () => ({
+      atom: selfState._atom,
       setValue: (args: ChangeKeyValArgs) => {
-        this._diffStream.next(args); // Also send observable for click
+        diffStream.next(args); // Also send observable for click
         if (args.value !== null) {
-          this._selfState.actions.changeKeyVal(args);
+          selfState.actions.changeKeyVal(args);
         }
       },
-    };
-  }
-}
+    }),
+  };
+};
 
-export const fieldProvider: Provider = {
+export const fieldProvider: Provider<TFieldService> = {
   provide: FIELD_SERVICE_TOKEN,
-  useClass: FieldService,
+  useFactory: fieldFactory,
   deps: [STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN],
 };

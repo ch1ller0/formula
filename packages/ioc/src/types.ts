@@ -1,14 +1,12 @@
-export type Token = symbol | string;
+export type Token<T = unknown> = (symbol | string) & { _brand: T };
+export type ExtractToken<T extends Token> = T['_brand'];
 
-type ProviderBase = {
-  provide: Token;
-  deps?: Token[];
-};
-
-export type Provider = ProviderBase & {
-  useValue?: any;
-  useFactory?: (deps: any) => unknown;
-  useClass?: any;
+export type Provider<P = unknown> = {
+  provide: Token<P>;
+  deps?: Token<any>[];
+  useValue?: P;
+  useFactory?: (deps: any) => P;
+  useClass?: new (deps: any) => P;
 };
 
 export type IocRecord<R = unknown> = {

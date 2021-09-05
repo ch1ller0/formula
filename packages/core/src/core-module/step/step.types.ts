@@ -8,7 +8,7 @@ export type StepState = {
 
 export type SetBlockArgs = { stepNum: string; value: boolean };
 
-export interface TStepService extends TProviderService {
+export interface StepFactory extends TProviderService {
   setBlocked(args: SetBlockArgs): void;
   _getRenderDeps(): {
     atom: Atom<StepState>;
