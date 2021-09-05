@@ -5,6 +5,7 @@ import {
   STRUCTURE_CONFIG_TOKEN,
   RENDER_SERVICE_TOKEN,
   GLOBAL_STORE_TOKEN,
+  BINDER_SERVICE_TOKEN,
 } from './core-module/tokens';
 
 import type { StructureFactory } from './core-module/structure/structure.types';
@@ -36,7 +37,8 @@ export class FormBuilder {
 
   toComponent(CoreWrapper?: React.FC): React.ReactNode {
     const depContainer = new DependencyContainer(this._config.providers);
-    // const globalStoreState =
+    // initialize bindings for fields
+    depContainer.getByToken(BINDER_SERVICE_TOKEN).initialize();
     console.log(
       'before-render-state:',
       depContainer.getByToken(GLOBAL_STORE_TOKEN).getState(),

@@ -40,12 +40,13 @@ export class DependencyContainer {
       },
     ];
 
-    this._providerStorage = prs.reduce((acc, cur) => {
-      return {
+    this._providerStorage = prs.reduce(
+      (acc, cur) => ({
         ...acc,
         [cur.provide]: { provider: cur, marker: 2 as const },
-      };
-    }, {} as Record<string, IocRecord>);
+      }),
+      {} as Storage,
+    );
 
     const resolveSingle = (currentRecord: IocRecord) => {
       // already resolved previously

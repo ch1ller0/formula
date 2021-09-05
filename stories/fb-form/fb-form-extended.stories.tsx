@@ -1,7 +1,10 @@
 import { debounceTime, distinctUntilKeyChanged, pluck } from 'rxjs/operators';
 
-import { FormBuilder, BuiltInProviders } from '@formula/core';
-import { ValidationProvider } from '@formula/provider-validation';
+import { FormBuilder, CoreTokens } from '@formula/core';
+import {
+  ValidationProvider,
+  VALIDATION_SERVICE_TOKEN,
+} from '@formula/provider-validation';
 
 import {
   InputFieldView,
@@ -14,7 +17,11 @@ import {
 import { requiredValidator, lengthValidator } from './shared/validators';
 import { boxWrapper } from './shared/wrapper';
 
-const { StepProvider, FieldProvider, PropsProvider } = BuiltInProviders;
+const {
+  STEP_SERVICE_TOKEN,
+  FIELD_SERVICE_TOKEN,
+  PROPS_SERVICE_TOKEN,
+} = CoreTokens;
 
 const ExtendedStory = () => {
   const Cmp = new FormBuilder()
@@ -27,7 +34,7 @@ const ExtendedStory = () => {
           // @TODO infer type here
           props: { label: 'Your name' },
           controls: ({ getBinders }) => [
-            getBinders(ValidationProvider).validateField([
+            getBinders(VALIDATION_SERVICE_TOKEN).validateField([
               requiredValidator,
               lengthValidator({ min: 6 }),
             ]),
@@ -44,7 +51,7 @@ const ExtendedStory = () => {
             ],
           },
           controls: ({ getBinders }) => [
-            getBinders(ValidationProvider).validateField([
+            getBinders(VALIDATION_SERVICE_TOKEN).validateField([
               requiredValidator,
               (value: string) => {
                 return ['st_petersburg', 'moscow'].includes(value)
@@ -78,8 +85,8 @@ const ExtendedStory = () => {
             label: 'Next',
           },
           controls: ({ getBinders }) => [
-            getBinders(StepProvider).nextStep(),
-            getBinders(ValidationProvider).stepDisabled(),
+            getBinders(STEP_SERVICE_TOKEN).nextStep(),
+            getBinders(VALIDATION_SERVICE_TOKEN).stepDisabled(),
           ],
         },
       }),
@@ -96,7 +103,7 @@ const ExtendedStory = () => {
             value: true,
           },
           controls: ({ getBinders }) => [
-            getBinders(ValidationProvider).validateField([
+            getBinders(VALIDATION_SERVICE_TOKEN).validateField([
               (v) => !v && 'Vegging is required',
             ]),
           ],
@@ -107,8 +114,8 @@ const ExtendedStory = () => {
             label: 'Finalize',
           },
           controls: ({ getBinders }) => [
-            getBinders(StepProvider).nextStep(),
-            getBinders(ValidationProvider).stepDisabled(),
+            getBinders(STEP_SERVICE_TOKEN).nextStep(),
+            getBinders(VALIDATION_SERVICE_TOKEN).stepDisabled(),
           ],
         },
       }),
@@ -127,7 +134,7 @@ const ExtendedStory = () => {
           controls: ({ getService }) => [
             (fieldName) => {
               const watchField = 'first_name';
-              getService(FieldProvider)
+              getService(FIELD_SERVICE_TOKEN)
                 .getRxStore()
                 .pipe(
                   distinctUntilKeyChanged(watchField),
@@ -136,7 +143,9 @@ const ExtendedStory = () => {
                 )
                 .subscribe((firstName) => {
                   const title = `Thank you for your feedback, ${firstName}`;
-                  getService(PropsProvider).setFieldProp(fieldName, { title });
+                  getService(PROPS_SERVICE_TOKEN).setFieldProp(fieldName, {
+                    title,
+                  });
                 });
             },
           ],
