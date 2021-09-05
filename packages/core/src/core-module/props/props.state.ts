@@ -2,8 +2,8 @@ import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import mapObj from '@tinkoff/utils/object/map';
 import { toRxStore } from '../../utils/state.util';
+import { GlobalStore } from '../global-store/global-store.types';
 
-import type { TProviderConsturctorArgs } from '../../types/provider.types';
 import type { StructureState } from '../structure/structure.types';
 import type { ChangeFieldPropsArgs, PropsState } from './props.types';
 
@@ -14,7 +14,8 @@ const changeFieldProps = declareAction<ChangeFieldPropsArgs>(
 export const useState = ({
   globalStore,
   structure,
-}: TProviderConsturctorArgs & {
+}: {
+  globalStore: GlobalStore;
   structure: StructureState;
 }) => {
   // @ts-ignore

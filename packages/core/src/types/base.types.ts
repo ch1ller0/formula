@@ -1,10 +1,4 @@
 import type { FC } from 'react';
-import type {
-  TProviderConfig,
-  BinderFactory,
-  TProviderService,
-} from './provider.types';
-import { ProviderContainer } from '../base/provider-container';
 
 type TVagueProps = Record<string, any>;
 export type TPrimitive = string | number | boolean | null;
@@ -47,12 +41,7 @@ export type TFieldStructure = {
   /**
    * Controls to manipulate behaviour on the field
    */
-  controls?: (arg: {
-    getService: InstanceType<typeof ProviderContainer>['getService'];
-    getBinders: (
-      s: TProviderConfig<TProviderService>,
-    ) => Record<string, BinderFactory> | undefined;
-  }) => unknown[];
+  controls?: unknown;
 };
 export type TStepStructure = Record<string, TFieldStructure>;
 
@@ -74,16 +63,6 @@ export type TBuilderFieldProps<T extends TPrimitive = TPrimitive> = {
    * Callback for setting the value
    */
   setValue: (value: T) => void;
-};
-
-/**
- * Global form configuration
- */
-export type TBuilderConfig = {
-  /**
-   * Registered providers
-   */
-  providers: TProviderConfig[];
 };
 
 // @TODO NEED BETTER TYPES, CURRENT ARE REALLY VAGUE

@@ -12,8 +12,8 @@ export const toRxStore = <Stt>(
   if (atom) {
     const initialState = globalStore.getState(atom);
 
-    // @ts-ignore
     return from(observe(globalStore, atom)).pipe(
+      // @ts-ignore
       startWith(initialState), // emit initial value after stream creation
       shareReplay(), // multicasting atom state
     );

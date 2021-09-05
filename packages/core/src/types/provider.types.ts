@@ -1,16 +1,4 @@
-import type { Store } from '@reatom/core';
 import type { Observable } from 'rxjs';
-
-export type TProviderConsturctorArgs<T extends unknown[] = unknown[]> = {
-  /**
-   * Services from other providers current provider depends on
-   */
-  deps: T;
-  /**
-   * Global form-store
-   */
-  globalStore: Store;
-};
 
 export type BinderFactory = (config?: any) => (fieldName: string) => void;
 
@@ -24,27 +12,6 @@ export interface TProviderService {
    */
   useBinders?(): Record<string, BinderFactory>;
 }
-
-export type TProviderConfig<Srv = TProviderService> = {
-  /**
-   * Name of the provider
-   */
-  name: string;
-  /**
-   * Service the provider should expose to other parts of the program
-   */
-  useService: {
-    new (args: TProviderConsturctorArgs, addit: unknown): Srv;
-  };
-  /**
-   * Providers the current provider depends on
-   */
-  deps: TProviderConfig[];
-};
-
-export type TToProviderInstance<Config extends TProviderConfig> = InstanceType<
-  Config['useService']
->;
 
 /**
  * Service might contain methods used for

@@ -1,13 +1,13 @@
 import React from 'react';
-import { coreProviders } from '../core-module';
+import { coreProviders } from './core-module';
 import { DependencyContainer } from '@formula/ioc';
 import {
   STRUCTURE_CONFIG_TOKEN,
   RENDER_SERVICE_TOKEN,
   GLOBAL_STORE_TOKEN,
-} from '../core-module/tokens';
+} from './core-module/tokens';
 
-import type { StructureFactory } from '../core-module/structure/structure.types';
+import type { StructureFactory } from './core-module/structure/structure.types';
 
 import type { Provider } from '@formula/ioc';
 

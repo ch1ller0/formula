@@ -17,7 +17,7 @@ class PropsService implements TPropsService {
     const [structureService, globalStore] = deps;
     const structure = structureService._getInitialState();
 
-    this._selfState = useState({ globalStore, structure, deps });
+    this._selfState = useState({ globalStore, structure });
   }
 
   useBinders() {

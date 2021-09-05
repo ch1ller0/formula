@@ -33,7 +33,7 @@ export const normalizate = (state: FormStructure) => {
     if (groupKey in temp.groups) {
       throw new Error(`duplicate key found in groups: ${groupKey}`);
     }
-    const children = [] as string[];
+    const children: (GroupStructKey | ScreenStructKey)[] = [];
 
     toPairs(group).map(([entName, entVal]) => {
       const childId = traverseUnknown(entVal, entName);

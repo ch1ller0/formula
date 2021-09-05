@@ -1,5 +1,5 @@
 export * as StateUtil from './utils/state.util';
-export { FormBuilder } from './base/builder';
+export { FormBuilder } from './builder';
 export { ViewGenerator } from './generate';
 export * as CoreTokens from './core-module/tokens';
 

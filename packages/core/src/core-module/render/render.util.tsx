@@ -87,7 +87,7 @@ const createRenderers = (
   return renderAny;
 };
 
-const _exhaustiveCheck = (a: never) => a;
+// const _exhaustiveCheck = (a: never) => a;
 // @ts-ignore
 const defaultWrapper: React.FC = ({ children }) => children;
 
