@@ -1,34 +1,24 @@
 import { distinctUntilChanged, filter, mapTo, sample, map } from 'rxjs/operators';
 import { FIELD_SERVICE_TOKEN, GLOBAL_STORE_TOKEN, STEP_SERVICE_TOKEN } from '../tokens';
 import { useState } from './step.state';
-import type { Provider } from '@formula/ioc';
+import type { ExtractToken, Provider } from '@formula/ioc';
+import type { SetBlockArgs, StepFactory } from './step.types';
 
-import type { TFieldService } from '../field/field.types';
-import type { GlobalStore } from '../global-store/global-store.types';
-import type { TStepService, SetBlockArgs } from './step.types';
+const stepFactory = (deps: [ExtractToken<typeof FIELD_SERVICE_TOKEN>, ExtractToken<typeof GLOBAL_STORE_TOKEN>]) => {
+  const [fieldService, globalStore] = deps;
+  const selfState = useState(globalStore);
 
-class StepService implements TStepService {
-  private readonly _selfState: ReturnType<typeof useState>;
-
-  private readonly _fieldService: TFieldService;
-
-  constructor(deps: [TFieldService, GlobalStore]) {
-    const [fieldService, globalStore] = deps;
-    this._fieldService = fieldService;
-    this._selfState = useState(globalStore);
-  }
-
-  useBinders() {
-    return {
+  return {
+    useBinders: () => ({
       nextStep: () => (fieldName: string) => {
-        const buttonClick$ = this._fieldService.getDiffRx().pipe(
+        const buttonClick$ = fieldService.getDiffRx().pipe(
           // watch only for this button clicked
           filter(({ name }) => name === fieldName),
           // need nothing from data - only timings
           mapTo(`click$:${fieldName}`),
         );
 
-        this._selfState.rx
+        selfState.rx
           .pipe(
             // @TODO need optimization - value should not be emitted if states are equal
             distinctUntilChanged(),
@@ -39,28 +29,21 @@ class StepService implements TStepService {
           )
           .subscribe((stepBlocked) => {
             if (!stepBlocked) {
-              this._selfState.actions.stepIncrement();
+              selfState.actions.stepIncrement();
             }
           });
       },
-    };
-  }
+    }),
+    setBlocked: (args: SetBlockArgs) => {
+      selfState.actions.stepBlock(args);
+    },
+    getRxStore: () => selfState.rx,
+    _getRenderDeps: () => ({ atom: selfState._atom }),
+  };
+};
 
-  getRxStore() {
-    return this._selfState.rx;
-  }
-
-  setBlocked(args: SetBlockArgs) {
-    this._selfState.actions.stepBlock(args);
-  }
-
-  _getRenderDeps() {
-    return { atom: this._selfState._atom };
-  }
-}
-
-export const stepProvider: Provider = {
+export const stepProvider: Provider<StepFactory> = {
   provide: STEP_SERVICE_TOKEN,
-  useClass: StepService,
+  useFactory: stepFactory,
   deps: [FIELD_SERVICE_TOKEN, GLOBAL_STORE_TOKEN],
 };

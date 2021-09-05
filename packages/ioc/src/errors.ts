@@ -1,21 +1,20 @@
 /* eslint-disable max-classes-per-file */
-import type { Provider, Token } from './types';
+import type { Provider } from './types';
 
 export class CircularDepError extends Error {
-  requireStack: Token[];
+  requireStack: string[];
 
-  constructor(requireStack: Token[]) {
+  constructor(requireStack: string[]) {
     super(`circular dependency for token: ${requireStack[0].toString()}`);
     this.requireStack = requireStack.map((e) => e.toString());
   }
 }
 
 export class TokenNotFoundError extends Error {
-  requireStack: Token[];
+  requireStack: string[];
 
-  constructor(requireStack: Token[]) {
+  constructor(requireStack: string[]) {
     super(`token not registered: ${requireStack[requireStack.length - 1].toString()}`);
-    this.requireStack = requireStack.map((e) => e.toString());
     this.requireStack = requireStack;
   }
 }

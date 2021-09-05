@@ -13,6 +13,7 @@ describe('DependencyContainer', () => {
       ]);
 
       const container = new DependencyContainer(providers);
+      // @ts-ignore
       expect(container.getByToken('valueToken')).toEqual('value:valueToken');
     });
 
@@ -31,6 +32,7 @@ describe('DependencyContainer', () => {
       ]);
 
       const container = new DependencyContainer(providers);
+      // @ts-ignore
       expect(container.getByToken('sharedToken')).toEqual(2); // uses latest implementation
     });
   });
@@ -55,11 +57,17 @@ describe('DependencyContainer', () => {
     ]);
 
     const container = new DependencyContainer(providers);
+    // @ts-ignore
     const firstDep = container.getByToken('first');
+    // @ts-ignore
     const secondDep = container.getByToken('second');
+    // @ts-ignore
     const thirdDep = container.getByToken('third');
+    // @ts-ignore
     expect(thirdDep.isClass).toEqual(true);
+    // @ts-ignore
     expect(thirdDep.getDep(0)).toEqual(firstDep);
+    // @ts-ignore
     expect(thirdDep.getDep(1)).toEqual(secondDep); // should be same pointer
   });
 
@@ -82,13 +90,21 @@ describe('DependencyContainer', () => {
     ]);
 
     const container = new DependencyContainer(providers);
+    // @ts-ignore
     const firstDep = container.getByToken('first');
+    // @ts-ignore
     const secondDep = container.getByToken('second');
+    // @ts-ignore
     const thirdDep = container.getByToken('third');
+    // @ts-ignore
     expect(firstDep.isClass).toEqual(true);
+    // @ts-ignore
     expect(firstDep.getDep(0)).toEqual(secondDep);
+    // @ts-ignore
     expect(firstDep.getDep(1)).toEqual(thirdDep);
+    // @ts-ignore
     expect(thirdDep('as')).toEqual(':as');
+    // @ts-ignore
     expect(secondDep.isClass).toEqual(true);
   });
 
@@ -114,13 +130,21 @@ describe('DependencyContainer', () => {
     ]);
 
     const container = new DependencyContainer(providers);
+    // @ts-ignore
     const firstDep = container.getByToken(token1);
+    // @ts-ignore
     const secondDep = container.getByToken(token2);
+    // @ts-ignore
     const thirdDep = container.getByToken(token3);
+    // @ts-ignore
     expect(firstDep.isClass).toEqual(true);
+    // @ts-ignore
     expect(firstDep.getDep(0)).toEqual(secondDep);
+    // @ts-ignore
     expect(firstDep.getDep(1)).toEqual(thirdDep);
+    // @ts-ignore
     expect(thirdDep('as')).toEqual(':as');
+    // @ts-ignore
     expect(secondDep.isClass).toEqual(true);
   });
 
@@ -141,6 +165,7 @@ describe('DependencyContainer', () => {
 
       try {
         const container = new DependencyContainer(providers);
+        // @ts-ignore
         container.getByToken('second');
       } catch (e) {
         expect(e.message).toEqual('token not registered: non_existent');
@@ -158,6 +183,7 @@ describe('DependencyContainer', () => {
       ]);
       try {
         const container = new DependencyContainer(providers);
+        // @ts-ignore
         container.getByToken('non_existent');
       } catch (e) {
         expect(e.message).toEqual('token not registered: non_existent');
@@ -183,6 +209,7 @@ describe('DependencyContainer', () => {
 
       try {
         const container = new DependencyContainer(providers);
+        // @ts-ignore
         container.getByToken('first');
       } catch (e) {
         expect(e.message).toEqual('circular dependency for token: second');
@@ -212,6 +239,7 @@ describe('DependencyContainer', () => {
 
       try {
         const container = new DependencyContainer(providers);
+        // @ts-ignore
         container.getByToken('first');
       } catch (e) {
         expect(e.message).toEqual('circular dependency for token: third');
@@ -232,6 +260,7 @@ describe('DependencyContainer', () => {
 
       try {
         const container = new DependencyContainer(providers);
+        // @ts-ignore
         container.getByToken('first');
       } catch (e) {
         expect(e.message).toEqual('circular dependency for token: token-100');
@@ -268,6 +297,7 @@ describe('DependencyContainer', () => {
           },
         ]);
         const container = new DependencyContainer(providers);
+        // @ts-ignore
         container.getByToken('first');
       } catch (e) {
         expect(e.message).toEqual('provider not ready: second');
@@ -291,7 +321,9 @@ describe('DependencyContainer', () => {
         },
       ]);
       const container = new DependencyContainer(providers);
+      // @ts-ignore
       const value1 = container.getByToken('first');
+      // @ts-ignore
       const value2 = container.getByToken('second');
       expect(value1).toEqual(value2);
     });

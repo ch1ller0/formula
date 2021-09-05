@@ -8,6 +8,7 @@ import type {
   StructureState,
   GroupStructKey,
   ScreenStructKey,
+  FieldStructKey,
 } from './structure.types';
 
 export const getInitialStructure = (factory: StructureFactory) => {
@@ -35,15 +36,17 @@ export const normalizate = (state: FormStructure) => {
     toPairs(group).forEach(([entName, entVal]) => {
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       const childId = traverseUnknown(entVal, entName);
+      // @ts-ignore
       children.push(childId);
     });
 
+    // @ts-ignore
     temp.groups[groupKey] = { id: groupKey, children, opts };
 
     return groupKey;
   };
 
-  const traverseField = (a: TFieldStructure, fieldKey: string) => {
+  const traverseField = (a: TFieldStructure, fieldKey: FieldStructKey) => {
     if (fieldKey in temp.fields) {
       throw new Error(`duplicate key found in fields: ${fieldKey}`);
     }
