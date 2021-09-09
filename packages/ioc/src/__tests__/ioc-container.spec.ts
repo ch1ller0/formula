@@ -1,68 +1,69 @@
 import range from '@tinkoff/utils/array/range';
+import { createToken } from '../create-token';
 import { DependencyContainer, DI_TOKEN } from '../ioc-container';
 import { createProviders } from './test-utils';
 
 describe('DependencyContainer', () => {
   describe('basics', () => {
     it('single value', () => {
+      const token = createToken('valueToken');
       const providers = createProviders([
         {
-          provide: 'valueToken',
+          provide: token,
           type: 'value',
         },
       ]);
 
       const container = new DependencyContainer(providers);
-      // @ts-ignore
-      expect(container.getByToken('valueToken')).toEqual('value:valueToken');
+      expect(container.getByToken(token)).toEqual('value:valueToken');
     });
 
     it('shadowing', () => {
+      const sharedToken = createToken('shared-token');
       const providers = createProviders([
         {
-          provide: 'sharedToken',
+          provide: sharedToken,
           type: 'value' as const,
           implementation: 1,
         },
         {
-          provide: 'sharedToken',
+          provide: sharedToken,
           type: 'value' as const,
           implementation: 2,
         },
       ]);
 
       const container = new DependencyContainer(providers);
-      // @ts-ignore
-      expect(container.getByToken('sharedToken')).toEqual(2); // uses latest implementation
+      expect(container.getByToken(sharedToken)).toEqual(2); // uses latest implementation
     });
   });
 
   it('straight dep chain', () => {
+    const firstToken = createToken('first');
+    const secondToken = createToken('second');
+    const thirdToken = createToken('third');
     const providers = createProviders([
       {
-        provide: 'third',
+        provide: thirdToken,
         type: 'class',
-        deps: ['first', 'second'],
+        deps: [firstToken, secondToken],
       },
       {
-        provide: 'first',
+        provide: firstToken,
         type: 'value',
         implementation: 'bibka',
       },
       {
-        provide: 'second',
+        provide: secondToken,
         type: 'factory',
-        deps: ['first'],
+        deps: [firstToken],
       },
     ]);
 
     const container = new DependencyContainer(providers);
-    // @ts-ignore
-    const firstDep = container.getByToken('first');
-    // @ts-ignore
-    const secondDep = container.getByToken('second');
-    // @ts-ignore
-    const thirdDep = container.getByToken('third');
+    const firstDep = container.getByToken(firstToken);
+    const secondDep = container.getByToken(secondToken);
+    const thirdDep = container.getByToken(thirdToken);
     // @ts-ignore
     expect(thirdDep.isClass).toEqual(true);
     // @ts-ignore
@@ -72,70 +73,30 @@ describe('DependencyContainer', () => {
   });
 
   it('complex dep graph', () => {
+    const firstToken = createToken('first');
+    const secondToken = createToken('second');
+    const thirdToken = createToken('third');
     const providers = createProviders([
       {
-        provide: 'first',
+        provide: firstToken,
         type: 'class',
-        deps: ['second', 'third'],
+        deps: [secondToken, thirdToken],
       },
       {
-        provide: 'second',
+        provide: secondToken,
         type: 'class',
-        deps: ['third'],
+        deps: [thirdToken],
       },
       {
-        provide: 'third',
+        provide: thirdToken,
         type: 'factory',
       },
     ]);
 
     const container = new DependencyContainer(providers);
-    // @ts-ignore
-    const firstDep = container.getByToken('first');
-    // @ts-ignore
-    const secondDep = container.getByToken('second');
-    // @ts-ignore
-    const thirdDep = container.getByToken('third');
-    // @ts-ignore
-    expect(firstDep.isClass).toEqual(true);
-    // @ts-ignore
-    expect(firstDep.getDep(0)).toEqual(secondDep);
-    // @ts-ignore
-    expect(firstDep.getDep(1)).toEqual(thirdDep);
-    // @ts-ignore
-    expect(thirdDep('as')).toEqual(':as');
-    // @ts-ignore
-    expect(secondDep.isClass).toEqual(true);
-  });
-
-  it('complex dep graph using symbols', () => {
-    const token1 = Symbol('a');
-    const token2 = Symbol('a');
-    const token3 = Symbol('a');
-    const providers = createProviders([
-      {
-        provide: token1,
-        type: 'class',
-        deps: [token2, token3],
-      },
-      {
-        provide: token2,
-        type: 'class',
-        deps: [token3],
-      },
-      {
-        provide: token3,
-        type: 'factory',
-      },
-    ]);
-
-    const container = new DependencyContainer(providers);
-    // @ts-ignore
-    const firstDep = container.getByToken(token1);
-    // @ts-ignore
-    const secondDep = container.getByToken(token2);
-    // @ts-ignore
-    const thirdDep = container.getByToken(token3);
+    const firstDep = container.getByToken(firstToken);
+    const secondDep = container.getByToken(secondToken);
+    const thirdDep = container.getByToken(thirdToken);
     // @ts-ignore
     expect(firstDep.isClass).toEqual(true);
     // @ts-ignore
@@ -151,22 +112,24 @@ describe('DependencyContainer', () => {
   describe('not existent token', () => {
     it('token not found during init', () => {
       expect.assertions(2);
+      const firstToken = createToken('first');
+      const secondToken = createToken('second');
+      const nonExistentToken = createToken('non_existent');
       const providers = createProviders([
         {
-          provide: 'second',
+          provide: secondToken,
           type: 'factory',
-          deps: ['first', 'non_existent'], // no such token
+          deps: [firstToken, nonExistentToken], // no such token
         },
         {
-          provide: 'first',
+          provide: firstToken,
           type: 'value',
         },
       ]);
 
       try {
         const container = new DependencyContainer(providers);
-        // @ts-ignore
-        container.getByToken('second');
+        container.getByToken(secondToken);
       } catch (e) {
         expect(e.message).toEqual('token not registered: non_existent');
         expect(e.requireStack).toEqual(['second', 'non_existent']);
@@ -175,16 +138,17 @@ describe('DependencyContainer', () => {
 
     it('token not found of creation', () => {
       expect.assertions(1);
+      const firstToken = createToken('first');
+      const nonExistentToken = createToken('non_existent');
       const providers = createProviders([
         {
-          provide: 'first',
+          provide: firstToken,
           type: 'value',
         },
       ]);
       try {
         const container = new DependencyContainer(providers);
-        // @ts-ignore
-        container.getByToken('non_existent');
+        container.getByToken(nonExistentToken);
       } catch (e) {
         expect(e.message).toEqual('token not registered: non_existent');
       }
@@ -193,24 +157,26 @@ describe('DependencyContainer', () => {
 
   describe('circular dependencies', () => {
     it('to itself', () => {
+      const firstToken = createToken('first');
+      const secondToken = createToken('second');
+
       expect.assertions(2);
       const providers = createProviders([
         {
-          provide: 'first',
+          provide: firstToken,
           type: 'value',
           implementation: 'bibka',
         },
         {
-          provide: 'second',
+          provide: secondToken,
           type: 'factory',
-          deps: ['first', 'second'], // points to itself
+          deps: [firstToken, secondToken], // points to itself
         },
       ]);
 
       try {
         const container = new DependencyContainer(providers);
-        // @ts-ignore
-        container.getByToken('first');
+        container.getByToken(firstToken);
       } catch (e) {
         expect(e.message).toEqual('circular dependency for token: second');
         expect(e.requireStack).toEqual(['second']);
@@ -219,28 +185,30 @@ describe('DependencyContainer', () => {
 
     it('triangle', () => {
       expect.assertions(2);
+      const firstToken = createToken('first');
+      const secondToken = createToken('second');
+      const thirdToken = createToken('third');
       const providers = createProviders([
         {
-          provide: 'first',
+          provide: firstToken,
           type: 'factory',
-          deps: ['second'],
+          deps: [secondToken],
         },
         {
-          provide: 'second',
+          provide: secondToken,
           type: 'factory',
-          deps: ['third'],
+          deps: [thirdToken],
         },
         {
-          provide: 'third',
+          provide: thirdToken,
           type: 'factory',
-          deps: ['first'],
+          deps: [firstToken],
         },
       ]);
 
       try {
         const container = new DependencyContainer(providers);
-        // @ts-ignore
-        container.getByToken('first');
+        container.getByToken(firstToken);
       } catch (e) {
         expect(e.message).toEqual('circular dependency for token: third');
         expect(e.requireStack).toEqual(['third', 'first', 'second']);
@@ -250,18 +218,19 @@ describe('DependencyContainer', () => {
     it('for many providers', () => {
       expect.assertions(3);
       const array = range(0, 101);
+      const tokens = array.map((x) => createToken(`token-${x}`));
+
       const providers = createProviders(
         array.map((x) => ({
           type: 'factory',
-          provide: `token-${x}`,
-          deps: [`token-${x === array.length - 1 ? 0 : x + 1}`],
+          provide: tokens[x],
+          deps: [tokens[x === array.length - 1 ? 0 : x + 1]],
         })),
       );
 
       try {
         const container = new DependencyContainer(providers);
-        // @ts-ignore
-        container.getByToken('first');
+        container.getByToken(tokens[0]);
       } catch (e) {
         expect(e.message).toEqual('circular dependency for token: token-100');
         expect(e.requireStack.length).toEqual(101);
@@ -273,59 +242,71 @@ describe('DependencyContainer', () => {
 
   describe('features', () => {
     it('di container exposes itself', () => {
-      const providers = createProviders([{ provide: 'first', type: 'value' }]);
+      const firstToken = createToken('first');
+      const providers = createProviders([{ provide: firstToken, type: 'value' }]);
       const container1 = new DependencyContainer(providers);
       const container2 = container1.getByToken(DI_TOKEN);
       expect(container1).toEqual(container2);
     });
 
-    it('throw if trying to get unresolved dependency', () => {
-      expect.assertions(1);
-      try {
-        const providers = createProviders([
-          {
-            provide: 'first',
-            type: 'factory',
-            deps: [DI_TOKEN],
-            implementation: ([diContainer]) => {
-              diContainer.getByToken('second'); // illegal during dependency creation
-            },
-          },
-          {
-            provide: 'second',
-            type: 'value',
-          },
-        ]);
-        const container = new DependencyContainer(providers);
-        // @ts-ignore
-        container.getByToken('first');
-      } catch (e) {
-        expect(e.message).toEqual('provider not ready: second');
-      }
-    });
+    describe('container not ready', () => {
+      it('throw if trying to get unresolved dependency', () => {
+        expect.assertions(1);
+        const firstToken = createToken('first');
+        const secondToken = createToken('second');
 
-    it('wont throw if dependency is resolved (might be bad)', () => {
-      expect.assertions(1);
-      const providers = createProviders([
-        {
-          provide: 'second',
-          type: 'value',
-        },
-        {
-          provide: 'first',
-          type: 'factory',
-          deps: [DI_TOKEN],
-          implementation: ([diContainer]) => {
-            return diContainer.getByToken('second');
-          },
-        },
-      ]);
-      const container = new DependencyContainer(providers);
-      // @ts-ignore
-      const value1 = container.getByToken('first');
-      // @ts-ignore
-      const value2 = container.getByToken('second');
-      expect(value1).toEqual(value2);
+        try {
+          const providers = createProviders([
+            {
+              provide: firstToken,
+              type: 'factory',
+              deps: [DI_TOKEN],
+              implementation: ([diContainer]) => {
+                diContainer.getByToken(secondToken); // illegal during dependency creation
+              },
+            },
+            {
+              provide: secondToken,
+              type: 'value',
+            },
+          ]);
+          const container = new DependencyContainer(providers);
+          container.getByToken(firstToken);
+        } catch (e) {
+          expect(e.message).toEqual(
+            'container not ready yet, it is illegal to access container before full initialization',
+          );
+        }
+      });
+
+      it('throw even if dep is resolved', () => {
+        expect.assertions(1);
+        const firstToken = createToken('first');
+        const secondToken = createToken('second');
+
+        try {
+          const providers = createProviders([
+            {
+              provide: secondToken,
+              type: 'value',
+            },
+            {
+              provide: firstToken,
+              type: 'factory',
+              deps: [DI_TOKEN],
+              implementation: ([diContainer]) => {
+                return diContainer.getByToken(secondToken);
+              },
+            },
+          ]);
+          const container = new DependencyContainer(providers);
+          container.getByToken(firstToken);
+        } catch (e) {
+          expect(e.message).toEqual(
+            'container not ready yet, it is illegal to access container before full initialization',
+          );
+        }
+      });
     });
   });
 });

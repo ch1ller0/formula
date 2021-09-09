@@ -2,7 +2,7 @@ import React from 'react';
 import { context, useAtom } from '@reatom/react';
 
 import type { TPrimitive } from '../../types/base.types';
-import type { TStructureService, GroupStructVal } from '../structure/structure.types';
+import type { TStructureService, GroupStructVal, ScreenStructKey } from '../structure/structure.types';
 import type { TPropsService } from '../props/props.types';
 import type { TFieldService } from '../field/field.types';
 import type { StepFactory } from '../step/step.types';
@@ -12,6 +12,7 @@ import type { RendererFn } from './render.types';
 type RenderDepReturn<T extends { _getRenderDeps: any }> = ReturnType<T['_getRenderDeps']>;
 
 const createRenderers = (
+  // @ts-ignore
   resolveEnt,
   args: {
     propsDeps: RenderDepReturn<TPropsService>;
@@ -108,8 +109,7 @@ const RenderTree: React.FC<{
     },
   );
 
-  const currentScreen = useAtom(stepDeps.atom, (a) => `scr.${a.currentStep}`, []);
-  // @ts-ignore
+  const currentScreen = useAtom(stepDeps.atom, (a) => `scr.${a.currentStep}` as ScreenStructKey, []);
   const currentEntity = currentEntities.groups[currentScreen] as GroupStructVal;
 
   return (

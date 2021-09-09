@@ -18,7 +18,6 @@ export const useState = ({ globalStore, factory }: { globalStore: Store; factory
   const atom = declareAtom<StructureState>(['structure'], normalizedState, (on) => [
     on(toggleGroupVisibilityAction, (state, { groupKeys }) => {
       const part = groupKeys.reduce((acc, groupKey) => {
-        // @ts-ignore
         const prevGroupState = state.groups[groupKey] as GroupStructVal;
         const opts = {
           ...prevGroupState.opts,

@@ -15,7 +15,7 @@ import { combineLatest } from 'rxjs';
 import { CoreTokens } from '@formula/core';
 import { createToken } from '@formula/ioc';
 
-// @ts-ignore
+// @ts-ignore @TODO remove this import
 import { allScreenFields } from '../../core/src/core-module/structure/structure.selector';
 import { useState } from './validation.state';
 import type { Provider, ExtractToken } from '@formula/ioc';
@@ -76,6 +76,7 @@ const validationFactory = (
           map(([stepValidationRequirements, validationState]) => ({
             screenName: stepValidationRequirements?.[0],
             screenValidation: filterObj(
+              // @ts-ignore
               (_, key) => (stepValidationRequirements?.[1] || []).includes(key),
               validationState,
             ),

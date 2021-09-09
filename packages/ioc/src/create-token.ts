@@ -1,3 +1,3 @@
 import type { Token } from './types';
 
-export const createToken = <T = unknown>(t: string) => Symbol(t) as Token<T>;
+export const createToken = <T = unknown>(nm: string) => Symbol(nm) as Token<T>;

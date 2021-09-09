@@ -26,6 +26,6 @@ jobs:
       - name: Running unit tests
         run: yarn test:unit
         if: always()
-      - name: Checking types (allow to fail)
+      - name: Checking types
         run: yarn test:types
         if: always()

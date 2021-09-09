@@ -1,4 +1,4 @@
-export type Token<T = unknown> = (symbol | string) & { _brand: T };
+export type Token<T = unknown> = symbol & { description: string } & { _brand: T };
 export type ExtractToken<T extends Token> = T['_brand'];
 
 export type Provider<P = unknown> = {
