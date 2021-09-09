@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import type { Provider, Token } from './types';
+import type { Token } from './types';
 
 export class CircularDepError extends Error {
   requireStack: string[];
@@ -19,8 +19,8 @@ export class TokenNotFoundError extends Error {
   }
 }
 
-export class ProviderNotReady extends Error {
-  constructor(provider: Provider) {
-    super(`provider not ready: ${provider.provide.description}`);
+export class ContainerNotReadyError extends Error {
+  constructor() {
+    super(`container not ready yet, it is illegal to access container before full initialization`);
   }
 }

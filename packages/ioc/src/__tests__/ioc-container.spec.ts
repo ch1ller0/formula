@@ -249,56 +249,64 @@ describe('DependencyContainer', () => {
       expect(container1).toEqual(container2);
     });
 
-    it('throw if trying to get unresolved dependency', () => {
-      expect.assertions(1);
-      const firstToken = createToken('first');
-      const secondToken = createToken('second');
+    describe('container not ready', () => {
+      it('throw if trying to get unresolved dependency', () => {
+        expect.assertions(1);
+        const firstToken = createToken('first');
+        const secondToken = createToken('second');
 
-      try {
-        const providers = createProviders([
-          {
-            provide: firstToken,
-            type: 'factory',
-            deps: [DI_TOKEN],
-            implementation: ([diContainer]) => {
-              diContainer.getByToken(secondToken); // illegal during dependency creation
+        try {
+          const providers = createProviders([
+            {
+              provide: firstToken,
+              type: 'factory',
+              deps: [DI_TOKEN],
+              implementation: ([diContainer]) => {
+                diContainer.getByToken(secondToken); // illegal during dependency creation
+              },
             },
-          },
-          {
-            provide: secondToken,
-            type: 'value',
-          },
-        ]);
-        const container = new DependencyContainer(providers);
-        container.getByToken(firstToken);
-      } catch (e) {
-        expect(e.message).toEqual('provider not ready: second');
-      }
-    });
+            {
+              provide: secondToken,
+              type: 'value',
+            },
+          ]);
+          const container = new DependencyContainer(providers);
+          container.getByToken(firstToken);
+        } catch (e) {
+          expect(e.message).toEqual(
+            'container not ready yet, it is illegal to access container before full initialization',
+          );
+        }
+      });
 
-    it('throw if dependency is resolved', () => {
-      expect.assertions(1);
-      const firstToken = createToken('first');
-      const secondToken = createToken('second');
+      it('throw even if dep is resolved', () => {
+        expect.assertions(1);
+        const firstToken = createToken('first');
+        const secondToken = createToken('second');
 
-      const providers = createProviders([
-        {
-          provide: secondToken,
-          type: 'value',
-        },
-        {
-          provide: firstToken,
-          type: 'factory',
-          deps: [DI_TOKEN],
-          implementation: ([diContainer]) => {
-            return diContainer.getByToken(secondToken);
-          },
-        },
-      ]);
-      const container = new DependencyContainer(providers);
-      const value1 = container.getByToken(firstToken);
-      const value2 = container.getByToken(secondToken);
-      expect(value1).toEqual(value2);
+        try {
+          const providers = createProviders([
+            {
+              provide: secondToken,
+              type: 'value',
+            },
+            {
+              provide: firstToken,
+              type: 'factory',
+              deps: [DI_TOKEN],
+              implementation: ([diContainer]) => {
+                return diContainer.getByToken(secondToken);
+              },
+            },
+          ]);
+          const container = new DependencyContainer(providers);
+          container.getByToken(firstToken);
+        } catch (e) {
+          expect(e.message).toEqual(
+            'container not ready yet, it is illegal to access container before full initialization',
+          );
+        }
+      });
     });
   });
 });

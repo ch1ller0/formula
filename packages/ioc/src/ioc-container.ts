@@ -1,5 +1,5 @@
 import { createToken } from './create-token';
-import { CircularDepError, TokenNotFoundError, ProviderNotReady } from './errors';
+import { CircularDepError, TokenNotFoundError, ContainerNotReadyError } from './errors';
 import type { Provider, Token, IocRecord, ExtractToken } from './types';
 
 type Storage = Record<Token, IocRecord>;
@@ -23,6 +23,8 @@ export const DI_TOKEN = createToken<DependencyContainer>('di-container');
 
 export class DependencyContainer {
   private _providerStorage: Storage = {};
+
+  private _allResolved: boolean = false;
 
   constructor(externalPrs: Provider[]) {
     const prs: Provider[] = [
@@ -102,15 +104,16 @@ export class DependencyContainer {
       // @ts-ignore
       resolveSingle(this._providerStorage[e]);
     });
+    this._allResolved = true;
   }
 
   getByToken<T extends Token>(token: T): ExtractToken<T> {
+    if (!this._allResolved) {
+      throw new ContainerNotReadyError();
+    }
     const provider = this._providerStorage[token];
     if (!provider) {
       throw new TokenNotFoundError([token]);
-    }
-    if (provider.marker !== 0) {
-      throw new ProviderNotReady(provider.provider);
     }
 
     return provider.resolved;
