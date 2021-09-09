@@ -15,9 +15,11 @@ export class BinderService {
 
     toPairs(fields).forEach(([fieldName, { controls }]) => {
       if (controls) {
+        // @ts-ignore
         controls({
           getBinders: this.getBinders.bind(this),
           getService: this.getService.bind(this),
+          // @ts-ignore
         }).forEach((element) => element(fieldName));
       }
     });

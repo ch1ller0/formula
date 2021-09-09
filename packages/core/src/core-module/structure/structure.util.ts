@@ -35,8 +35,7 @@ export const normalizate = (state: FormStructure) => {
 
     toPairs(group).forEach(([entName, entVal]) => {
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      const childId = traverseUnknown(entVal, entName);
-      // @ts-ignore
+      const childId = traverseUnknown(entVal, entName) as GroupStructKey | ScreenStructKey;
       children.push(childId);
     });
 
