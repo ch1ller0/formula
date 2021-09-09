@@ -17,7 +17,7 @@ const createDep = (a: Conf) => {
     case 'value': {
       return {
         ...shared,
-        useValue: a.implementation || `value:${a.provide.toString()}`,
+        useValue: a.implementation || `value:${a.provide.description}`,
       } as Provider;
     }
     case 'factory': {

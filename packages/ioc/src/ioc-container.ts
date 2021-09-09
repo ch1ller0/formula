@@ -1,19 +1,18 @@
-import each from '@tinkoff/utils/object/each';
 import { createToken } from './create-token';
 import { CircularDepError, TokenNotFoundError, ProviderNotReady } from './errors';
 import type { Provider, Token, IocRecord, ExtractToken } from './types';
 
 type Storage = Record<Token, IocRecord>;
 
-const getRequireStack = (current: IocRecord, storage: Storage): string[] => {
-  const requireStack: string[] = [current.provider.provide.toString()];
-  const follow = (currentRec: IocRecord): string[] => {
+const getRequireStack = (current: IocRecord, storage: Storage): Token[] => {
+  const requireStack: Token[] = [current.provider.provide];
+  const follow = (currentRec: IocRecord): Token[] => {
     const prevUnresolved = currentRec.provider.deps?.find((x) => storage[x].marker === 1) as Token;
 
     if (prevUnresolved === current.provider.provide) {
       return requireStack;
     }
-    requireStack.push(prevUnresolved.toString());
+    requireStack.push(prevUnresolved);
     return follow(storage[prevUnresolved]);
   };
 
@@ -66,7 +65,7 @@ export class DependencyContainer {
       const resolvedDeps = (currentRecord.provider.deps || []).map((deptoken) => {
         const depRecord = this._providerStorage[deptoken];
         if (!depRecord) {
-          throw new TokenNotFoundError([currentRecord.provider.provide.toString(), deptoken.toString()]);
+          throw new TokenNotFoundError([currentRecord.provider.provide, deptoken]);
         }
 
         // circular dependency detected
@@ -98,11 +97,6 @@ export class DependencyContainer {
       }
     };
 
-    // for string keys
-    each((val) => {
-      resolveSingle(val);
-    }, this._providerStorage);
-
     // for symbol keys
     Object.getOwnPropertySymbols(this._providerStorage).forEach((e) => {
       // @ts-ignore
@@ -113,7 +107,7 @@ export class DependencyContainer {
   getByToken<T extends Token>(token: T): ExtractToken<T> {
     const provider = this._providerStorage[token];
     if (!provider) {
-      throw new TokenNotFoundError([token.toString()]);
+      throw new TokenNotFoundError([token]);
     }
     if (provider.marker !== 0) {
       throw new ProviderNotReady(provider.provider);
