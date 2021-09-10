@@ -18,8 +18,10 @@ const propsFactory = (
   };
 };
 
-export const propsProvider: Provider<TPropsService> = {
+const propsProvider: Provider<TPropsService> = {
   provide: PROPS_SERVICE_TOKEN,
   useFactory: propsFactory,
   deps: [STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN],
 };
+
+export const PropsModule = [propsProvider];

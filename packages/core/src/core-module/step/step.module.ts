@@ -42,8 +42,10 @@ const stepFactory = (deps: [ExtractToken<typeof FIELD_SERVICE_TOKEN>, ExtractTok
   };
 };
 
-export const stepProvider: Provider<StepFactory> = {
+const stepProvider: Provider<StepFactory> = {
   provide: STEP_SERVICE_TOKEN,
   useFactory: stepFactory,
   deps: [FIELD_SERVICE_TOKEN, GLOBAL_STORE_TOKEN],
 };
+
+export const StepModule = [stepProvider];

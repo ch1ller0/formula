@@ -2,9 +2,9 @@ import { createStore } from '@reatom/core';
 import { connectReduxDevtools } from '@reatom/debug';
 import { GLOBAL_STORE_TOKEN } from '../tokens';
 import type { Provider } from '@formula/ioc';
-import type { GlobalStore } from './global-store.types';
+import type { GlobalStore } from './state.types';
 
-export const globalStoreProvider: Provider<GlobalStore> = {
+const globalStoreProvider: Provider<GlobalStore> = {
   provide: GLOBAL_STORE_TOKEN,
   useFactory: () => {
     const store = createStore();
@@ -16,3 +16,5 @@ export const globalStoreProvider: Provider<GlobalStore> = {
     return store;
   },
 };
+
+export const StateModule = [globalStoreProvider];

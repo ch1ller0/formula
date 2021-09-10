@@ -3,7 +3,7 @@ import noop from '@tinkoff/utils/function/noop';
 import propSet from '@tinkoff/utils/object/propSet';
 import { toRxStore } from '../../utils/state.util';
 
-import type { GlobalStore } from '../global-store/global-store.types';
+import type { GlobalStore } from '../state/state.types';
 import type { SetBlockArgs, StepState } from './step.types';
 
 const stepIncrement = declareAction('step.stepIncrement');

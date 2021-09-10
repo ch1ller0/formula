@@ -1,5 +1,5 @@
 import { FormBuilder, CoreTokens } from '@formula/core';
-import { ValidationProvider, VALIDATION_SERVICE_TOKEN } from '@formula/provider-validation';
+import { ValidationModule, VALIDATION_SERVICE_TOKEN } from '@formula/provider-validation';
 
 import { InputFieldView, SubmitButtonView, ThankYouView, TextFieldView } from './shared/fields';
 import { requiredValidator, lengthValidator } from './shared/validators';
@@ -9,7 +9,7 @@ const { STEP_SERVICE_TOKEN } = CoreTokens;
 
 const GroupStory = () => {
   const Cmp = new FormBuilder()
-    .addProviders([ValidationProvider])
+    .addProviders(ValidationModule)
     .buildStructure(({ group }) => ({
       // first step
       0: group({

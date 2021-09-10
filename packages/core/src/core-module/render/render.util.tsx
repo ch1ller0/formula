@@ -6,7 +6,7 @@ import type { TStructureService, GroupStructVal, ScreenStructKey } from '../stru
 import type { TPropsService } from '../props/props.types';
 import type { TFieldService } from '../field/field.types';
 import type { StepFactory } from '../step/step.types';
-import type { GlobalStore } from '../global-store/global-store.types';
+import type { GlobalStore } from '../state/state.types';
 import type { RendererFn } from './render.types';
 
 type RenderDepReturn<T extends { _getRenderDeps: any }> = ReturnType<T['_getRenderDeps']>;

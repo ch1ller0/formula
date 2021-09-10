@@ -1,7 +1,7 @@
 import { debounceTime, distinctUntilKeyChanged, pluck } from 'rxjs/operators';
 
 import { FormBuilder, CoreTokens } from '@formula/core';
-import { ValidationProvider, VALIDATION_SERVICE_TOKEN } from '@formula/provider-validation';
+import { ValidationModule, VALIDATION_SERVICE_TOKEN } from '@formula/provider-validation';
 
 import {
   InputFieldView,
@@ -18,13 +18,12 @@ const { STEP_SERVICE_TOKEN, FIELD_SERVICE_TOKEN, PROPS_SERVICE_TOKEN } = CoreTok
 
 const ExtendedStory = () => {
   const Cmp = new FormBuilder()
-    .addProviders([ValidationProvider])
+    .addProviders(ValidationModule)
     .buildStructure(({ group }) => ({
       // first step
       0: group({
         first_name: {
           field: InputFieldView,
-          // @TODO infer type here
           props: { label: 'Your name' },
           controls: ({ getBinders }) => [
             getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),

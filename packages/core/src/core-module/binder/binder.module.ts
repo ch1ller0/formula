@@ -40,8 +40,10 @@ export class BinderService {
 
 export type TBinderService = InstanceType<typeof BinderService>;
 
-export const binderProvider: Provider<TBinderService> = {
+const binderProvider: Provider<TBinderService> = {
   provide: BINDER_SERVICE_TOKEN,
   useClass: BinderService,
   deps: [DI_TOKEN],
 };
+
+export const BinderModule = [binderProvider];

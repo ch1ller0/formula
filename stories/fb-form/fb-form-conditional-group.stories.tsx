@@ -1,5 +1,5 @@
 import { FormBuilder, CoreTokens } from '@formula/core';
-import { ValidationProvider, VALIDATION_SERVICE_TOKEN } from '@formula/provider-validation';
+import { ValidationModule, VALIDATION_SERVICE_TOKEN } from '@formula/provider-validation';
 
 import { pluck, filter } from 'rxjs/operators';
 import { CheckboxFieldView, InputFieldView, SubmitButtonView, TextFieldView, ThankYouView } from './shared/fields';
@@ -10,7 +10,7 @@ const { STEP_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN, FIELD_SERVICE_TOKEN } = Cor
 
 const ConditionalGroupStory = () => {
   const Cmp = new FormBuilder()
-    .addProviders([ValidationProvider])
+    .addProviders(ValidationModule)
     .buildStructure(({ group }) => ({
       // first step
       0: group({

@@ -1,17 +1,17 @@
-import { fieldProvider } from './field/field.provider';
-import { globalStoreProvider } from './global-store/global-store.provider';
-import { propsProvider } from './props/props.provider';
-import { renderProvider } from './render/render.provider';
-import { stepProvider } from './step/step.provider';
-import { structureProvider } from './structure/structure.provider';
-import { binderProvider } from './binder/binder.provider';
+import { FieldModule } from './field/field.module';
+import { StateModule } from './state/state.module';
+import { PropsModule } from './props/props.module';
+import { RenderModule } from './render/render.module';
+import { StepModule } from './step/step.module';
+import { StructureModule } from './structure/structure.module';
+import { BinderModule } from './binder/binder.module';
 
-export const coreProviders = [
-  binderProvider,
-  fieldProvider,
-  globalStoreProvider,
-  propsProvider,
-  renderProvider,
-  stepProvider,
-  structureProvider,
+export const CoreModule = [
+  ...StructureModule,
+  ...RenderModule,
+  ...PropsModule,
+  ...BinderModule,
+  ...FieldModule,
+  ...StepModule,
+  ...StateModule,
 ];

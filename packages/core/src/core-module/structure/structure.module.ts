@@ -22,8 +22,10 @@ const structureFactory = (
   };
 };
 
-export const structureProvider: Provider<TStructureService> = {
+const structureProvider: Provider<TStructureService> = {
   provide: STRUCTURE_SERVICE_TOKEN,
   useFactory: structureFactory,
   deps: [STRUCTURE_CONFIG_TOKEN, GLOBAL_STORE_TOKEN],
 };
+
+export const StructureModule = [structureProvider];

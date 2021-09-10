@@ -1,9 +1,9 @@
 import { createToken } from '@formula/ioc';
 
 import type { RendererFn } from './render/render.types';
-import type { GlobalStore } from './global-store/global-store.types';
+import type { GlobalStore } from './state/state.types';
 import type { StructureFactory, TStructureService } from './structure/structure.types';
-import type { BinderService } from './binder/binder.provider';
+import type { BinderService } from './binder/binder.module';
 import type { TFieldService } from './field/field.types';
 import type { TPropsService } from './props/props.types';
 import type { StepFactory } from './step/step.types';
@@ -18,3 +18,11 @@ export const PROPS_SERVICE_TOKEN = createToken<TPropsService>('props-service');
 export const RENDER_SERVICE_TOKEN = createToken<RendererFn>('render-service');
 export const STEP_SERVICE_TOKEN = createToken<StepFactory>('step-service');
 export const STRUCTURE_SERVICE_TOKEN = createToken<TStructureService>('structure-service');
+
+export const PublicTokens = {
+  GLOBAL_STORE_TOKEN,
+  FIELD_SERVICE_TOKEN,
+  PROPS_SERVICE_TOKEN,
+  STEP_SERVICE_TOKEN,
+  STRUCTURE_SERVICE_TOKEN,
+};

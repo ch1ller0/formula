@@ -131,8 +131,10 @@ type ValidationFactory = ReturnType<typeof validationFactory>;
 
 export const VALIDATION_SERVICE_TOKEN = createToken<ValidationFactory>('validation-factory');
 
-export const ValidationProvider: Provider<ValidationFactory> = {
+const validationProvider: Provider<ValidationFactory> = {
   provide: VALIDATION_SERVICE_TOKEN,
   useFactory: validationFactory,
   deps: [FIELD_SERVICE_TOKEN, PROPS_SERVICE_TOKEN, STEP_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN],
 };
+
+export const ValidationModule = [validationProvider];

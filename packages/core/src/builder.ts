@@ -1,6 +1,6 @@
 import React from 'react';
 import { DependencyContainer } from '@formula/ioc';
-import { coreProviders } from './core-module';
+import { CoreModule } from './core-module';
 import {
   STRUCTURE_CONFIG_TOKEN,
   RENDER_SERVICE_TOKEN,
@@ -14,7 +14,7 @@ export class FormBuilder {
   private _config: { providers: Provider[] };
 
   constructor() {
-    this._config = { providers: coreProviders };
+    this._config = { providers: CoreModule };
   }
 
   addProviders(ar: Provider[]) {

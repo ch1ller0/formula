@@ -27,8 +27,10 @@ const fieldFactory = (
   };
 };
 
-export const fieldProvider: Provider<TFieldService> = {
+const fieldProvider: Provider<TFieldService> = {
   provide: FIELD_SERVICE_TOKEN,
   useFactory: fieldFactory,
   deps: [STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN],
 };
+
+export const FieldModule = [fieldProvider];
