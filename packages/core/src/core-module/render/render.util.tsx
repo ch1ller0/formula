@@ -1,22 +1,23 @@
 import React from 'react';
 import { context, useAtom } from '@reatom/react';
 
-import type { TPrimitive } from '../../types/base.types';
-import type { TStructureService, GroupStructVal, ScreenStructKey } from '../structure/structure.types';
-import type { TPropsService } from '../props/props.types';
-import type { TFieldService } from '../field/field.types';
-import type { StepFactory } from '../step/step.types';
+import type { Primitive } from '../../types/base.types';
+import type { StructureService, GroupStructVal, ScreenStructKey } from '../structure/structure.types';
+import type { PropsService } from '../props/props.types';
+import type { FieldService } from '../field/field.types';
+import type { StepService } from '../step/step.types';
 import type { GlobalStore } from '../state/state.types';
 import type { RendererFn } from './render.types';
+import type { TodoAny } from '@formula/core-types';
 
-type RenderDepReturn<T extends { _getRenderDeps: any }> = ReturnType<T['_getRenderDeps']>;
+type RenderDepReturn<T extends { _getRenderDeps: TodoAny }> = ReturnType<T['_getRenderDeps']>;
 
 const createRenderers = (
   // @ts-ignore
   resolveEnt,
   args: {
-    propsDeps: RenderDepReturn<TPropsService>;
-    fieldDeps: RenderDepReturn<TFieldService>;
+    propsDeps: RenderDepReturn<PropsService>;
+    fieldDeps: RenderDepReturn<FieldService>;
   },
 ) => {
   const { propsDeps, fieldDeps } = args;
@@ -30,7 +31,7 @@ const createRenderers = (
     const currentVal = useAtom(fieldDeps.atom, (a) => a[id], []);
 
     const innerProps = {
-      setValue: (value: TPrimitive) => {
+      setValue: (value: Primitive) => {
         fieldDeps.setValue({ name: id, value });
       },
       value: currentVal,
@@ -91,10 +92,10 @@ const createRenderers = (
 const defaultWrapper: React.FC = ({ children }) => children;
 
 const RenderTree: React.FC<{
-  structureDeps: RenderDepReturn<TStructureService>;
-  stepDeps: RenderDepReturn<StepFactory>;
-  fieldDeps: RenderDepReturn<TFieldService>;
-  propsDeps: RenderDepReturn<TPropsService>;
+  structureDeps: RenderDepReturn<StructureService>;
+  stepDeps: RenderDepReturn<StepService>;
+  fieldDeps: RenderDepReturn<FieldService>;
+  propsDeps: RenderDepReturn<PropsService>;
 }> = ({ structureDeps, stepDeps, fieldDeps, propsDeps }) => {
   const currentEntities = useAtom(structureDeps.atom);
 
@@ -120,7 +121,7 @@ const RenderTree: React.FC<{
 };
 
 export const renderRoot = (
-  deps: [TStructureService, TPropsService, TFieldService, StepFactory, GlobalStore],
+  deps: [StructureService, PropsService, FieldService, StepService, GlobalStore],
 ): RendererFn => (Wrapper = defaultWrapper) => {
   const [structureService, propsService, fieldService, stepService, globalStore] = deps;
   const renderDependencies = {

@@ -1,5 +1,5 @@
 import { FormBuilder, CoreTokens } from '@formula/core';
-import { ValidationModule, VALIDATION_SERVICE_TOKEN } from '@formula/provider-validation';
+import { ValidationModule, VALIDATION_SERVICE_TOKEN } from '@formula/module-validation';
 
 import { InputFieldView, SubmitButtonView, ThankYouView, TextFieldView } from './shared/fields';
 import { requiredValidator, lengthValidator } from './shared/validators';

@@ -1,7 +1,7 @@
 import { debounceTime, distinctUntilKeyChanged, pluck } from 'rxjs/operators';
 
 import { FormBuilder, CoreTokens } from '@formula/core';
-import { ValidationModule, VALIDATION_SERVICE_TOKEN } from '@formula/provider-validation';
+import { ValidationModule, VALIDATION_SERVICE_TOKEN } from '@formula/module-validation';
 
 import {
   InputFieldView,

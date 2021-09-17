@@ -1,7 +1,11 @@
-export const requiredValidator = (v: string) => (!v?.length ? 'Field is required' : undefined);
+import type { ValidateFn } from '@formula/module-validation';
+
+export const requiredValidator: ValidateFn<string> = (v) => (!v?.length ? 'Field is required' : undefined);
 
 // Fake promise
-export const lengthValidator = ({ min = 0, max = 30 }: { min?: number; max?: number }) => (v: string) => {
+export const lengthValidator = ({ min = 0, max = 30 }: { min?: number; max?: number }): ValidateFn<string> => (
+  v: string,
+) => {
   return new Promise((res) => {
     setTimeout(() => {
       const { length } = v;

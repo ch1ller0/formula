@@ -1,0 +1,10 @@
+{
+  "name": "@formula/core-types",
+  "version": "0.0.0-stub",
+  "description": "Core typings",
+  "sideEffects": false,
+  "private": true,
+  "main": "lib",
+  "typings": "src",
+  "files": ["lib"]
+}

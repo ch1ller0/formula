@@ -1,7 +1,7 @@
 import { STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN, PROPS_SERVICE_TOKEN } from '../tokens';
 import { useState } from './props.state';
 import type { ExtractToken, Provider } from '@formula/ioc';
-import type { TPropsService, Props } from './props.types';
+import type { PropsService, Props } from './props.types';
 
 const propsFactory = (
   deps: [ExtractToken<typeof STRUCTURE_SERVICE_TOKEN>, ExtractToken<typeof GLOBAL_STORE_TOKEN>],
@@ -18,7 +18,7 @@ const propsFactory = (
   };
 };
 
-const propsProvider: Provider<TPropsService> = {
+const propsProvider: Provider<PropsService> = {
   provide: PROPS_SERVICE_TOKEN,
   useFactory: propsFactory,
   deps: [STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN],

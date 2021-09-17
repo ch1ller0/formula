@@ -2,14 +2,14 @@ import { distinctUntilChanged, filter, mapTo, sample, map } from 'rxjs/operators
 import { FIELD_SERVICE_TOKEN, GLOBAL_STORE_TOKEN, STEP_SERVICE_TOKEN } from '../tokens';
 import { useState } from './step.state';
 import type { ExtractToken, Provider } from '@formula/ioc';
-import type { SetBlockArgs, StepFactory } from './step.types';
+import type { SetBlockArgs, StepService } from './step.types';
 
 const stepFactory = (deps: [ExtractToken<typeof FIELD_SERVICE_TOKEN>, ExtractToken<typeof GLOBAL_STORE_TOKEN>]) => {
   const [fieldService, globalStore] = deps;
   const selfState = useState(globalStore);
 
   return {
-    useBinders: () => ({
+    useBinders: {
       nextStep: () => (fieldName: string) => {
         const buttonClick$ = fieldService.getDiffRx().pipe(
           // watch only for this button clicked
@@ -33,7 +33,7 @@ const stepFactory = (deps: [ExtractToken<typeof FIELD_SERVICE_TOKEN>, ExtractTok
             }
           });
       },
-    }),
+    },
     setBlocked: (args: SetBlockArgs) => {
       selfState.actions.stepBlock(args);
     },
@@ -42,7 +42,7 @@ const stepFactory = (deps: [ExtractToken<typeof FIELD_SERVICE_TOKEN>, ExtractTok
   };
 };
 
-const stepProvider: Provider<StepFactory> = {
+const stepProvider: Provider<StepService> = {
   provide: STEP_SERVICE_TOKEN,
   useFactory: stepFactory,
   deps: [FIELD_SERVICE_TOKEN, GLOBAL_STORE_TOKEN],

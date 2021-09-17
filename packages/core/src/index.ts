@@ -4,5 +4,3 @@ export { ViewGenerator } from './generate';
 export { PublicTokens as CoreTokens } from './core-module/tokens';
 
 export * as TBase from './types/base.types';
-export * as TProvider from './types/provider.types';
-// @TODO should export types as well

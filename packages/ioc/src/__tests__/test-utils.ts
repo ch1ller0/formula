@@ -1,10 +1,11 @@
 import type { Provider, Token } from '../types';
+import type { TodoAny } from '@formula/core-types';
 
 type Conf = {
   provide: Omit<Token, '_brand'>;
   deps?: Omit<Token, '_brand'>[];
   type: 'value' | 'factory' | 'class';
-  implementation?: any;
+  implementation?: TodoAny;
 };
 
 // eslint-disable-next-line consistent-return
@@ -34,9 +35,9 @@ const createDep = (a: Conf) => {
           class Dep {
             isClass = true;
 
-            private deps: any[] = [];
+            private deps: TodoAny[] = [];
 
-            constructor(deps: any[]) {
+            constructor(deps: TodoAny[]) {
               this.deps = deps;
             }
 

@@ -1,10 +1,9 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import mapObj from '@tinkoff/utils/object/map';
-import { ExtractToken } from 'packages/ioc/src';
 import { toRxStore } from '../../utils/state.util';
 import { GLOBAL_STORE_TOKEN } from '../tokens';
-
+import type { ExtractToken } from '@formula/ioc';
 import type { StructureState } from '../structure/structure.types';
 import type { ChangeFieldPropsArgs, PropsState } from './props.types';
 

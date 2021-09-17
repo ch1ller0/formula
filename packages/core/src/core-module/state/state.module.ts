@@ -11,6 +11,8 @@ const globalStoreProvider: Provider<GlobalStore> = {
 
     if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
       connectReduxDevtools(store);
+      // @ts-ignore
+      window.__formula = { store };
     }
 
     return store;

@@ -2,12 +2,13 @@ import { DI_TOKEN } from '@formula/ioc';
 import toPairs from '@tinkoff/utils/object/toPairs';
 import { BINDER_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN } from '../tokens';
 import type { Provider, Token, ExtractToken } from '@formula/ioc';
+import type { TodoAny } from '@formula/core-types';
 
 export class BinderService {
   private _container: ExtractToken<typeof DI_TOKEN>;
 
   constructor(deps: [ExtractToken<typeof DI_TOKEN>]) {
-    this._container = deps[0];
+    [this._container] = deps;
   }
 
   initialize() {
@@ -29,12 +30,13 @@ export class BinderService {
     return this._container.getByToken(tok);
   }
 
-  getBinders<T extends Token<{ useBinders: any }>>(tok: T): ExtractToken<T> {
-    const binderClass = this._container.getByToken(tok);
-    if (typeof binderClass.useBinders !== 'function') {
-      throw new Error(`token: ${tok.toString()} has no useBinders method`);
+  getBinders<T extends Token<{ useBinders: TodoAny }>>(tok: T): ExtractToken<T> {
+    const binderClass = this.getService(tok);
+
+    if (!Object.keys(binderClass.useBinders)) {
+      throw new Error(`token: ${tok.toString()} has no useBinders field or it is empty`);
     }
-    return this._container.getByToken(tok).useBinders();
+    return binderClass.useBinders;
   }
 }
 

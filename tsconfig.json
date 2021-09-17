@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "baseUrl": "./packages",
         "composite": true,
         "allowJs": true,
         "target": "es5",
@@ -17,11 +18,7 @@
         "pretty": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "lib": [
-            "es2019",
-            "dom"
-        ],
-        "baseUrl": ".",
+        "lib": [ "es2019", "dom" ],
         "typeRoots": [
             "node_modules/@types",
             "node_modules/@fridgefm-web/typings",
@@ -47,6 +44,6 @@
         "stories"
     ],
     "paths": {
-      "@formula": "packages/*"
+      "@formula/*": "packages/*/src/index.ts"
     }
 }

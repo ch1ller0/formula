@@ -5,17 +5,6 @@
   "main": "index.js",
   "license": "MIT",
   "private": true,
-  "dependencies": {
-    "@reatom/core": "^1.1.5",
-    "@reatom/observable": "^1.0.0",
-    "@reatom/react": "^1.1.5",
-    "@tinkoff/utils": "^2.2.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "rsuite": "^4.10.2",
-    "rxjs": "^7.1.0",
-    "typescript": "^4.4.2"
-  },
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@reatom/debug": "^1.2.0",
@@ -32,7 +21,10 @@
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.0.6",
-    "ts-jest": "^27.0.3"
+    "ts-jest": "^27.0.3",
+    "react-dom": "^17.x.x",
+    "rsuite": "^4.10.2",
+    "typescript": "^4.4.2"
   },
   "workspaces": [
     "packages/*"
@@ -43,6 +35,7 @@
     "lint:fix": "eslint ./packages ./stories -c .eslintrc.json --fix",
     "test:lint": "eslint ./packages ./stories -c .eslintrc.json",
     "test:types": "tsc --build tsconfig.json",
-    "test:unit": "jest"
+    "test:unit": "jest",
+    "test:all": "yarn test:lint && yarn test:types && yarn test:unit"
   }
 }

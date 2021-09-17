@@ -13,21 +13,12 @@ import filterObj from '@tinkoff/utils/object/filter';
 import eachObj from '@tinkoff/utils/object/each';
 import { combineLatest } from 'rxjs';
 import { CoreTokens } from '@formula/core';
-import { createToken } from '@formula/ioc';
+import { VALIDATION_SERVICE_TOKEN, VALIDATION_STATE_TOKEN } from '../tokens';
 
-// @ts-ignore @TODO remove this import
-import { allScreenFields } from '../../core/src/core-module/structure/structure.selector';
-import { useState } from './validation.state';
 import type { Provider, ExtractToken } from '@formula/ioc';
-import type { ValidateFn } from './validation.types';
+import type { ValidateFn, ValidationService } from '../types';
 
-const {
-  FIELD_SERVICE_TOKEN,
-  PROPS_SERVICE_TOKEN,
-  STEP_SERVICE_TOKEN,
-  STRUCTURE_SERVICE_TOKEN,
-  GLOBAL_STORE_TOKEN,
-} = CoreTokens;
+const { FIELD_SERVICE_TOKEN, PROPS_SERVICE_TOKEN, STEP_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN } = CoreTokens;
 
 const validationFactory = (
   deps: [
@@ -35,14 +26,13 @@ const validationFactory = (
     ExtractToken<typeof PROPS_SERVICE_TOKEN>,
     ExtractToken<typeof STEP_SERVICE_TOKEN>,
     ExtractToken<typeof STRUCTURE_SERVICE_TOKEN>,
-    ExtractToken<typeof GLOBAL_STORE_TOKEN>,
+    ExtractToken<typeof VALIDATION_STATE_TOKEN>,
   ],
 ) => {
-  const [fieldService, propsService, stepService, structureService, globalStore] = deps;
-  const selfState = useState(globalStore);
+  const [fieldService, propsService, stepService, structureService, selfState] = deps;
 
   return {
-    useBinders: () => ({
+    useBinders: {
       validateField: (validateFns: ValidateFn[]) => (fieldName: string) => {
         fieldService
           .getRxStore()
@@ -53,14 +43,15 @@ const validationFactory = (
             pluck(fieldName),
             mergeMap((nextValue) =>
               // apply validator functions
-              Promise.all(validateFns.map((v) => v(nextValue))).then((a) => a.filter((x) => !!x)),
+              Promise.all(validateFns.map((v) => v(nextValue))).then((a) => a.filter((x) => !!x) as string[]),
             ),
           )
           .subscribe((errors) => {
-            selfState.actions.validateAction({ name: fieldName, errors });
+            selfState.validate({ name: fieldName, errors });
           });
       },
       stepDisabled: () => (buttonName: string) => {
+        const { allScreenFields } = structureService.selectors;
         propsService.setFieldProp(buttonName, { disabled: true });
 
         // stream of requirements for screen to be passed
@@ -123,18 +114,12 @@ const validationFactory = (
             });
           });
       },
-    }),
+    },
   };
 };
 
-type ValidationFactory = ReturnType<typeof validationFactory>;
-
-export const VALIDATION_SERVICE_TOKEN = createToken<ValidationFactory>('validation-factory');
-
-const validationProvider: Provider<ValidationFactory> = {
+export const validationService: Provider<ValidationService> = {
   provide: VALIDATION_SERVICE_TOKEN,
   useFactory: validationFactory,
-  deps: [FIELD_SERVICE_TOKEN, PROPS_SERVICE_TOKEN, STEP_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN],
+  deps: [FIELD_SERVICE_TOKEN, PROPS_SERVICE_TOKEN, STEP_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN, VALIDATION_STATE_TOKEN],
 };
-
-export const ValidationModule = [validationProvider];

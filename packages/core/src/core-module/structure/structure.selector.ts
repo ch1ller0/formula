@@ -38,3 +38,7 @@ export const allScreenFields = (
       .map(([key, val]) => [key, val.children])
   );
 };
+
+export const selectors = {
+  allScreenFields,
+};

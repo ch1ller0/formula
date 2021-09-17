@@ -1,12 +1,14 @@
+import type { TodoAny } from '@formula/core-types';
+
 export type Token<T = unknown> = symbol & { description: string } & { _brand: T };
 export type ExtractToken<T extends Token> = T['_brand'];
 
 export type Provider<P = unknown> = {
   provide: Token<P>;
-  deps?: Token<any>[];
+  deps?: Token<TodoAny>[];
   useValue?: P;
-  useFactory?: (deps: any) => P;
-  useClass?: new (deps: any) => P;
+  useFactory?: (deps: TodoAny) => P;
+  useClass?: new (deps: TodoAny) => P;
 };
 
 export type IocRecord<R = unknown> = {

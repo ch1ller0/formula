@@ -6,7 +6,9 @@
   "private": true,
   "main": "lib",
   "typings": "src",
-  "files": [
-    "lib"
-  ]
+  "files": ["lib"],
+  "dependencies": {
+    "@formula/core-types": "0.0.0-stub",
+    "@tinkoff/utils": "^2.x.x"
+  }
 }

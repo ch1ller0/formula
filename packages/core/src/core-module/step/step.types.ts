@@ -1,5 +1,5 @@
 import type { Atom } from '@reatom/core';
-import type { TProviderService } from '../../types/provider.types';
+import type { BinderReturn } from '../../types/base.types';
 
 export type StepState = {
   currentStep: number;
@@ -8,9 +8,12 @@ export type StepState = {
 
 export type SetBlockArgs = { stepNum: string; value: boolean };
 
-export interface StepFactory extends TProviderService {
+export type StepService = {
   setBlocked(args: SetBlockArgs): void;
   _getRenderDeps(): {
     atom: Atom<StepState>;
   };
-}
+  useBinders: {
+    nextStep: () => BinderReturn;
+  };
+};

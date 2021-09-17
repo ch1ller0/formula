@@ -1,5 +1,5 @@
 import { FormBuilder, CoreTokens } from '@formula/core';
-import { ValidationModule, VALIDATION_SERVICE_TOKEN } from '@formula/provider-validation';
+import { ValidationModule, VALIDATION_SERVICE_TOKEN } from '@formula/module-validation';
 
 import { pluck, filter } from 'rxjs/operators';
 import { CheckboxFieldView, InputFieldView, SubmitButtonView, TextFieldView, ThankYouView } from './shared/fields';
@@ -47,9 +47,11 @@ const ConditionalGroupStory = () => {
             nickname: {
               field: InputFieldView,
               props: { label: 'Nickname' },
-              controls: ({ getBinders }) => [
-                getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
-              ],
+              controls: ({ getBinders }) => {
+                return [
+                  getBinders(VALIDATION_SERVICE_TOKEN).validateField([requiredValidator, lengthValidator({ min: 6 })]),
+                ];
+              },
             },
             email1: {
               field: InputFieldView,

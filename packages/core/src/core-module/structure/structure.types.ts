@@ -1,7 +1,7 @@
 import type { Atom } from '@reatom/core';
 import type { Observable } from 'rxjs';
 import type { TFieldStructure } from '../../types/base.types';
-import type { TProviderService } from '../../types/provider.types';
+import type { selectors } from './structure.selector';
 
 type ScreenName = string;
 
@@ -41,10 +41,12 @@ export type StructureState = {
   groups: Record<ScreenStructKey | GroupStructKey, GroupStructVal>;
 };
 
-export interface TStructureService extends TProviderService {
+export type StructureService = {
   _getInitialState: () => StructureState;
   getRxStore: () => Observable<StructureState>;
   _getRenderDeps(): {
     atom: Atom<StructureState>;
   };
-}
+  selectors: typeof selectors;
+  toggleGroupsVisibility: (a: GroupStructKey[]) => void;
+};

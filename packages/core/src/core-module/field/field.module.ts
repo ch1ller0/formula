@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { FIELD_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN } from '../tokens';
 import { useState } from './field.state';
 import type { ExtractToken, Provider } from '@formula/ioc';
-import type { TFieldService, ChangeKeyValArgs } from './field.types';
+import type { FieldService, ChangeKeyValArgs } from './field.types';
 
 const fieldFactory = (
   deps: [ExtractToken<typeof STRUCTURE_SERVICE_TOKEN>, ExtractToken<typeof GLOBAL_STORE_TOKEN>],
@@ -27,7 +27,7 @@ const fieldFactory = (
   };
 };
 
-const fieldProvider: Provider<TFieldService> = {
+const fieldProvider: Provider<FieldService> = {
   provide: FIELD_SERVICE_TOKEN,
   useFactory: fieldFactory,
   deps: [STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN],

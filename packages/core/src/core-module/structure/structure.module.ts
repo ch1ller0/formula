@@ -1,7 +1,8 @@
 import { STRUCTURE_CONFIG_TOKEN, STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN } from '../tokens';
 import { useState } from './structure.state';
+import { selectors } from './structure.selector';
 import type { ExtractToken, Provider } from '@formula/ioc';
-import type { TStructureService, GroupStructKey } from './structure.types';
+import type { StructureService, GroupStructKey } from './structure.types';
 
 const structureFactory = (
   deps: [ExtractToken<typeof STRUCTURE_CONFIG_TOKEN>, ExtractToken<typeof GLOBAL_STORE_TOKEN>],
@@ -19,10 +20,11 @@ const structureFactory = (
     },
     _getRenderDeps: () => ({ atom: selfState._atom }),
     _getInitialState: () => selfState.initialState,
+    selectors,
   };
 };
 
-const structureProvider: Provider<TStructureService> = {
+const structureProvider: Provider<StructureService> = {
   provide: STRUCTURE_SERVICE_TOKEN,
   useFactory: structureFactory,
   deps: [STRUCTURE_CONFIG_TOKEN, GLOBAL_STORE_TOKEN],
