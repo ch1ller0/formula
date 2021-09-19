@@ -8,7 +8,8 @@ module.exports = {
   ],
   addons: [
     '@storybook/addon-links',
-    '@storybook/addon-essentials'
+    '@storybook/addon-essentials',
+    './formula-addon/register'
   ],
   typescript: {
     check: false,

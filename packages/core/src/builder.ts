@@ -44,4 +44,9 @@ export class FormBuilder {
 
     return renderer(CoreWrapper);
   }
+
+  // this is a very costly operation, use it only in dev mode
+  _getDebugProviders() {
+    return new DependencyContainer(this._config.providers)._getResolvedNodes();
+  }
 }
