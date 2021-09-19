@@ -33,7 +33,7 @@ export class BinderService {
   getBinders<T extends Token<{ useBinders: TodoAny }>>(tok: T): ExtractToken<T> {
     const binderClass = this.getService(tok);
 
-    if (!Object.keys(binderClass.useBinders)) {
+    if (!binderClass.useBinders) {
       throw new Error(`token: ${tok.toString()} has no useBinders field or it is empty`);
     }
     return binderClass.useBinders;

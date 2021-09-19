@@ -12,6 +12,19 @@ import type { TBase } from '@formula/core';
 export default {
   title: 'Example/Fields',
   component: <div>placeholder</div>,
+  parameters: {
+    // pure core providers
+    providers: new FormBuilder()
+      .buildStructure(({ group }) => ({
+        0: group({
+          dumb_input: {
+            field: InputFieldView,
+            props: { label: 'Dumb input field' },
+          },
+        }),
+      }))
+      ._getDebugProviders(),
+  },
 };
 
 const SingleField = (step: TBase.TStepStructure) => {

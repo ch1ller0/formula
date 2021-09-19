@@ -30,7 +30,7 @@ const render = () => {
     readonly={true}
     nodes={providers.map(({ provide }) => ({ id: provide, text: provide }))}
     direction="UP"
-    edges={edges.slice(0, 19)}
+    edges={edges}
   />
 }
 
