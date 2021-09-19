@@ -30,23 +30,21 @@ export class FormBuilder {
       },
     ]);
 
-    return this;
-  }
-
-  toComponent(CoreWrapper?: React.FC): React.ReactNode {
     const depContainer = new DependencyContainer(this._config.providers);
-    // initialize bindings for fields
-    depContainer.getByToken(BINDER_SERVICE_TOKEN).initialize();
-    // @TODO create logger provider
-    // eslint-disable-next-line no-console
-    console.log('before-render-state:', depContainer.getByToken(GLOBAL_STORE_TOKEN).getState());
-    const renderer = depContainer.getByToken(RENDER_SERVICE_TOKEN);
 
-    return renderer(CoreWrapper);
-  }
+    return {
+      toComponent(CoreWrapper?: React.FC): React.ReactNode {
+        // initialize bindings for fields
+        depContainer.getByToken(BINDER_SERVICE_TOKEN).initialize();
+        // @TODO create logger provider
+        // eslint-disable-next-line no-console
+        console.log('before-render-state:', depContainer.getByToken(GLOBAL_STORE_TOKEN).getState());
+        const renderer = depContainer.getByToken(RENDER_SERVICE_TOKEN);
 
-  // this is a very costly operation, use it only in dev mode
-  _getDebugProviders() {
-    return new DependencyContainer(this._config.providers)._getResolvedNodes();
+        return renderer(CoreWrapper);
+      },
+      // this is a very costly operation, use it only in dev mode
+      _getDebugProviders: () => depContainer._getResolvedNodes(),
+    };
   }
 }

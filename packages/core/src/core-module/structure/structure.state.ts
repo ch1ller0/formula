@@ -2,8 +2,8 @@ import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import { toRxStore } from '../../utils/state.util';
 import { getInitialStructure, normalizate } from './structure.util';
-import type { Store } from '@reatom/core';
 
+import type { Store } from '@reatom/core';
 import type { StructureFactory, StructureState, GroupStructKey, GroupStructVal } from './structure.types';
 
 type ToggleGroupVisibilityArgs = {

@@ -268,7 +268,7 @@ describe('DependencyContainer', () => {
           const container1 = new DependencyContainer(providers);
           container1.getByToken(DI_TOKEN);
         } catch (e) {
-          expect(e.message).toEqual('token not registered: di-container');
+          expect(e.message).toEqual('token not registered: kernel:di-container');
         }
       });
     });

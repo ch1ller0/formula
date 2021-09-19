@@ -1,7 +1,30 @@
 import React from 'react';
-import { Canvas } from 'reaflow';
+import { Canvas, Node } from 'reaflow';
 import { useParameter } from '@storybook/api';
 import { addons, types } from '@storybook/addons';
+
+const generateBackgrounds = (providers) => {
+  const generateRandomColor = () => {
+    const letters = '0123456789AB';
+    let color = '#';
+    for (let i = 0; i < 3; i++) {
+      color += letters[Math.floor(Math.random() * (letters.length - 1))];
+    }
+    return color;
+  }
+
+  const backs = { core: 'black', kernel: 'black' }
+
+  providers.forEach(x => {
+    const key = x.provide.split(':')[0]
+    if (backs[key]) {
+      return 
+    }
+    backs[key] = generateRandomColor()
+  })
+
+  return backs
+}
 
 const render = () => {
   const providers = useParameter('providers', []);
@@ -9,6 +32,8 @@ const render = () => {
   if (!providers.length) {
     return <p>Empty providers tree</p>
   }
+
+  const HIGHLIGHTS = generateBackgrounds(providers)
 
   const edges = providers.reduce((acc, cur) => {
       const {deps, provide} = cur
@@ -31,6 +56,14 @@ const render = () => {
     nodes={providers.map(({ provide }) => ({ id: provide, text: provide }))}
     direction="UP"
     edges={edges}
+    node={(node) => {
+      const fill = HIGHLIGHTS[node.id.split(':')[0]]
+      return <Node
+          {...node}
+          style={{ fill }}
+        />
+      }
+    }
   />
 }
 

@@ -18,6 +18,7 @@ export const stateProvider: Provider<ValidationState> = {
     ]);
 
     return {
+      // @TODO move to another state implementation
       rx: StateUtil.toRxStore(localStore, atom),
       validate: (a: ValidateArgs) => localStore.dispatch(validateAction(a)),
     };
