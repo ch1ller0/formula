@@ -41,7 +41,8 @@
     "include": [
         "packages/**/*.ts",
         "packages/**/*.tsx",
-        "stories"
+        "stories",
+        ".storybook/formula-addon"
     ],
     "paths": {
       "@formula/*": "packages/*/src/index.ts"

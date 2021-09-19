@@ -241,12 +241,36 @@ describe('DependencyContainer', () => {
   });
 
   describe('features', () => {
-    it('di container exposes itself', () => {
-      const firstToken = createToken('first');
-      const providers = createProviders([{ provide: firstToken, type: 'value' }]);
-      const container1 = new DependencyContainer(providers);
-      const container2 = container1.getByToken(DI_TOKEN);
-      expect(container1).toEqual(container2);
+    describe('di container exposes itself', () => {
+      it('available as another provider dependency', () => {
+        const firstToken = createToken('first');
+        const providers = createProviders([
+          {
+            provide: firstToken,
+            type: 'factory',
+            deps: [DI_TOKEN],
+            implementation: (deps) => {
+              return () => ['some-val', deps[0]];
+            },
+          },
+        ]);
+        const container1 = new DependencyContainer(providers);
+        const firstProvide = container1.getByToken(firstToken);
+        // @ts-ignore
+        expect(container1).toEqual(firstProvide()[1]);
+      });
+
+      it('not available via getByToken', () => {
+        expect.assertions(1);
+        try {
+          const firstToken = createToken('first');
+          const providers = createProviders([{ provide: firstToken, type: 'value' }]);
+          const container1 = new DependencyContainer(providers);
+          container1.getByToken(DI_TOKEN);
+        } catch (e) {
+          expect(e.message).toEqual('token not registered: di-container');
+        }
+      });
     });
 
     describe('container not ready', () => {

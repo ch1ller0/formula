@@ -102,7 +102,8 @@ export class DependencyContainer {
     // for symbol keys
     Object.getOwnPropertySymbols(this._providerStorage).forEach((e) => {
       // @ts-ignore
-      resolveSingle(this._providerStorage[e]);
+      const record = this._providerStorage[e] as IocRecord;
+      resolveSingle(record);
     });
     this._allResolved = true;
   }
@@ -112,10 +113,28 @@ export class DependencyContainer {
       throw new ContainerNotReadyError();
     }
     const provider = this._providerStorage[token];
-    if (!provider) {
+    if (!provider || token === DI_TOKEN) {
       throw new TokenNotFoundError([token]);
     }
 
     return provider.resolved;
+  }
+
+  _getResolvedNodes() {
+    if (!this._allResolved) {
+      throw new ContainerNotReadyError();
+    }
+    const res: { provide: string; deps: string[] }[] = [];
+
+    Object.getOwnPropertySymbols(this._providerStorage).forEach((e) => {
+      // @ts-ignore
+      const record = this._providerStorage[e] as IocRecord;
+      res.push({
+        provide: record.provider.provide.description,
+        deps: record.provider.deps?.map((x) => x.description) || [],
+      });
+    });
+
+    return res;
   }
 }
