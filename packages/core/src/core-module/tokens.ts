@@ -8,16 +8,16 @@ import type { FieldService } from './field/field.types';
 import type { PropsService } from './props/props.types';
 import type { StepService } from './step/step.types';
 
-export const GLOBAL_STORE_TOKEN = createToken<GlobalStore>('global-store');
-export const STRUCTURE_CONFIG_TOKEN = createToken<StructureFactory>('structure-config');
-export const BINDER_SERVICE_TOKEN = createToken<InstanceType<typeof BinderService>>('binder-service');
+export const GLOBAL_STORE_TOKEN = createToken<GlobalStore>('core:store');
+export const STRUCTURE_CONFIG_TOKEN = createToken<StructureFactory>('core:structure-config');
+export const BINDER_SERVICE_TOKEN = createToken<InstanceType<typeof BinderService>>('core:binder');
+export const RENDER_SERVICE_TOKEN = createToken<RendererFn>('core:render');
 
-// core services
-export const FIELD_SERVICE_TOKEN = createToken<FieldService>('field-service');
-export const PROPS_SERVICE_TOKEN = createToken<PropsService>('props-service');
-export const RENDER_SERVICE_TOKEN = createToken<RendererFn>('render-service');
-export const STEP_SERVICE_TOKEN = createToken<StepService>('step-service');
-export const STRUCTURE_SERVICE_TOKEN = createToken<StructureService>('structure-service');
+// public core providers
+export const FIELD_SERVICE_TOKEN = createToken<FieldService>('core:field');
+export const PROPS_SERVICE_TOKEN = createToken<PropsService>('core:props');
+export const STEP_SERVICE_TOKEN = createToken<StepService>('core:step');
+export const STRUCTURE_SERVICE_TOKEN = createToken<StructureService>('core:structure');
 
 export const PublicTokens = {
   FIELD_SERVICE_TOKEN,

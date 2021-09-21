@@ -43,7 +43,7 @@ const createRenderers = (
 
   const renderGroup = ({ children, opts, id }: GroupStructVal) => {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    const childrenRender = children.map((a) => renderAny(a));
+    const childrenRender = children.map((a) => renderUnknown(a));
 
     if (opts.invisible === true) {
       return null;
@@ -67,7 +67,7 @@ const createRenderers = (
     return childrenRender;
   };
 
-  const renderAny = (id: string): React.ReactNode => {
+  const renderUnknown = (id: string): React.ReactNode => {
     const entity = resolveEnt(id);
     if (entity.id.includes('scr') || entity.id.includes('grp')) {
       return renderGroup(entity);
@@ -84,7 +84,7 @@ const createRenderers = (
     throw new Error('unknown render entity');
   };
 
-  return renderAny;
+  return renderUnknown;
 };
 
 // const _exhaustiveCheck = (a: never) => a;

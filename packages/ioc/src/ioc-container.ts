@@ -19,7 +19,7 @@ const getRequireStack = (current: IocRecord, storage: Storage): Token[] => {
   return follow(current);
 };
 
-export const DI_TOKEN = createToken<DependencyContainer>('di-container');
+export const DI_TOKEN = createToken<DependencyContainer>('kernel:di-container');
 
 export class DependencyContainer {
   private _providerStorage: Storage = {};
