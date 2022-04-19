@@ -1,17 +1,21 @@
-import { FieldModule } from './field/field.module';
-import { StateModule } from './state/state.module';
-import { PropsModule } from './props/props.module';
-import { RenderModule } from './render/render.module';
-import { StepModule } from './step/step.module';
-import { StructureModule } from './structure/structure.module';
-import { BinderModule } from './binder/binder.module';
+import { declareModule } from '@fridgefm/inverter';
+import { fieldProviders } from './field/field.provider';
+import { stateProviders } from './state/state.module';
+import { renderProviders } from './render/render.provider';
+import { propsProviders } from './props/props.provider';
+import { stepProviders } from './step/step.provider';
+import { structureProviders } from './structure/structure.provider';
+import { binderProviders } from './binder/binder.provider';
 
-export const CoreModule = [
-  ...StructureModule,
-  ...RenderModule,
-  ...PropsModule,
-  ...BinderModule,
-  ...FieldModule,
-  ...StepModule,
-  ...StateModule,
-];
+export const CoreModule = declareModule({
+  name: 'CoreModule',
+  providers: [
+    ...fieldProviders,
+    ...stateProviders,
+    ...renderProviders,
+    ...structureProviders,
+    ...propsProviders,
+    ...stepProviders,
+    ...binderProviders,
+  ],
+});

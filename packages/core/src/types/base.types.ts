@@ -1,6 +1,8 @@
-import type { Token } from '@formula/ioc';
+import type { declareContainer } from '@fridgefm/inverter';
 import type { FC } from 'react';
 import type { TodoAny } from '@formula/core-types';
+
+export type ContainerGet = ReturnType<typeof declareContainer>['get'];
 
 type TVagueProps = Record<string, TodoAny>;
 
@@ -26,9 +28,6 @@ export type FieldConfig<Prps extends TVagueProps = TVagueProps, FT extends Primi
 
 export type BinderReturn = (fieldName: string) => void;
 
-type GetService = <T = unknown>(tok: Token<T>) => T;
-export type GetBinders = <T extends { useBinders: Record<string, unknown> }>(tok: Token<T>) => T['useBinders'];
-
 /**
  * Field`s structure that appears in global structure
  */
@@ -44,7 +43,7 @@ export type TFieldStructure = {
   /**
    * Controls to manipulate behaviour on the field
    */
-  controls?: (a: { getService: GetService; getBinders: GetBinders }) => void;
+  controls?: (get: ContainerGet) => BinderReturn[];
 };
 export type TStepStructure = Record<string, TFieldStructure>;
 

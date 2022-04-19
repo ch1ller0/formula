@@ -1,6 +1,10 @@
-import { stateProvider } from './providers/state.provider';
-import { validationService } from './providers/service.provider';
+import { declareModule } from '@fridgefm/inverter';
+import { validationStateProvider } from './providers/state.provider';
+import { validationBindersProvider } from './providers/binders.provider';
 
-export { VALIDATION_SERVICE_TOKEN } from './tokens';
-export const ValidationModule = [validationService, stateProvider];
-export type { ValidationService, ValidationState, ValidateFn } from './types';
+export { VALIDATION_BINDERS_TOKEN } from './tokens';
+export type { ValidationBinders, ValidationState, ValidateFn } from './types';
+export const ValidationModule = declareModule({
+  name: 'ValidationModule',
+  providers: [validationStateProvider, validationBindersProvider],
+});
