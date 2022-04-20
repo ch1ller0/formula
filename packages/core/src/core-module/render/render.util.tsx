@@ -121,9 +121,12 @@ const RenderTree: React.FC<{
 };
 
 export const renderRoot = (
-  deps: [StructureService, PropsService, FieldService, StepService, GlobalStore],
+  structureService: StructureService,
+  propsService: PropsService,
+  fieldService: FieldService,
+  stepService: StepService,
+  globalStore: GlobalStore,
 ): RendererFn => (Wrapper = defaultWrapper) => {
-  const [structureService, propsService, fieldService, stepService, globalStore] = deps;
   const renderDependencies = {
     structureDeps: structureService._getRenderDeps(),
     propsDeps: propsService._getRenderDeps(),

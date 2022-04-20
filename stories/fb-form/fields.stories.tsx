@@ -1,4 +1,4 @@
-import { FormBuilder } from '@formula/core';
+import { formBuilder } from '@formula/core';
 import {
   InputFieldView,
   SelectFieldView,
@@ -14,22 +14,21 @@ export default {
   component: <div>placeholder</div>,
   parameters: {
     // pure core providers
-    providers: new FormBuilder()
-      .buildStructure(({ group }) => ({
-        0: group({
-          dumb_input: {
-            field: InputFieldView,
-            props: { label: 'Dumb input field' },
-          },
-        }),
-      }))
-      ._getDebugProviders(),
+    providers: formBuilder().build(({ group }) => ({
+      0: group({
+        dumb_input: {
+          field: InputFieldView,
+          props: { label: 'Dumb input field' },
+        },
+      }),
+    })),
+    // ._getDebugProviders(),
   },
 };
 
 const SingleField = (step: TBase.TStepStructure) => {
-  const CMP = new FormBuilder()
-    .buildStructure(({ group }) => ({ 0: group(step) }))
+  const CMP = formBuilder()
+    .build(({ group }) => ({ 0: group(step) }))
     .toComponent(({ children }) => <form>{children}</form>);
   return <CMP />;
 };

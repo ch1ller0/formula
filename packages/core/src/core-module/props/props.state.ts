@@ -3,7 +3,7 @@ import noop from '@tinkoff/utils/function/noop';
 import mapObj from '@tinkoff/utils/object/map';
 import { toRxStore } from '../../utils/state.util';
 import { GLOBAL_STORE_TOKEN } from '../tokens';
-import type { ExtractToken } from '@formula/ioc';
+import type { TokenProvide } from '@fridgefm/inverter';
 import type { StructureState } from '../structure/structure.types';
 import type { ChangeFieldPropsArgs, PropsState } from './props.types';
 
@@ -13,7 +13,7 @@ export const useState = ({
   globalStore,
   structure,
 }: {
-  globalStore: ExtractToken<typeof GLOBAL_STORE_TOKEN>;
+  globalStore: TokenProvide<typeof GLOBAL_STORE_TOKEN>;
   structure: StructureState;
 }) => {
   const initialState = mapObj(({ props }) => props, structure.fields);

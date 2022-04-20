@@ -1236,6 +1236,11 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@fridgefm/inverter@^0.1.13":
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/@fridgefm/inverter/-/inverter-0.1.13.tgz#dfb555bb600d555c3e37485d3b1eea46e74c680c"
+  integrity sha512-196fRI3LBB5xR2pZfJhuYWI3X8XnVmgwBhquRKwWMHG617tEhNV2aoMaKmODdgiQ/k1th3PbZF/Xwh33YqVOtQ==
+
 "@gar/promisify@^1.0.1":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.2.tgz#30aa825f11d438671d585bd44e7fd564535fc210"

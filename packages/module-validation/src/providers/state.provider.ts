@@ -1,10 +1,10 @@
-import { Provider } from '@formula/ioc';
+import { injectable } from '@fridgefm/inverter';
 import { declareAction, declareAtom, createStore } from '@reatom/core';
 import { StateUtil } from '@formula/core';
 import { VALIDATION_STATE_TOKEN } from '../tokens';
-import type { ValidationState, ValidateArgs, InnerState } from '../types';
+import type { ValidateArgs, InnerState } from '../types';
 
-export const stateProvider: Provider<ValidationState> = {
+export const validationStateProvider = injectable({
   provide: VALIDATION_STATE_TOKEN,
   useFactory: () => {
     // no need to connect it to global
@@ -23,4 +23,4 @@ export const stateProvider: Provider<ValidationState> = {
       validate: (a: ValidateArgs) => localStore.dispatch(validateAction(a)),
     };
   },
-};
+});

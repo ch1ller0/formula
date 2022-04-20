@@ -10,8 +10,8 @@
     "lib"
   ],
   "dependencies": {
-    "@formula/ioc": "0.0.0-stub",
     "@formula/core-types": "0.0.0-stub",
+    "@fridgefm/inverter": "^0.1.13",
     "@reatom/core": "^1.x.x",
     "@reatom/debug": "^1.x.x",
     "@reatom/observable": "^1.x.x",

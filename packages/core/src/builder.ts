@@ -1,50 +1,57 @@
 import React from 'react';
-import { DependencyContainer } from '@formula/ioc';
-import { CoreModule } from './core-module';
+import { ContainerConfiguration, declareContainer, injectable } from '@fridgefm/inverter';
 import {
-  STRUCTURE_CONFIG_TOKEN,
   RENDER_SERVICE_TOKEN,
   GLOBAL_STORE_TOKEN,
   BINDER_SERVICE_TOKEN,
+  ROOT_CONTAINER_GET_TOKEN,
+  STRUCTURE_CONFIG_TOKEN,
 } from './core-module/tokens';
-import type { Provider } from '@formula/ioc';
-import type { StructureFactory } from './core-module/structure/structure.types';
+import { CoreModule } from './core-module';
+import { StructureFactory } from './core-module/structure/structure.types';
 
-export class FormBuilder {
-  private _config: { providers: Provider[] };
+export const formBuilder = () => {
+  const initialConfig: ContainerConfiguration = { modules: [CoreModule], providers: [] };
+  const instance = {
+    configure: (cfg: Pick<ContainerConfiguration, 'modules' | 'providers'>) => {
+      cfg.modules?.forEach((injectedModule) => {
+        initialConfig.modules?.push(injectedModule);
+      });
+      cfg.providers.forEach((injectedProvider) => {
+        initialConfig.providers?.push(injectedProvider);
+      });
+      return instance;
+    },
+    build: (factory: StructureFactory) => {
+      const depContainer = declareContainer({
+        modules: initialConfig.modules,
+        providers: [
+          ...initialConfig.providers,
+          injectable({
+            provide: ROOT_CONTAINER_GET_TOKEN,
+            useFactory: () => depContainer.get,
+          }),
+          injectable({
+            provide: STRUCTURE_CONFIG_TOKEN,
+            useValue: factory,
+          }),
+        ],
+      });
 
-  constructor() {
-    this._config = { providers: CoreModule };
-  }
+      return {
+        toComponent(CoreWrapper?: React.FC): React.ReactNode {
+          // initialize bindings for fields
+          depContainer.get(BINDER_SERVICE_TOKEN).initialize();
+          // @TODO create logger provider
+          // eslint-disable-next-line no-console
+          console.log('before-render-state:', depContainer.get(GLOBAL_STORE_TOKEN).getState());
+          const renderer = depContainer.get(RENDER_SERVICE_TOKEN);
 
-  addProviders(ar: Provider[]) {
-    this._config.providers = this._config.providers.concat(ar);
-    return this;
-  }
+          return renderer(CoreWrapper);
+        },
+      };
+    },
+  };
 
-  buildStructure(factory: StructureFactory) {
-    this.addProviders([
-      {
-        provide: STRUCTURE_CONFIG_TOKEN,
-        useValue: factory,
-      },
-    ]);
-
-    const depContainer = new DependencyContainer(this._config.providers);
-
-    return {
-      toComponent(CoreWrapper?: React.FC): React.ReactNode {
-        // initialize bindings for fields
-        depContainer.getByToken(BINDER_SERVICE_TOKEN).initialize();
-        // @TODO create logger provider
-        // eslint-disable-next-line no-console
-        console.log('before-render-state:', depContainer.getByToken(GLOBAL_STORE_TOKEN).getState());
-        const renderer = depContainer.getByToken(RENDER_SERVICE_TOKEN);
-
-        return renderer(CoreWrapper);
-      },
-      // this is a very costly operation, use it only in dev mode
-      _getDebugProviders: () => depContainer._getResolvedNodes(),
-    };
-  }
-}
+  return instance;
+};
