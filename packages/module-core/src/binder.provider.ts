@@ -1,6 +1,6 @@
 import toPairs from '@tinkoff/utils/object/toPairs';
 import { injectable } from '@fridgefm/inverter';
-import { BINDER_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN, ROOT_CONTAINER_GET_TOKEN } from '../tokens';
+import { BINDER_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN, ROOT_CONTAINER_GET_TOKEN } from './tokens';
 
 export type BinderService = {
   initialize: () => void;

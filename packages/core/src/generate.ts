@@ -1,4 +1,4 @@
-import type { FieldConfig } from './types/base.types';
+import type { FieldConfig } from '@formula/core-types';
 
 type Brand<T> = { _: T };
 

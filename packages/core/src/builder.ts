@@ -1,14 +1,15 @@
 import React from 'react';
 import { ContainerConfiguration, declareContainer, injectable } from '@fridgefm/inverter';
-import {
+import { CoreModule, CoreTokens } from '@formula/module-core';
+import { StructureFactory } from '@formula/core-types';
+
+const {
   RENDER_SERVICE_TOKEN,
   GLOBAL_STORE_TOKEN,
   BINDER_SERVICE_TOKEN,
   ROOT_CONTAINER_GET_TOKEN,
   STRUCTURE_CONFIG_TOKEN,
-} from './core-module/tokens';
-import { CoreModule } from './core-module';
-import { StructureFactory } from './core-module/structure/structure.types';
+} = CoreTokens;
 
 export const formBuilder = () => {
   const initialConfig: ContainerConfiguration = { modules: [CoreModule], providers: [] };

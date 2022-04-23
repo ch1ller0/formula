@@ -1,5 +1,5 @@
 import { injectable } from '@fridgefm/inverter';
-import { STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN, PROPS_SERVICE_TOKEN } from '../tokens';
+import { STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN, PROPS_SERVICE_TOKEN } from './tokens';
 import { useState } from './props.state';
 import type { Props } from './props.types';
 

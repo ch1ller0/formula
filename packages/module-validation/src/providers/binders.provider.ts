@@ -12,7 +12,7 @@ import keys from '@tinkoff/utils/object/keys';
 import filterObj from '@tinkoff/utils/object/filter';
 import eachObj from '@tinkoff/utils/object/each';
 import { combineLatest } from 'rxjs';
-import { CoreTokens } from '@formula/core';
+import { CoreTokens } from '@formula/module-core';
 import { injectable } from '@fridgefm/inverter';
 import { VALIDATION_BINDERS_TOKEN, VALIDATION_STATE_TOKEN } from '../tokens';
 

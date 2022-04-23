@@ -1,12 +1,23 @@
 import type { declareContainer } from '@fridgefm/inverter';
+import type { TVagueProps, Primitive } from './base-props.types';
 import type { FC } from 'react';
-import type { TodoAny } from '@formula/core-types';
+
+export type ScreenName = string;
+export type StructureInput = GroupOut | TFieldStructure;
+export type FormStructure = Record<ScreenName, GroupOut>;
+
+export type GroupOpts = {
+  horizontal?: true;
+  invisible?: boolean;
+};
+
+export type GroupOut = {
+  type: 'group';
+  group: Record<string, StructureInput>;
+  opts: GroupOpts;
+};
 
 export type ContainerGet = ReturnType<typeof declareContainer>['get'];
-
-type TVagueProps = Record<string, TodoAny>;
-
-export type Primitive = string | number | boolean | null;
 
 /**
  * Basic field configuration
@@ -45,6 +56,7 @@ export type TFieldStructure = {
    */
   controls?: (get: ContainerGet) => BinderReturn[];
 };
+
 export type TStepStructure = Record<string, TFieldStructure>;
 
 // #### CONFG
@@ -67,4 +79,6 @@ export type BuilderFieldProps<T extends Primitive = Primitive> = {
   setValue: (value: T) => void;
 };
 
-// @TODO NEED BETTER TYPES, CURRENT ARE REALLY VAGUE
+export type StructureFactory = (args: {
+  group(cfg: Record<string, StructureInput>, opts?: GroupOpts): GroupOut;
+}) => FormStructure;
