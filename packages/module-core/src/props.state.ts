@@ -1,10 +1,10 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import mapObj from '@tinkoff/utils/object/map';
-import { toRxStore } from '../../utils/state.util';
-import { GLOBAL_STORE_TOKEN } from '../tokens';
+import { toRxStore } from './state.util';
+import { GLOBAL_STORE_TOKEN } from './tokens';
 import type { TokenProvide } from '@fridgefm/inverter';
-import type { StructureState } from '../structure/structure.types';
+import type { StructureState } from './structure.types';
 import type { ChangeFieldPropsArgs, PropsState } from './props.types';
 
 const changeFieldProps = declareAction<ChangeFieldPropsArgs>('props.changeFieldProps');

@@ -1,12 +1,12 @@
 import { injectable } from '@fridgefm/inverter';
 import { declareAction, declareAtom, createStore } from '@reatom/core';
-import { StateUtil } from '@formula/core';
+import { CoreTokens } from '@formula/module-core';
 import { VALIDATION_STATE_TOKEN } from '../tokens';
 import type { ValidateArgs, InnerState } from '../types';
 
 export const validationStateProvider = injectable({
   provide: VALIDATION_STATE_TOKEN,
-  useFactory: () => {
+  useFactory: (storeUtils) => {
     // no need to connect it to global
     const localStore = createStore();
     const validateAction = declareAction<ValidateArgs>('validation.validateAction');
@@ -19,8 +19,9 @@ export const validationStateProvider = injectable({
 
     return {
       // @TODO move to another state implementation
-      rx: StateUtil.toRxStore(localStore, atom),
+      rx: storeUtils.toRxStore(localStore, atom),
       validate: (a: ValidateArgs) => localStore.dispatch(validateAction(a)),
     };
   },
+  inject: [CoreTokens.STORE_UTILS_TOKEN] as const,
 });

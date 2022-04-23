@@ -1,6 +1,6 @@
 import { distinctUntilChanged, filter, mapTo, sample, map } from 'rxjs/operators';
 import { injectable } from '@fridgefm/inverter';
-import { FIELD_SERVICE_TOKEN, GLOBAL_STORE_TOKEN, STEP_SERVICE_TOKEN, STEP_BINDERS_TOKEN } from '../tokens';
+import { FIELD_SERVICE_TOKEN, GLOBAL_STORE_TOKEN, STEP_SERVICE_TOKEN, STEP_BINDERS_TOKEN } from './tokens';
 import { useState } from './step.state';
 
 export const stepProviders = [

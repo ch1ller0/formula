@@ -1,6 +1,6 @@
 import type { Observable } from 'rxjs';
 import type { Atom } from '@reatom/core';
-import type { Primitive } from '../../types/base.types';
+import type { Primitive } from '@formula/core-types';
 
 export type FieldState = Record<string, Primitive>;
 export type ChangeKeyValArgs = {

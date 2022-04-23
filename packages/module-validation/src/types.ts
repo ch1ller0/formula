@@ -1,10 +1,10 @@
-import type { TBase } from '@formula/core';
+import type { BinderReturn } from '@formula/core-types';
 import type { Observable } from 'rxjs';
 
 export type ValidateFn = (v: unknown) => string | undefined | Promise<string | undefined>;
 export type ValidationBinders = {
-  validateField: (a: ValidateFn[]) => TBase.BinderReturn;
-  stepDisabled: () => TBase.BinderReturn;
+  validateField: (a: ValidateFn[]) => BinderReturn;
+  stepDisabled: () => BinderReturn;
 };
 export type ValidationState = {
   rx: Observable<InnerState>;

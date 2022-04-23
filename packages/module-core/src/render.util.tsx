@@ -1,14 +1,13 @@
-import React from 'react';
 import { context, useAtom } from '@reatom/react';
+import React from 'react';
 
-import type { Primitive } from '../../types/base.types';
-import type { StructureService, GroupStructVal, ScreenStructKey } from '../structure/structure.types';
-import type { PropsService } from '../props/props.types';
-import type { FieldService } from '../field/field.types';
-import type { StepService } from '../step/step.types';
-import type { GlobalStore } from '../state/state.types';
+import type { Primitive, TodoAny } from '@formula/core-types';
+import type { StructureService, GroupStructVal, ScreenStructKey } from './structure.types';
+import type { PropsService } from './props.types';
+import type { FieldService } from './field.types';
+import type { StepService } from './step.types';
+import type { GlobalStore } from './state.types';
 import type { RendererFn } from './render.types';
-import type { TodoAny } from '@formula/core-types';
 
 type RenderDepReturn<T extends { _getRenderDeps: TodoAny }> = ReturnType<T['_getRenderDeps']>;
 

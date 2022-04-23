@@ -1,15 +1,6 @@
 import toPairs from '@tinkoff/utils/object/toPairs';
-import { TFieldStructure } from '../../types/base.types';
-import type {
-  FormStructure,
-  GroupOut,
-  StructureFactory,
-  StructureInput,
-  StructureState,
-  GroupStructKey,
-  ScreenStructKey,
-  FieldStructKey,
-} from './structure.types';
+import type { TFieldStructure, FormStructure, GroupOut, StructureFactory, StructureInput } from '@formula/core-types';
+import type { StructureState, GroupStructKey, ScreenStructKey, FieldStructKey } from './structure.types';
 
 export const getInitialStructure = (factory: StructureFactory) => {
   return factory({

@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import type { Atom } from '@reatom/core';
-import type { BinderReturn } from '../../types/base.types';
+import type { BinderReturn } from '@formula/core-types';
 
 export type StepState = {
   currentStep: number;

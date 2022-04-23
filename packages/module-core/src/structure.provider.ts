@@ -1,5 +1,5 @@
 import { injectable } from '@fridgefm/inverter';
-import { STRUCTURE_CONFIG_TOKEN, STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN } from '../tokens';
+import { STRUCTURE_CONFIG_TOKEN, STRUCTURE_SERVICE_TOKEN, GLOBAL_STORE_TOKEN } from './tokens';
 import { useState } from './structure.state';
 import { selectors } from './structure.selector';
 import type { TokenProvide } from '@fridgefm/inverter';

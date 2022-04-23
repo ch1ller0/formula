@@ -1,9 +1,9 @@
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import propSet from '@tinkoff/utils/object/propSet';
-import { toRxStore } from '../../utils/state.util';
+import { toRxStore } from './state.util';
 
-import type { GlobalStore } from '../state/state.types';
+import type { GlobalStore } from './state.types';
 import type { SetBlockArgs, StepState } from './step.types';
 
 const stepIncrement = declareAction('step.stepIncrement');

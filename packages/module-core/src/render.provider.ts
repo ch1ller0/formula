@@ -6,7 +6,7 @@ import {
   FIELD_SERVICE_TOKEN,
   STEP_SERVICE_TOKEN,
   GLOBAL_STORE_TOKEN,
-} from '../tokens';
+} from './tokens';
 import { renderRoot } from './render.util';
 
 export const renderProviders = [
