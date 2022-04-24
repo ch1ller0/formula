@@ -4,7 +4,7 @@ import { CoreModule, CoreTokens } from '@formula/module-core';
 import { StructureFactory } from '@formula/core-types';
 
 const {
-  RENDER_SERVICE_TOKEN,
+  RENDERER_FN_TOKEN,
   GLOBAL_STORE_TOKEN,
   BINDER_SERVICE_TOKEN,
   ROOT_CONTAINER_GET_TOKEN,
@@ -46,7 +46,7 @@ export const formBuilder = () => {
           // @TODO create logger provider
           // eslint-disable-next-line no-console
           console.log('before-render-state:', depContainer.get(GLOBAL_STORE_TOKEN).getState());
-          const renderer = depContainer.get(RENDER_SERVICE_TOKEN);
+          const renderer = depContainer.get(RENDERER_FN_TOKEN);
 
           return renderer(CoreWrapper);
         },

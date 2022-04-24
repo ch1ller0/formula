@@ -37,6 +37,6 @@
     "test:lint": "eslint ./packages ./stories -c .eslintrc.json",
     "test:types": "tsc --build tsconfig.json",
     "test:unit": "jest",
-    "test:all": "yarn test:lint && yarn test:types && yarn test:unit"
+    "test": "yarn test:lint && yarn test:types && yarn test:unit"
   }
 }

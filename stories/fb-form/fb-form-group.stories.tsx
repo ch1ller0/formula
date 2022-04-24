@@ -6,12 +6,11 @@ import { InputFieldView, SubmitButtonView, ThankYouView, TextFieldView } from '.
 import { requiredValidator, lengthValidator } from './shared/validators';
 import { boxWrapper } from './shared/wrapper';
 
-const { STEP_BINDERS_TOKEN } = CoreTokens;
+const { SCREEN_BINDERS_TOKEN } = CoreTokens;
 
 const builder = formBuilder()
   .configure({ modules: [ValidationModule], providers: [] })
   .build(({ group }) => ({
-    // first step
     0: group({
       caption1: {
         field: TextFieldView,
@@ -40,7 +39,7 @@ const builder = formBuilder()
             props: {
               label: 'Finish',
             },
-            controls: (get) => [get(STEP_BINDERS_TOKEN).nextStep(), get(VALIDATION_BINDERS_TOKEN).stepDisabled()],
+            controls: (get) => [get(SCREEN_BINDERS_TOKEN).nextScreen(), get(VALIDATION_BINDERS_TOKEN).screenDisabled()],
           },
         },
         {
@@ -79,7 +78,7 @@ const builder = formBuilder()
         props: {
           label: 'Finish',
         },
-        controls: (get) => [get(STEP_BINDERS_TOKEN).nextStep(), get(VALIDATION_BINDERS_TOKEN).stepDisabled()],
+        controls: (get) => [get(SCREEN_BINDERS_TOKEN).nextScreen(), get(VALIDATION_BINDERS_TOKEN).screenDisabled()],
       },
       caption3: {
         field: TextFieldView,
@@ -105,11 +104,10 @@ const builder = formBuilder()
           props: {
             label: 'Finish',
           },
-          controls: (get) => [get(STEP_BINDERS_TOKEN).nextStep(), get(VALIDATION_BINDERS_TOKEN).stepDisabled()],
+          controls: (get) => [get(SCREEN_BINDERS_TOKEN).nextScreen(), get(VALIDATION_BINDERS_TOKEN).screenDisabled()],
         },
       }),
     }),
-    // first step
     1: group({
       thank_you: {
         field: ThankYouView,

@@ -7,7 +7,7 @@ import {
   SubmitButtonView,
   ThankYouView,
 } from './shared/fields';
-import type { TBase } from '@formula/core';
+import type { TScreenStructure } from '@formula/core-types';
 
 export default {
   title: 'Example/Fields',
@@ -26,9 +26,9 @@ export default {
   },
 };
 
-const SingleField = (step: TBase.TStepStructure) => {
+const SingleField = (screen: TScreenStructure) => {
   const CMP = formBuilder()
-    .build(({ group }) => ({ 0: group(step) }))
+    .build(({ group }) => ({ 0: group(screen) }))
     .toComponent(({ children }) => <form>{children}</form>);
   return <CMP />;
 };

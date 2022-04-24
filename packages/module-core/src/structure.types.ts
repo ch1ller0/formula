@@ -22,12 +22,17 @@ export type StructureState = {
   groups: Record<ScreenStructKey | GroupStructKey, GroupStructVal>;
 };
 
-export type StructureService = {
-  _getInitialState: () => StructureState;
-  getRxStore: () => Observable<StructureState>;
-  _getRenderDeps(): {
-    atom: Atom<StructureState>;
-  };
-  selectors: typeof selectors;
+type StructureActions = {
   toggleGroupsVisibility: (a: GroupStructKey[]) => void;
 };
+
+export type StructureStore = {
+  atom: Atom<StructureState>;
+  actions: StructureActions;
+  initialState: StructureState;
+};
+
+export type StructureService = {
+  getRxStore: () => Observable<StructureState>;
+  selectors: typeof selectors;
+} & StructureActions;
