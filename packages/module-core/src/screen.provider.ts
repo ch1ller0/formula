@@ -67,7 +67,7 @@ export const screenProviders = [
         nextScreen: () => (fieldName) => {
           const buttonClick$ = fieldService.getDiffRx().pipe(
             // watch only for this button clicked
-            filter(({ name }) => name === fieldName),
+            filter(({ fieldName: name }) => name === fieldName),
             // need nothing from data - only timings
             mapTo(`click$:${fieldName}`),
           );

@@ -46,9 +46,8 @@ export const validationBindersProvider = injectable({
       const screenValidationRequirements$ = structureService
         .getRxStore()
         .pipe(map((s) => allScreenFields(s).find((sa) => sa[1].includes(buttonName))));
-
       // stream of button clicks
-      const buttonClick$ = fieldService.getDiffRx().pipe(filter(({ name }) => name === buttonName));
+      const buttonClick$ = fieldService.getDiffRx().pipe(filter(({ fieldName }) => fieldName === buttonName));
 
       // stream of current screen validation map
       const currentScreenValidation$ = combineLatest([screenValidationRequirements$, selfState.rx]).pipe(

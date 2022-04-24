@@ -16,6 +16,5 @@ export const toRxStore = <Stt>(globalStore: Store, atom?: Atom<Stt>): Observable
     );
   }
 
-  // @ts-ignore
   return from(observe(globalStore));
 };

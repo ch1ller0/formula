@@ -4,12 +4,12 @@ import type { StructureFactory } from '@formula/core-types';
 import type { RendererFn } from './render.types';
 import type { GlobalStore, StoreUtils } from './state.types';
 import type { StructureService, StructureStore } from './structure.types';
-import type { FieldService } from './field.types';
+import type { FieldService, FieldStore } from './field.types';
 import type { PropsService, PropsStore } from './props.types';
 import type { ScreenService, ScreenBinders, ScreenStore } from './screen.types';
 import type { BinderService } from './binder.provider';
 
-// private providers
+// private tokens
 export const ROOT_CONTAINER_GET_TOKEN = createToken<ReturnType<typeof declareContainer>['get']>(
   'core:root-container-get',
 );
@@ -21,8 +21,9 @@ export const RENDERER_FN_TOKEN = createToken<RendererFn>('core:render');
 export const SCREEN_STORE_TOKEN = createToken<ScreenStore>('core:screen:store');
 export const PROPS_STORE_TOKEN = createToken<PropsStore>('core:props:store');
 export const STRUCTURE_STORE_TOKEN = createToken<StructureStore>('core:structure:store');
+export const FIELD_STORE_TOKEN = createToken<FieldStore>('core:field:store');
 
-// public providers
+// public tokens
 export const FIELD_SERVICE_TOKEN = createToken<FieldService>('core:field:service');
 export const PROPS_SERVICE_TOKEN = createToken<PropsService>('core:props:service');
 export const SCREEN_SERVICE_TOKEN = createToken<ScreenService>('core:screen:service');

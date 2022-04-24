@@ -28,7 +28,7 @@ const builder = formBuilder()
             get(FIELD_SERVICE_TOKEN)
               .getDiffRx()
               .pipe(
-                filter((a) => a.name === fieldName),
+                filter((a) => a.fieldName === fieldName),
                 pluck('value'),
               )
               .subscribe(() => {
