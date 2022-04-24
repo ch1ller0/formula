@@ -3,7 +3,7 @@ import { fieldProviders } from './field.provider';
 import { stateProviders } from './state.provider';
 import { renderProviders } from './render.provider';
 import { propsProviders } from './props.provider';
-import { stepProviders } from './step.provider';
+import { screenProviders } from './screeen.provider';
 import { structureProviders } from './structure.provider';
 import { binderProviders } from './binder.provider';
 
@@ -15,7 +15,7 @@ export const CoreModule = declareModule({
     ...renderProviders,
     ...structureProviders,
     ...propsProviders,
-    ...stepProviders,
+    ...screenProviders,
     ...binderProviders,
   ],
 });

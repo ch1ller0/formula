@@ -3,7 +3,6 @@
 Engine for creating forms with business-logic based on Observable pattern
 
 > Storybook available here: https://formula-master.surge.sh
-> `Dep Tree` storybook tab that lets you inspect the DI providers graph - it might differ from form to form
 
 # Status
 > This is a _proof-of-concept_ `form engine`, based on several conceptions and ideas. It should not be used as a production-ready framework. 

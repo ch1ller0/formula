@@ -4,7 +4,7 @@ import type { Observable } from 'rxjs';
 export type ValidateFn = (v: unknown) => string | undefined | Promise<string | undefined>;
 export type ValidationBinders = {
   validateField: (a: ValidateFn[]) => BinderReturn;
-  stepDisabled: () => BinderReturn;
+  screenDisabled: () => BinderReturn;
 };
 export type ValidationState = {
   rx: Observable<InnerState>;

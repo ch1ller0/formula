@@ -13,12 +13,11 @@ import {
 import { requiredValidator, lengthValidator } from './shared/validators';
 import { boxWrapper } from './shared/wrapper';
 
-const { FIELD_SERVICE_TOKEN, PROPS_SERVICE_TOKEN, STEP_BINDERS_TOKEN } = CoreTokens;
+const { FIELD_SERVICE_TOKEN, PROPS_SERVICE_TOKEN, SCREEN_BINDERS_TOKEN } = CoreTokens;
 
 const builder = formBuilder()
   .configure({ modules: [ValidationModule], providers: [] })
   .build(({ group }) => ({
-    // first step
     0: group({
       first_name: {
         field: InputFieldView,
@@ -71,10 +70,9 @@ const builder = formBuilder()
         props: {
           label: 'Next',
         },
-        controls: (get) => [get(STEP_BINDERS_TOKEN).nextStep(), get(VALIDATION_BINDERS_TOKEN).stepDisabled()],
+        controls: (get) => [get(SCREEN_BINDERS_TOKEN).nextScreen(), get(VALIDATION_BINDERS_TOKEN).screenDisabled()],
       },
     }),
-    // first step
     1: group({
       fav_fruit: {
         field: InputFieldView,
@@ -93,10 +91,9 @@ const builder = formBuilder()
         props: {
           label: 'Finalize',
         },
-        controls: (get) => [get(STEP_BINDERS_TOKEN).nextStep(), get(VALIDATION_BINDERS_TOKEN).stepDisabled()],
+        controls: (get) => [get(SCREEN_BINDERS_TOKEN).nextScreen(), get(VALIDATION_BINDERS_TOKEN).screenDisabled()],
       },
     }),
-    // first step
     2: group({
       thank_you: {
         field: ThankYouView,

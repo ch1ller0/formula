@@ -57,7 +57,7 @@ export type TFieldStructure = {
   controls?: (get: ContainerGet) => BinderReturn[];
 };
 
-export type TStepStructure = Record<string, TFieldStructure>;
+export type TScreenStructure = Record<string, TFieldStructure>;
 
 // #### CONFG
 

@@ -67,13 +67,13 @@ const render = () => {
   />
 }
 
-addons.register('formula-addon', () => {
-  addons.add('formula-providers/tab', {
-    title: 'Dep Tree',
-    // 👇 Sets the type of UI element in Storybook
-    type: types.TAB,
-    route: ({ storyId, refId }) => (refId ? `/dependencies/${refId}_${storyId}` : `/dependencies/${storyId}`),
-    match: ({ viewMode }) => !!viewMode,
-    render,
-  });
-});
+// addons.register('formula-addon', () => {
+//   addons.add('formula-providers/tab', {
+//     title: 'Dep Tree',
+//     // 👇 Sets the type of UI element in Storybook
+//     type: types.TAB,
+//     route: ({ storyId, refId }) => (refId ? `/dependencies/${refId}_${storyId}` : `/dependencies/${storyId}`),
+//     match: ({ viewMode }) => !!viewMode,
+//     render,
+//   });
+// });

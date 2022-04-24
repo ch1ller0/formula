@@ -1,13 +1,20 @@
+import { injectable } from '@fridgefm/inverter';
 import { context, useAtom } from '@reatom/react';
 import React from 'react';
+import {
+  RENDER_SERVICE_TOKEN,
+  STRUCTURE_SERVICE_TOKEN,
+  PROPS_SERVICE_TOKEN,
+  FIELD_SERVICE_TOKEN,
+  SCREEN_SERVICE_TOKEN,
+  GLOBAL_STORE_TOKEN,
+} from './tokens';
 
 import type { Primitive, TodoAny } from '@formula/core-types';
 import type { StructureService, GroupStructVal, ScreenStructKey } from './structure.types';
 import type { PropsService } from './props.types';
 import type { FieldService } from './field.types';
-import type { StepService } from './step.types';
-import type { GlobalStore } from './state.types';
-import type { RendererFn } from './render.types';
+import type { ScreenService } from './screen.types';
 
 type RenderDepReturn<T extends { _getRenderDeps: TodoAny }> = ReturnType<T['_getRenderDeps']>;
 
@@ -92,10 +99,10 @@ const defaultWrapper: React.FC = ({ children }) => children;
 
 const RenderTree: React.FC<{
   structureDeps: RenderDepReturn<StructureService>;
-  stepDeps: RenderDepReturn<StepService>;
+  screenDeps: RenderDepReturn<ScreenService>;
   fieldDeps: RenderDepReturn<FieldService>;
   propsDeps: RenderDepReturn<PropsService>;
-}> = ({ structureDeps, stepDeps, fieldDeps, propsDeps }) => {
+}> = ({ structureDeps, screenDeps, fieldDeps, propsDeps }) => {
   const currentEntities = useAtom(structureDeps.atom);
 
   const rootRender = createRenderers(
@@ -109,7 +116,7 @@ const RenderTree: React.FC<{
     },
   );
 
-  const currentScreen = useAtom(stepDeps.atom, (a) => `scr.${a.currentStep}` as ScreenStructKey, []);
+  const currentScreen = useAtom(screenDeps.atom, (a) => `scr.${a.currentScreen}` as ScreenStructKey, []);
   const currentEntity = currentEntities.groups[currentScreen] as GroupStructVal;
 
   return (
@@ -119,25 +126,33 @@ const RenderTree: React.FC<{
   );
 };
 
-export const renderRoot = (
-  structureService: StructureService,
-  propsService: PropsService,
-  fieldService: FieldService,
-  stepService: StepService,
-  globalStore: GlobalStore,
-): RendererFn => (Wrapper = defaultWrapper) => {
-  const renderDependencies = {
-    structureDeps: structureService._getRenderDeps(),
-    propsDeps: propsService._getRenderDeps(),
-    fieldDeps: fieldService._getRenderDeps(),
-    stepDeps: stepService._getRenderDeps(),
-  };
+export const renderProviders = [
+  injectable({
+    provide: RENDER_SERVICE_TOKEN,
+    useFactory: (structureService, propsService, fieldService, screenService, globalStore) => (
+      Wrapper = defaultWrapper,
+    ) => {
+      const renderDependencies = {
+        structureDeps: structureService._getRenderDeps(),
+        propsDeps: propsService._getRenderDeps(),
+        fieldDeps: fieldService._getRenderDeps(),
+        screenDeps: screenService._getRenderDeps(),
+      };
 
-  return () => (
-    <context.Provider value={globalStore}>
-      <Wrapper>
-        <RenderTree {...renderDependencies} />
-      </Wrapper>
-    </context.Provider>
-  );
-};
+      return () => (
+        <context.Provider value={globalStore}>
+          <Wrapper>
+            <RenderTree {...renderDependencies} />
+          </Wrapper>
+        </context.Provider>
+      );
+    },
+    inject: [
+      STRUCTURE_SERVICE_TOKEN,
+      PROPS_SERVICE_TOKEN,
+      FIELD_SERVICE_TOKEN,
+      SCREEN_SERVICE_TOKEN,
+      GLOBAL_STORE_TOKEN,
+    ] as const,
+  }),
+];

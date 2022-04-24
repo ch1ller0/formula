@@ -20,7 +20,7 @@ import type { ValidateFn } from '../types';
 
 export const validationBindersProvider = injectable({
   provide: VALIDATION_BINDERS_TOKEN,
-  useFactory: (fieldService, propsService, stepService, structureService, selfState) => ({
+  useFactory: (fieldService, propsService, screenService, structureService, selfState) => ({
     validateField: (validateFns: ValidateFn[]) => (fieldName: string) => {
       fieldService
         .getRxStore()
@@ -38,7 +38,7 @@ export const validationBindersProvider = injectable({
           selfState.validate({ name: fieldName, errors });
         });
     },
-    stepDisabled: () => (buttonName: string) => {
+    screenDisabled: () => (buttonName: string) => {
       const { allScreenFields } = structureService.selectors;
       propsService.setFieldProp(buttonName, { disabled: true });
 
@@ -52,19 +52,19 @@ export const validationBindersProvider = injectable({
 
       // stream of current screen validation map
       const currentScreenValidation$ = combineLatest([screenValidationRequirements$, selfState.rx]).pipe(
-        map(([stepValidationRequirements, validationState]) => ({
-          screenName: stepValidationRequirements?.[0],
+        map(([screenValidationRequirements, validationState]) => ({
+          screenName: screenValidationRequirements?.[0],
           screenValidation: filterObj(
             // @ts-ignore
-            (_, key) => (stepValidationRequirements?.[1] || []).includes(key),
+            (_, key) => (screenValidationRequirements?.[1] || []).includes(key),
             validationState,
           ),
         })),
         distinctUntilChanged(),
       );
 
-      // setting errors for current step fields
-      // combine button clicks with step`s validation state
+      // setting errors for current screen fields
+      // combine button clicks with screen`s validation state
       // starts emitting after button was clicked once
       combineLatest([currentScreenValidation$, buttonClick$])
         .pipe(map((v) => v[0]))
@@ -91,8 +91,8 @@ export const validationBindersProvider = injectable({
           const stepNum = screenName?.replace('scr.', '');
 
           if (stepNum !== undefined) {
-            stepService.stepBlock({
-              stepNum, // @TODO replace step provider with screen provider
+            screenService.blockScreen({
+              screenNum: stepNum, // @TODO replace screen provider with screen provider
               value: isDisabled,
             });
           }
@@ -106,7 +106,7 @@ export const validationBindersProvider = injectable({
   inject: [
     CoreTokens.FIELD_SERVICE_TOKEN,
     CoreTokens.PROPS_SERVICE_TOKEN,
-    CoreTokens.STEP_SERVICE_TOKEN,
+    CoreTokens.SCREEN_SERVICE_TOKEN,
     CoreTokens.STRUCTURE_SERVICE_TOKEN,
     VALIDATION_STATE_TOKEN,
   ] as const,
