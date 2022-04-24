@@ -3,7 +3,7 @@ import { fieldProviders } from './field.provider';
 import { stateProviders } from './state.provider';
 import { renderProviders } from './render.provider';
 import { propsProviders } from './props.provider';
-import { screenProviders } from './screeen.provider';
+import { screenProviders } from './screen.provider';
 import { structureProviders } from './structure.provider';
 import { binderProviders } from './binder.provider';
 

@@ -40,7 +40,7 @@ export const validationBindersProvider = injectable({
     },
     screenDisabled: () => (buttonName: string) => {
       const { allScreenFields } = structureService.selectors;
-      propsService.setFieldProp(buttonName, { disabled: true });
+      propsService.setFieldProps(buttonName, { disabled: true });
 
       // stream of requirements for screen to be passed
       const screenValidationRequirements$ = structureService
@@ -70,7 +70,7 @@ export const validationBindersProvider = injectable({
         .pipe(map((v) => v[0]))
         .subscribe(({ screenValidation }) =>
           eachObj((errors, fieldName) => {
-            propsService.setFieldProp(fieldName, {
+            propsService.setFieldProps(fieldName, {
               error: errors?.[0],
             });
           }, screenValidation),
@@ -97,7 +97,7 @@ export const validationBindersProvider = injectable({
             });
           }
 
-          propsService.setFieldProp(buttonName, {
+          propsService.setFieldProps(buttonName, {
             disabled: isDisabled,
           });
         });

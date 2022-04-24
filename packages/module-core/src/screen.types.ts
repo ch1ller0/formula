@@ -16,11 +16,6 @@ type ScreenActions = {
 
 export type ScreenService = {
   getRxStore: () => Observable<ScreenState>;
-  blockScreen(args: SetBlockArgs): void;
-  nextScreen(): void;
-  _getRenderDeps(): {
-    atom: Atom<ScreenState>;
-  };
 } & ScreenActions;
 
 export type ScreenBinders = {

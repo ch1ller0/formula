@@ -113,9 +113,7 @@ const builder = formBuilder()
               .pipe(distinctUntilKeyChanged(watchField), pluck(watchField), debounceTime(300))
               .subscribe((firstName) => {
                 const title = `Thank you for your feedback, ${firstName}`;
-                get(PROPS_SERVICE_TOKEN).setFieldProp(fieldName, {
-                  title,
-                });
+                get(PROPS_SERVICE_TOKEN).setFieldProps(fieldName, { title });
               });
           },
         ],

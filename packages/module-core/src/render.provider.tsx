@@ -2,19 +2,20 @@ import { injectable } from '@fridgefm/inverter';
 import { context, useAtom } from '@reatom/react';
 import React from 'react';
 import {
-  RENDER_SERVICE_TOKEN,
-  STRUCTURE_SERVICE_TOKEN,
-  PROPS_SERVICE_TOKEN,
+  RENDERER_FN_TOKEN,
   FIELD_SERVICE_TOKEN,
-  SCREEN_SERVICE_TOKEN,
   GLOBAL_STORE_TOKEN,
+  SCREEN_STORE_TOKEN,
+  PROPS_STORE_TOKEN,
+  STRUCTURE_STORE_TOKEN,
 } from './tokens';
 
 import type { Primitive, TodoAny } from '@formula/core-types';
-import type { StructureService, GroupStructVal, ScreenStructKey } from './structure.types';
-import type { PropsService } from './props.types';
+import type { GroupStructVal, ScreenStructKey, StructureState } from './structure.types';
+import type { PropsState } from './props.types';
 import type { FieldService } from './field.types';
-import type { ScreenService } from './screen.types';
+import type { ScreenState } from './screen.types';
+import type { Atom } from '@reatom/core';
 
 type RenderDepReturn<T extends { _getRenderDeps: TodoAny }> = ReturnType<T['_getRenderDeps']>;
 
@@ -22,7 +23,7 @@ const createRenderers = (
   // @ts-ignore
   resolveEnt,
   args: {
-    propsDeps: RenderDepReturn<PropsService>;
+    propsDeps: { atom: Atom<PropsState> };
     fieldDeps: RenderDepReturn<FieldService>;
   },
 ) => {
@@ -98,10 +99,10 @@ const createRenderers = (
 const defaultWrapper: React.FC = ({ children }) => children;
 
 const RenderTree: React.FC<{
-  structureDeps: RenderDepReturn<StructureService>;
-  screenDeps: RenderDepReturn<ScreenService>;
+  structureDeps: { atom: Atom<StructureState> };
+  screenDeps: { atom: Atom<ScreenState> };
   fieldDeps: RenderDepReturn<FieldService>;
-  propsDeps: RenderDepReturn<PropsService>;
+  propsDeps: { atom: Atom<PropsState> };
 }> = ({ structureDeps, screenDeps, fieldDeps, propsDeps }) => {
   const currentEntities = useAtom(structureDeps.atom);
 
@@ -128,15 +129,13 @@ const RenderTree: React.FC<{
 
 export const renderProviders = [
   injectable({
-    provide: RENDER_SERVICE_TOKEN,
-    useFactory: (structureService, propsService, fieldService, screenService, globalStore) => (
-      Wrapper = defaultWrapper,
-    ) => {
+    provide: RENDERER_FN_TOKEN,
+    useFactory: (structureStore, propsStore, fieldService, screenStore, globalStore) => (Wrapper = defaultWrapper) => {
       const renderDependencies = {
-        structureDeps: structureService._getRenderDeps(),
-        propsDeps: propsService._getRenderDeps(),
+        structureDeps: { atom: structureStore.atom },
+        propsDeps: { atom: propsStore.atom },
         fieldDeps: fieldService._getRenderDeps(),
-        screenDeps: screenService._getRenderDeps(),
+        screenDeps: { atom: screenStore.atom },
       };
 
       return () => (
@@ -148,10 +147,10 @@ export const renderProviders = [
       );
     },
     inject: [
-      STRUCTURE_SERVICE_TOKEN,
-      PROPS_SERVICE_TOKEN,
+      STRUCTURE_STORE_TOKEN,
+      PROPS_STORE_TOKEN,
       FIELD_SERVICE_TOKEN,
-      SCREEN_SERVICE_TOKEN,
+      SCREEN_STORE_TOKEN,
       GLOBAL_STORE_TOKEN,
     ] as const,
   }),

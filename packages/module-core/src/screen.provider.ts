@@ -1,7 +1,6 @@
 import { distinctUntilChanged, filter, mapTo, sample, map } from 'rxjs/operators';
 import { injectable } from '@fridgefm/inverter';
 import { declareAction, declareAtom } from '@reatom/core';
-
 import noop from '@tinkoff/utils/function/noop';
 import propSet from '@tinkoff/utils/object/propSet';
 import {
@@ -19,8 +18,8 @@ export const screenProviders = [
   injectable({
     provide: SCREEN_STORE_TOKEN,
     useFactory: (globalStore) => {
-      const screenIncrement = declareAction('screen.increment');
-      const screenBlock = declareAction<SetBlockArgs>('screen.block');
+      const screenIncrementAction = declareAction('screen.increment');
+      const screenBlockAction = declareAction<SetBlockArgs>('screen.block');
 
       const atom = declareAtom<ScreenState>(
         ['screen'],
@@ -29,11 +28,11 @@ export const screenProviders = [
           blocked: {},
         },
         (on) => [
-          on(screenIncrement, (state) => ({
+          on(screenIncrementAction, (state) => ({
             ...state,
             currentScreen: state.currentScreen + 1,
           })),
-          on(screenBlock, (state, { screenNum, value }) => ({
+          on(screenBlockAction, (state, { screenNum, value }) => ({
             ...state,
             blocked: propSet(screenNum, value, state.blocked),
           })),
@@ -45,8 +44,8 @@ export const screenProviders = [
       return {
         atom,
         actions: {
-          nextScreen: () => globalStore.dispatch(screenIncrement()),
-          blockScreen: (a: SetBlockArgs) => globalStore.dispatch(screenBlock(a)),
+          nextScreen: () => globalStore.dispatch(screenIncrementAction()),
+          blockScreen: (a: SetBlockArgs) => globalStore.dispatch(screenBlockAction(a)),
         },
       };
     },
@@ -56,11 +55,8 @@ export const screenProviders = [
     provide: SCREEN_SERVICE_TOKEN,
     useFactory: (globalStore, screenStore) => {
       const rxStore = toRxStore(globalStore, screenStore.atom);
-      return {
-        ...screenStore.actions,
-        getRxStore: () => rxStore,
-        _getRenderDeps: () => ({ atom: screenStore.atom }),
-      };
+
+      return { ...screenStore.actions, getRxStore: () => rxStore };
     },
     inject: [GLOBAL_STORE_TOKEN, SCREEN_STORE_TOKEN] as const,
   }),

@@ -1,6 +1,6 @@
 import toPairs from '@tinkoff/utils/object/toPairs';
 import { injectable } from '@fridgefm/inverter';
-import { BINDER_SERVICE_TOKEN, STRUCTURE_SERVICE_TOKEN, ROOT_CONTAINER_GET_TOKEN } from './tokens';
+import { BINDER_SERVICE_TOKEN, ROOT_CONTAINER_GET_TOKEN, STRUCTURE_STORE_TOKEN } from './tokens';
 
 export type BinderService = {
   initialize: () => void;
@@ -12,7 +12,7 @@ export const binderProviders = [
     useFactory: (rootContainerGet) => {
       const instance: BinderService = {
         initialize: () => {
-          const { fields } = rootContainerGet(STRUCTURE_SERVICE_TOKEN)._getInitialState();
+          const { fields } = rootContainerGet(STRUCTURE_STORE_TOKEN).initialState;
 
           toPairs(fields).forEach(([fieldName, { controls }]) => {
             if (controls) {
