@@ -52,6 +52,7 @@ describe('structure.util', () => {
           'fld.field3': { field: 3, id: 'fld.field3' },
           'fld.field4': { field: 4, id: 'fld.field4' },
         },
+        arrays: {},
       });
     });
     it('should fail if duplicate keys found', () => {

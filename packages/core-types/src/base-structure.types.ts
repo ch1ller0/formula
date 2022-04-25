@@ -3,7 +3,7 @@ import type { TVagueProps, Primitive } from './base-props.types';
 import type { FC } from 'react';
 
 export type ScreenName = string;
-export type StructureInput = GroupOut | TFieldStructure;
+export type StructureInput = GroupOut | ArrayOut | TFieldStructure;
 export type FormStructure = Record<ScreenName, GroupOut>;
 
 export type GroupOpts = {
@@ -15,6 +15,16 @@ export type GroupOut = {
   type: 'group';
   group: Record<string, StructureInput>;
   opts: GroupOpts;
+};
+
+export type ArrayOpts = {
+  count: number;
+};
+
+export type ArrayOut = {
+  type: 'array';
+  array: Record<string, TFieldStructure>[];
+  opts: ArrayOpts;
 };
 
 export type ContainerGet = ReturnType<typeof declareContainer>['get'];
@@ -81,4 +91,5 @@ export type BuilderFieldProps<T extends Primitive = Primitive> = {
 
 export type StructureFactory = (args: {
   group(cfg: Record<string, StructureInput>, opts?: GroupOpts): GroupOut;
+  array(gen: (i: number) => Record<string, TFieldStructure>, opts?: ArrayOpts): ArrayOut;
 }) => FormStructure;
