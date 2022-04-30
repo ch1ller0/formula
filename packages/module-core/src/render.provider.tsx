@@ -11,7 +11,13 @@ import {
 } from './tokens';
 
 import type { Primitive } from '@formula/core-types';
-import type { FieldStructVal, GroupStructVal, ScreenStructKey } from './structure.types';
+import type {
+  ArrayStructVal,
+  FieldStructVal,
+  GroupStructVal,
+  ScreenStructKey,
+  FieldStructKey,
+} from './structure.types';
 
 const RENDER_ROOT_TOKEN = createToken<React.FC<{}>>('core:render:root');
 
@@ -53,6 +59,36 @@ export const renderProviders = [
             </div>
           );
         },
+        array: ({ children, id }: ArrayStructVal) => {
+          const paired = children.reduce((acc, cur) => {
+            const innerIndex = Number(cur[cur.length - 2]); // @TODO dirty hack
+
+            if (!acc[innerIndex]) {
+              acc[innerIndex] = [];
+            }
+            acc[innerIndex].push(cur);
+            return acc;
+          }, [] as FieldStructKey[][]);
+          const renderRow = (ids: FieldStructKey[]) =>
+            ids.map((childId) => <RenderVariants.something key={childId} id={childId} />);
+
+          return paired.map((ids, index) => {
+            const key = `${id}-r${index}`;
+            return (
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: `repeat(${paired.length}, 1fr)`,
+                  gridGap: '20px',
+                }}
+                data-key={key}
+                key={key}
+              >
+                {renderRow(ids)}
+              </div>
+            );
+          });
+        },
         screen: () => {
           const currentEntities = useAtom(structureStore.atom);
           const currentScreenName = useAtom(screenStore.atom, (a) => `scr.${a.currentScreen}` as ScreenStructKey, []);
@@ -85,9 +121,9 @@ export const renderProviders = [
           if (!id) {
             return <RenderVariants.screen />;
           }
-          const { fields, groups } = useAtom(structureStore.atom);
+          const { fields, groups, arrays } = useAtom(structureStore.atom);
           // @ts-ignore
-          const foundEntity = { ...fields, ...groups }[id] as FieldStructVal | GroupStructVal;
+          const foundEntity = { ...fields, ...groups, ...arrays }[id] as FieldStructVal | GroupStructVal;
           if (typeof foundEntity === 'undefined') {
             // eslint-disable-next-line no-console
             console.error(new Error(`Entity with id: ${id} not found`));
@@ -102,8 +138,12 @@ export const renderProviders = [
             // @ts-ignore
             return <RenderVariants.group {...foundEntity} />;
           }
+          if (id.startsWith('arr')) {
+            // @ts-ignore
+            return <RenderVariants.array {...foundEntity} />;
+          }
 
-          return <p>asf</p>;
+          return <p>Unknown</p>;
         },
       };
 

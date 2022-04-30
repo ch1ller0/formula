@@ -13,9 +13,12 @@ type FieldActions = {
   setFieldValue: (fieldName: string, value: Primitive) => void;
 };
 
+type ObservablePipe<I, O> = (input: Observable<I>) => Observable<O>;
+
 export type FieldService = {
   getRxStore(): Observable<FieldState>;
   getDiffRx(): Observable<SetFieldValueArgs>;
+  selectors: { getClicks: (args: { fieldName: string }) => ObservablePipe<FieldState, string> };
 } & FieldActions;
 
 export type FieldStore = {

@@ -12,7 +12,7 @@ export const binderProviders = [
     useFactory: (rootContainerGet) => {
       const instance: BinderService = {
         initialize: () => {
-          const { fields } = rootContainerGet(STRUCTURE_STORE_TOKEN).initialState;
+          const { fields } = rootContainerGet(STRUCTURE_STORE_TOKEN).getState();
 
           toPairs(fields).forEach(([fieldName, { controls }]) => {
             if (controls) {

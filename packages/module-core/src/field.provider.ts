@@ -1,9 +1,10 @@
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { injectable } from '@fridgefm/inverter';
 import { declareAction, declareAtom } from '@reatom/core';
 import noop from '@tinkoff/utils/function/noop';
 import mapObj from '@tinkoff/utils/object/map';
 import filterObj from '@tinkoff/utils/object/filter';
+import { filter, mapTo } from 'rxjs/operators';
 import { FIELD_SERVICE_TOKEN, FIELD_STORE_TOKEN, GLOBAL_STORE_TOKEN, STRUCTURE_STORE_TOKEN } from './tokens';
 import { toRxStore } from './state.util';
 import type { FieldState, SetFieldValueArgs } from './field.types';
@@ -12,7 +13,7 @@ export const fieldProviders = [
   injectable({
     provide: FIELD_STORE_TOKEN,
     useFactory: (globalStore, structureStore) => {
-      const structure = structureStore.initialState;
+      const structure = structureStore.getState();
       const initialState = mapObj(({ field: { initialValue }, props }) => initialValue(props), structure.fields);
       const setFieldValueAction = declareAction<SetFieldValueArgs>('field.setFieldValue');
       const atom = declareAtom<FieldState>(
@@ -50,6 +51,15 @@ export const fieldProviders = [
         },
         getDiffRx: () => fieldStore.diffRx,
         getRxStore: () => rxStore,
+        selectors: {
+          getClicks: (args: { fieldName: string }) => (rx: Observable<FieldState>) =>
+            rx.pipe(
+              // watch only for this button clicked
+              filter(({ fieldName: name }) => name === args.fieldName),
+              // need nothing from data - only timings
+              mapTo(`click$:${args.fieldName}`),
+            ),
+        },
       };
     },
     inject: [FIELD_STORE_TOKEN, GLOBAL_STORE_TOKEN] as const,

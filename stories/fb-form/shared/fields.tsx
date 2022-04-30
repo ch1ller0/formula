@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Input, SelectPicker, RadioGroup, Radio, Checkbox, FlexboxGrid } from 'rsuite';
 import { ViewGenerator } from '@formula/core';
 import 'rsuite/dist/styles/rsuite-default.css';
+import type { ButtonProps } from 'rsuite';
 
 const Text: React.FC<
   Partial<{
@@ -28,12 +29,7 @@ const Boxify: React.FC<{ error?: string; name?: string; label?: string }> = ({ c
   return (
     <>
       <FlexboxGrid justify="start">
-        <FlexboxGrid.Item
-          colspan={24}
-          style={{
-            marginTop: 15,
-          }}
-        >
+        <FlexboxGrid.Item colspan={24} style={{ marginTop: 15 }}>
           {label && name && (
             <label htmlFor={name}>
               <Text>{label}</Text>
@@ -170,20 +166,22 @@ export const CheckboxFieldView = ViewGenerator.field<{
   },
 });
 
-export const SubmitButtonView = ViewGenerator.field<{
-  label: string;
-  disabled: boolean;
-}>({
+export const SubmitButtonView = ViewGenerator.field<
+  {
+    label: string;
+    disabled: boolean;
+  } & ButtonProps
+>({
   name: 'submit',
   initialValue: () => null,
-  render: ({ setValue, label, disabled }) => {
+  render: ({ setValue, label, disabled, ...rest }) => {
     const onClick = () => {
       setValue(null);
     };
 
     return (
       <Boxify>
-        <Button appearance={disabled ? 'subtle' : 'primary'} onClick={onClick} size="lg">
+        <Button appearance={disabled ? 'subtle' : 'primary'} size="lg" {...rest} onClick={onClick}>
           {label}
         </Button>
       </Boxify>
