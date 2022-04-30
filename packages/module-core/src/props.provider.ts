@@ -10,7 +10,7 @@ export const propsProviders = [
   injectable({
     provide: PROPS_STORE_TOKEN,
     useFactory: (globalStore, structureStore) => {
-      const initialState = mapObj(({ props }) => props, structureStore.initialState.fields);
+      const initialState = mapObj(({ props }) => props, structureStore.getState().fields);
       const setFieldPropsAction = declareAction<[string, Props]>('props.setFieldProps');
 
       const atom = declareAtom<PropsState>(['props'], initialState, (on) => [

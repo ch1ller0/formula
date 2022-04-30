@@ -25,6 +25,7 @@ export type ArrayOut = {
   type: 'array';
   array: Record<string, TFieldStructure>[];
   opts: ArrayOpts;
+  generator: (i: number) => Record<string, TFieldStructure>;
 };
 
 export type ContainerGet = ReturnType<typeof declareContainer>['get'];
@@ -91,5 +92,5 @@ export type BuilderFieldProps<T extends Primitive = Primitive> = {
 
 export type StructureFactory = (args: {
   group(cfg: Record<string, StructureInput>, opts?: GroupOpts): GroupOut;
-  array(gen: (i: number) => Record<string, TFieldStructure>, opts?: ArrayOpts): ArrayOut;
+  array(gen: ArrayOut['generator'], opts?: ArrayOpts): ArrayOut;
 }) => FormStructure;

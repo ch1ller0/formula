@@ -6,7 +6,7 @@ import { InputFieldView, SubmitButtonView, ThankYouView, TextFieldView } from '.
 import { requiredValidator, lengthValidator } from './shared/validators';
 import { boxWrapper } from './shared/wrapper';
 
-const { SCREEN_BINDERS_TOKEN } = CoreTokens;
+const { SCREEN_BINDERS_TOKEN, STRUCTURE_BINDERS_TOKEN } = CoreTokens;
 
 const builder = formBuilder()
   .configure({ modules: [ValidationModule], providers: [] })
@@ -28,7 +28,8 @@ const builder = formBuilder()
           },
           remove_button: {
             field: SubmitButtonView,
-            props: { label: 'remove' },
+            props: { label: 'remove', appearance: 'link' },
+            controls: (get) => [get(STRUCTURE_BINDERS_TOKEN).removeRow()],
           },
         }),
         { count: 3 },
@@ -36,6 +37,7 @@ const builder = formBuilder()
       add_button: {
         field: SubmitButtonView,
         props: { label: 'Add row' },
+        controls: (get) => [get(STRUCTURE_BINDERS_TOKEN).appendRow({ arrName: 'arr.addresses_array' })],
       },
       finish_button: {
         field: SubmitButtonView,

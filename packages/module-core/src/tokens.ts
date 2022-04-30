@@ -3,7 +3,7 @@ import { createToken, declareContainer } from '@fridgefm/inverter';
 import type { StructureFactory } from '@formula/core-types';
 import type { RendererFn } from './render.types';
 import type { GlobalStore, StoreUtils } from './state.types';
-import type { StructureService, StructureStore } from './structure.types';
+import type { StructureBinders, StructureService, StructureStore } from './structure.types';
 import type { FieldService, FieldStore } from './field.types';
 import type { PropsService, PropsStore } from './props.types';
 import type { ScreenService, ScreenBinders, ScreenStore } from './screen.types';
@@ -29,6 +29,7 @@ export const PROPS_SERVICE_TOKEN = createToken<PropsService>('core:props:service
 export const SCREEN_SERVICE_TOKEN = createToken<ScreenService>('core:screen:service');
 export const SCREEN_BINDERS_TOKEN = createToken<ScreenBinders>('core:screen:binders');
 export const STRUCTURE_SERVICE_TOKEN = createToken<StructureService>('core:structure:service');
+export const STRUCTURE_BINDERS_TOKEN = createToken<StructureBinders>('core:structure:binders');
 
 export const PublicTokens = {
   FIELD_SERVICE_TOKEN,
