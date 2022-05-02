@@ -8,7 +8,7 @@
   "typings": "src",
   "files": ["lib"],
   "dependencies": {
-    "@fridgefm/inverter": "^0.1.13",
+    "@fridgefm/inverter": "0.1.15",
     "@reatom/core": "^1.x.x",
     "@reatom/debug": "^1.x.x",
     "@reatom/observable": "^1.x.x",
